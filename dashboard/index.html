@@ -261,7 +261,7 @@ function topline(right) {
   const done = all.filter(isDone).length;
   const count = STATIC ? `${all.length} exercices` : `${done}/${all.length} exercices validés`;
   const home = STATIC ? `<a class="link" href="../">Le projet</a>` : "";
-  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span>learn-rust</a><span class="count">${count}</span><span class="spacer"></span>${home}${right}</div>
+  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span>Learn Rust for web devs</a><span class="count">${count}</span><span class="spacer"></span>${home}${right}</div>
     <div class="bar"><div style="width:${all.length ? (done / all.length) * 100 : 0}%"></div></div>`;
 }
 

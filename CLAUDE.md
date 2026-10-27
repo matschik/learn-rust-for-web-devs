@@ -68,4 +68,4 @@ Sur le fil rouge, la règle 1 s'assouplit : tu peux écrire l'échafaudage (Carg
 
 Le repo est public. Ne commite jamais le code des exercices résolus par l'apprenant, `PROGRESS.md`, `CLAUDE.local.md`, ni rien de personnel (chemins locaux, emails, tokens).
 
-Sur le repo d'origine (matschik/learn-rust), les PRs de contenu (fiches, nouveaux modules, dashboard) sont mergées directement, sans attendre de relecture.
+Sur le repo d'origine (matschik/learn-rust-for-web-devs), les PRs de contenu (fiches, nouveaux modules, dashboard) sont mergées directement, sans attendre de relecture.

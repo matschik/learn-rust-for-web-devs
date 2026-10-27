@@ -2,7 +2,7 @@
 
 Apprendre Rust quand on est dev web full-stack TypeScript, pour écrire des backends. En français, avec les termes techniques en anglais (ownership, borrow checker, trait, crate).
 
-**Site : https://matschik.github.io/learn-rust/** (fiches de cours en lecture, et l'approche expliquée).
+**Site : https://matschik.github.io/learn-rust-for-web-devs/** (fiches de cours en lecture, et l'approche expliquée).
 
 Le repo sert aussi d'exemple pour apprendre avec un agent IA. [Claude Code](https://claude.com/claude-code) joue le rôle de tuteur : il t'explique, te pose des questions et te donne des indices, mais il n'écrit pas tes exercices à ta place.
 
@@ -50,8 +50,8 @@ Prérequis :
 - `jq`, utilisé par les hooks.
 
 ```sh
-git clone https://github.com/matschik/learn-rust.git   # ou ton fork
-cd learn-rust
+git clone https://github.com/matschik/learn-rust-for-web-devs.git   # ou ton fork
+cd learn-rust-for-web-devs
 claude
 ```
 
