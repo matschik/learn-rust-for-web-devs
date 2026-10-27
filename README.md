@@ -125,3 +125,7 @@ Si tu veux sauvegarder ton travail, pousse-le sur ton fork. N'ouvre pas de PR av
 - `.claude/commands/` : les commandes du tuteur (`/next`, `/hint`, `/review`, `/quiz`, `/explain-error`).
 - `scripts/` : les hooks de Claude Code. L'un bloque l'édition des exercices par Claude, l'autre lance clippy après chaque édition.
 - `scratch/` : bac à sable ignoré par git, utilisé par `/quiz` et pour le guessing game du chapitre 2.
+
+## Licence
+
+Le code (exercices, dashboard, scripts, configuration Claude Code) est sous licence [MIT](LICENSE). Les fiches de cours, les diagrammes, les quiz et le site sont sous licence [CC BY 4.0](LICENSE-CONTENT.md).
