@@ -1,40 +1,115 @@
-# learn-rust
+# Learn Rust for web devs
 
-Mon parcours pour apprendre Rust, orienté backend, avec Claude Code comme tuteur.
+Apprendre Rust quand on est dev web full-stack TypeScript, pour écrire des backends. En français, avec les termes techniques en anglais (ownership, borrow checker, trait, crate).
 
-## Démarrer une séance
+**Site : https://matschik.github.io/learn-rust/** (fiches de cours en lecture, et l'approche expliquée).
+
+Le repo sert aussi d'exemple pour apprendre avec un agent IA. [Claude Code](https://claude.com/claude-code) joue le rôle de tuteur : il t'explique, te pose des questions et te donne des indices, mais il n'écrit pas tes exercices à ta place.
+
+## Pour qui
+
+- Tu codes en TS tous les jours, front et back (Svelte ou React, Node, Fastify ou Express).
+- Tu pars de zéro en Rust.
+- Tu veux à terme écrire des APIs en Rust (Axum, sqlx, Postgres).
+- Tu as 30 à 45 minutes par séance, pas des journées entières.
+
+Pas besoin de cours sur ce qu'est une fonction ou une closure : le parcours va droit à ce qui est nouveau en Rust (ownership, borrowing, traits, `Result`) et le compare à ce que tu fais déjà en TS.
+
+## Comment ça marche
+
+- **Le Rust Book est la colonne vertébrale.** Le parcours suit la [version Brown](https://rust-book.cs.brown.edu/) du livre, avec ses quiz et son modèle de permissions (Read, Write, Own) pour comprendre le borrow checker.
+- **Cours, puis pratique.** Chaque exercice a une fiche de cours (`COURS.md`) : les sections du livre à lire, l'idée avec son équivalent TS, un diagramme et ce qu'il faut retenir. Vient ensuite la fiche pratique (`README.md`).
+- **Les tests sont rouges au départ.** Chaque exercice est un crate avec des tests qui échouent, et certains ne compilent même pas : c'est voulu, le compilateur fait partie du cours. Tu as fini quand `cargo test` est vert.
+- **Un tuteur qui ne donne pas les réponses.** Les règles du tuteur sont dans [CLAUDE.md](CLAUDE.md) :
+  - les indices viennent en 3 paliers ;
+  - il te demande de prédire si ton code compile avant de lancer `cargo` ;
+  - il t'apprend à lire les erreurs de `rustc` ;
+  - un hook l'empêche d'éditer tes fichiers d'exercice.
+- **Un fil rouge.** [Taskr](projects/taskr/README.md) est une API de gestion de tâches. Elle grandit à chaque module, du modèle métier jusqu'à une API Axum + Postgres en production. Claude pose l'échafaudage, tu écris les parties marquées `TODO(human)`.
+- **De la mémoire entre les séances.** Le tuteur note dans `PROGRESS.md` ce que tu as validé, les indices utilisés et les concepts fragiles. Il te repose ces concepts au début des séances suivantes (rappel espacé).
+
+## Démarrer
+
+Prérequis :
+
+- [rustup](https://rustup.rs/) : la toolchain est fixée par `rust-toolchain.toml` ;
+- [Claude Code](https://code.claude.com/docs) ;
+- Node 22 ou plus récent, pour le dashboard ;
+- `jq`, utilisé par les hooks.
 
 ```sh
-claude          # dans ce dossier
-/next           # rappel + exercice suivant
+git clone https://github.com/matschik/learn-rust.git   # ou ton fork
+cd learn-rust
+claude
 ```
 
-Pendant l'exercice : `/hint` pour un indice, `/explain-error` quand le compilateur râle, `/review` quand les tests sont verts, `/quiz` à la fin d'un module.
+Puis, dans Claude Code :
 
-Pour suivre ta progression : le dashboard tourne en permanence sur http://learn-rust.localhost:4400 (service launchd). À la main : `PORT=4400 node dashboard/server.mjs`. Le dashboard lance les tests de chaque exercice que tu modifies, lit `PROGRESS.md` et se met à jour tout seul.
+```
+/next
+```
 
-Les règles du tuteur sont dans [CLAUDE.md](CLAUDE.md), la progression dans [PROGRESS.md](PROGRESS.md).
+Au premier lancement, le tuteur crée ton `PROGRESS.md` à partir de `PROGRESS.template.md` et t'ouvre la fiche de cours du premier exercice.
 
-## Organisation
+Pour que le tuteur te connaisse, crée un `CLAUDE.local.md` à la racine. Ce fichier est ignoré par git. Par exemple :
 
-- `modules/` : un dossier par module, un crate par exercice, avec des tests qui échouent au départ.
-- `projects/taskr/` : le fil rouge, une API de gestion de tâches qui grandit à chaque module.
-- `dashboard/` : le dashboard de progression (Node, sans dépendance).
-- `scratch/` : bac à sable (ignoré par git), utilisé par `/quiz`.
+```md
+- Prénom : Camille
+- Stack : SvelteKit, Fastify, Prisma
+- Préférences : explications courtes, exemples backend
+```
+
+## Une séance
+
+1. `/next` : quelques questions de rappel, puis le cours de l'exercice suivant, avec les sections du Rust Book et leurs quiz.
+2. Tu lis, tu fais les quiz du livre, puis tu passes à la pratique dans `src/lib.rs`.
+3. Bloqué ? `/hint` donne le palier d'indice suivant. Le compilateur râle ? `/explain-error` t'aide à lire son message.
+4. Tests verts : `/review`. Tu expliques ton code en deux phrases, puis le tuteur relit comme un dev Rust senior.
+5. Fin de module : `/quiz`, cinq questions « est-ce que ça compile ? ».
+
+Tu peux aussi suivre le parcours sans Claude Code. Lis les `COURS.md`, fais les exercices et lance `cargo test -p <package>`. Tu perds alors les indices, les rappels et la relecture.
+
+## Le dashboard
+
+```sh
+node dashboard/server.mjs      # http://localhost:4400 (PORT=… pour changer)
+```
+
+Le dashboard ouvre directement sur l'exercice en cours, avec son cours puis sa pratique. Il relance les tests de chaque exercice que tu modifies et lit `PROGRESS.md`. La vue d'ensemble regroupe :
+
+- la roadmap ;
+- les questions à réviser ;
+- les erreurs récurrentes ;
+- les liens vers la doc.
+
+Le serveur n'a aucune dépendance npm.
 
 ## Parcours
 
-Le parcours suit le [Rust Book, version Brown](https://rust-book.cs.brown.edu/). Chaque exercice commence par une fiche de cours (`COURS.md`, avec un diagramme), puis une fiche pratique (`README.md`).
+| Module | Rust Book | État |
+| --- | --- | --- |
+| 1. Prise en main | ch. 1–3 | disponible |
+| 2. Ownership et structs | ch. 4–5 | disponible |
+| 3. Enums, collections, erreurs | ch. 6, 8, 9 | à venir |
+| 4. Modules, génériques, traits, tests | ch. 7, 10, 11 | à venir |
+| 5. Closures, itérateurs, smart pointers | ch. 13, 15 | à venir |
+| 6. Concurrence et async | ch. 16–17 | à venir |
+| 7. API avec Axum et sqlx | après le livre | à venir |
+| 8. Production | après le livre | à venir |
 
-| Module | Rust Book |
-| --- | --- |
-| 1. Prise en main | ch. 1–3 |
-| 2. Ownership et structs | ch. 4–5 |
-| 3. Enums, collections, erreurs | ch. 6, 8, 9 |
-| 4. Modules, génériques, traits, tests | ch. 7, 10, 11 |
-| 5. Closures, itérateurs, smart pointers | ch. 13, 15 |
-| 6. Concurrence et async | ch. 16–17 |
-| 7. API avec Axum et sqlx | après le livre |
-| 8. Production | après le livre |
+Les modules arrivent au fil de l'eau, au rythme de l'auteur.
 
-Prérequis : [rustup](https://rustup.rs/) (la toolchain est fixée par `rust-toolchain.toml`), `jq` (utilisé par le hook de Claude Code), et optionnellement [bacon](https://dioxus.github.io/bacon/) pour relancer les tests à chaque sauvegarde.
+## Garder ton travail pour toi
+
+Tes solutions sont des modifications locales des fichiers `modules/*/*/src/`. `PROGRESS.md` et `CLAUDE.local.md` sont ignorés par git.
+
+Si tu veux sauvegarder ton travail, pousse-le sur ton fork. N'ouvre pas de PR avec tes solutions : les exercices doivent rester rouges au départ pour les suivants.
+
+## Organisation
+
+- `modules/` : un dossier par module, un crate par exercice (`COURS.md`, `README.md`, `cours.svg`, `src/`).
+- `projects/taskr/` : le fil rouge.
+- `dashboard/` : le dashboard (Node, sans dépendance).
+- `.claude/commands/` : les commandes du tuteur (`/next`, `/hint`, `/review`, `/quiz`, `/explain-error`).
+- `scripts/` : les hooks de Claude Code. L'un bloque l'édition des exercices par Claude, l'autre lance clippy après chaque édition.
+- `scratch/` : bac à sable ignoré par git, utilisé par `/quiz` et pour le guessing game du chapitre 2.
