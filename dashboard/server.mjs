@@ -1,27 +1,17 @@
-// Dashboard de progression : `node dashboard/server.mjs`, puis http://localhost:4321
+// Dashboard de progression : `PORT=4400 node dashboard/server.mjs`, puis http://localhost:4400
 // Aucune dépendance npm. Lance `cargo test` sur chaque exercice modifié et lit PROGRESS.md.
 import { createServer } from "node:http";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { listModules, roadmap } from "./content.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const PORT = Number(process.env.PORT ?? 4321);
+const PORT = Number(process.env.PORT ?? 4400);
 // Un target dir séparé pour ne pas bloquer le cargo (ou bacon) de l'apprenant.
 const CARGO_ENV = { ...process.env, CARGO_TARGET_DIR: join(ROOT, "target", "dashboard") };
 
-// Les modules suivent l'ordre des chapitres du Rust Book (version Brown).
-const ROADMAP = [
-  { title: "Prise en main", chapters: "ch. 1–3" },
-  { title: "Ownership et structs", chapters: "ch. 4–5" },
-  { title: "Enums, collections, erreurs", chapters: "ch. 6, 8, 9" },
-  { title: "Modules, génériques, traits, tests", chapters: "ch. 7, 10, 11" },
-  { title: "Closures, itérateurs, smart pointers", chapters: "ch. 13, 15" },
-  { title: "Concurrence et async", chapters: "ch. 16–17" },
-  { title: "API avec Axum et sqlx", chapters: "après le livre" },
-  { title: "Production", chapters: "après le livre" },
-];
 
 function run(cmd, args) {
   return new Promise((resolve) => {
@@ -37,11 +27,6 @@ async function latestMtime(dir) {
     if (entry.isFile()) latest = Math.max(latest, (await stat(join(entry.parentPath, entry.name))).mtimeMs);
   }
   return latest;
-}
-
-async function listDirs(dir) {
-  const entries = await readdir(dir, { withFileTypes: true }).catch(() => []);
-  return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
 }
 
 // Résultats de tests, recalculés seulement quand les sources d'un exercice changent.
@@ -77,7 +62,10 @@ function section(markdown, title) {
 }
 
 async function readProgress() {
-  const md = await readFile(join(ROOT, "PROGRESS.md"), "utf8").catch(() => "");
+  // PROGRESS.md est propre à l'apprenant (ignoré par git) ; avant la première séance, on lit le modèle.
+  const md = await readFile(join(ROOT, "PROGRESS.md"), "utf8")
+    .catch(() => readFile(join(ROOT, "PROGRESS.template.md"), "utf8"))
+    .catch(() => "");
   const validated = new Map();
   for (const line of section(md, "Validés").split("\n")) {
     const cells = line.split("|").map((c) => c.trim()).filter(Boolean);
@@ -96,47 +84,26 @@ async function readProgress() {
   };
 }
 
-async function readTitle(file, fallback) {
-  const md = await readFile(file, "utf8").catch(() => "");
-  return md.match(/^# (.+)$/m)?.[1]?.replace(/ · (cours|pratique)$/, "") ?? fallback;
-}
-
 async function buildState() {
   const progress = await readProgress();
-  const modules = [];
-  for (const moduleDir of await listDirs(join(ROOT, "modules"))) {
-    const modulePath = join(ROOT, "modules", moduleDir);
+  const modules = await listModules(ROOT);
+  // Un exercice après l'autre : les cargo test se partagent le même target dir.
+  for (const m of modules) {
     const exercises = [];
-    for (const exDir of await listDirs(modulePath)) {
-      const dir = join(modulePath, exDir);
-      const cargo = await readFile(join(dir, "Cargo.toml"), "utf8").catch(() => null);
-      if (!cargo) continue;
-      const pkg = cargo.match(/^name\s*=\s*"(.+)"/m)?.[1];
-      const [tests, untouched] = await Promise.all([testExercise(dir, pkg), isUntouched(dir)]);
-      const validated = progress.validated.get(exDir) ?? progress.validated.get(pkg) ?? null;
+    for (const { dir, ...ex } of m.exercises) {
+      const [tests, untouched] = await Promise.all([testExercise(dir, ex.pkg), isUntouched(dir)]);
+      const validated = progress.validated.get(ex.id) ?? progress.validated.get(ex.pkg) ?? null;
       let status;
       if (validated) status = "validated";
       else if (tests.compiles && tests.total > 0 && tests.passed === tests.total) status = "green";
       else if (untouched) status = "todo";
       else status = "in-progress";
-      exercises.push({
-        id: exDir,
-        pkg,
-        title: await readTitle(join(dir, "README.md"), exDir),
-        readme: relative(ROOT, join(dir, "README.md")),
-        cours: relative(ROOT, join(dir, "COURS.md")),
-        status,
-        tests,
-        validated,
-      });
+      exercises.push({ ...ex, status, tests, validated });
     }
-    const number = Number(moduleDir.slice(0, 2));
-    modules.push({ id: moduleDir, number, title: ROADMAP[number - 1]?.title ?? moduleDir, readme: `modules/${moduleDir}/README.md`, exercises });
+    m.exercises = exercises;
   }
-  const available = new Set(modules.map((m) => m.number));
-  const roadmap = ROADMAP.map((step, i) => ({ number: i + 1, ...step, available: available.has(i + 1) }));
   return {
-    roadmap,
+    roadmap: roadmap(modules),
     modules,
     current: progress.current,
     review: progress.review,
@@ -181,7 +148,7 @@ createServer(async (req, res) => {
 })
   .on("error", (error) => {
     if (error.code !== "EADDRINUSE") throw error;
-    console.error(`Le port ${PORT} est déjà pris par une autre app. Relance avec : PORT=4400 node dashboard/server.mjs`);
+    console.error(`Le port ${PORT} est déjà pris par une autre app. Relance avec un autre port, par exemple : PORT=4401 node dashboard/server.mjs`);
     process.exit(1);
   })
   .listen(PORT, "127.0.0.1", () => {

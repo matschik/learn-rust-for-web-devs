@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>learn-rust</title>
+<title>Learn Rust for web devs</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2410c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='36' font-weight='700' fill='%23fff7ed'%3Ers%3C/text%3E%3C/svg%3E">
 <style>
   :root {
@@ -123,7 +123,7 @@
 </style>
 </head>
 <body>
-<div class="wrap" id="app"><div class="loading">Je lance les tests…</div></div>
+<div class="wrap" id="app"><div class="loading">Chargement…</div></div>
 <script>
 const LABELS = { validated: "Validé", green: "Tests verts", "in-progress": "En cours", broken: "Ne compile pas", todo: "À faire" };
 const RESOURCES = [
@@ -134,6 +134,8 @@ const RESOURCES = [
   ["err", "Index des erreurs du compilateur", "Chaque code EXXXX expliqué", "https://doc.rust-lang.org/error_codes/"],
   ["ref", "Rust Playground", "Tester un bout de code dans le navigateur", "https://play.rust-lang.org/"],
 ];
+// En version statique (GitHub Pages), pas de serveur : les fiches sont lues en lecture seule, sans tests ni progression.
+const STATIC = window.LEARN_RUST_STATIC === true;
 let state = null;
 let rendered = "";
 let tab = null; // "cours" | "pratique" pour l'exercice affiché
@@ -236,12 +238,13 @@ function statusBlock(ex) {
     green: ["Tous les tests passent", "Lance <code>/review</code> dans Claude Code pour valider l'exercice."],
     validated: ["Validé", "Rien à faire ici."],
   }[s];
+  if (STATIC) return `<div class="status st-todo"><strong>Pour faire cet exercice</strong><p>Clone le repo, lance <code>claude</code> à la racine, puis <code>/next</code> : le tuteur te guide sans te donner la solution. Les tests sont rouges au départ, à toi de les faire passer.</p></div>`;
   const error = s === "broken" ? firstError(t.output) : "";
   return `<div class="status st-${s}"><strong>${title}</strong><p>${text}</p>${error ? `<pre>${esc(error)}</pre>` : ""}</div>`;
 }
 
 async function file(path) {
-  if (!files.has(path)) files.set(path, await fetch(`/api/file?path=${encodeURIComponent(path)}`).then((r) => (r.ok ? r.text() : "")).catch(() => ""));
+  if (!files.has(path)) files.set(path, await fetch(STATIC ? `../${path}` : `/api/file?path=${encodeURIComponent(path)}`).then((r) => (r.ok ? r.text() : "")).catch(() => ""));
   return files.get(path);
 }
 
@@ -256,7 +259,9 @@ async function hydrateFigures() {
 function topline(right) {
   const all = exercises();
   const done = all.filter(isDone).length;
-  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span>learn-rust</a><span class="count">${done}/${all.length} exercices validés</span><span class="spacer"></span>${right}</div>
+  const count = STATIC ? `${all.length} exercices` : `${done}/${all.length} exercices validés`;
+  const home = STATIC ? `<a class="link" href="../">Le projet</a>` : "";
+  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span>learn-rust</a><span class="count">${count}</span><span class="spacer"></span>${home}${right}</div>
     <div class="bar"><div style="width:${all.length ? (done / all.length) * 100 : 0}%"></div></div>`;
 }
 
@@ -301,7 +306,7 @@ async function renderFocus(pinned) {
       ${p.intro ? markdown(p.intro, base).replace(/<p>Relis la fiche[^<]*<code>COURS\.md<\/code>[^<]*<\/p>/, "") : ""}
       <div class="task">${[...p.map].map(([h, md]) => `<h2>${inline(h)}</h2>${markdown(md, base)}`).join("")}</div>
       <div class="next"><button class="btn ghost" data-tab="cours">← Revoir le cours</button></div>
-      <details><summary>Dernière sortie de cargo test</summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>`;
+      ${STATIC ? "" : `<details><summary>Dernière sortie de cargo test</summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>`}`;
   }
 
   app.innerHTML = topline(right) + `
@@ -351,9 +356,10 @@ function renderOverview() {
       <h1>Vue d'ensemble</h1>
       <div class="roadmap">${roadmap}</div>
       ${modules}
+      ${STATIC ? "" : `
       <div class="card"><h2>À réviser</h2>${list(state.review, "Rien à réviser pour l'instant.")}</div>
       <div class="card"><h2>Erreurs récurrentes</h2>${list(state.mistakes, "Rien de noté pour l'instant.")}</div>
-      <div class="card"><h2>Fil rouge Taskr</h2>${list(state.taskr, "Pas commencé.")}</div>
+      <div class="card"><h2>Fil rouge Taskr</h2>${list(state.taskr, "Pas commencé.")}</div>`}
       <div class="card"><h2>Documentation</h2>${resources}</div>
     </div>`;
 }
@@ -369,13 +375,13 @@ window.addEventListener("hashchange", () => { rendered = ""; tabFor = null; wind
 
 async function refresh() {
   try {
-    state = await fetch("/api/state").then((r) => r.json());
+    state = await fetch(STATIC ? "state.json" : "/api/state").then((r) => r.json());
     render();
   } catch {
     document.getElementById("app").innerHTML = `<div class="loading">Serveur injoignable.</div>`;
     rendered = "";
   }
-  setTimeout(refresh, 3000);
+  if (!STATIC) setTimeout(refresh, 3000);
 }
 refresh();
 </script>

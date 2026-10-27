@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learn Rust for web devs</title>
+<meta name="description" content="Un repo pour apprendre Rust quand on est dev web full-stack TypeScript, avec Claude Code comme tuteur qui ne donne pas les réponses.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2410c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='36' font-weight='700' fill='%23fff7ed'%3Ers%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #faf8f5; --panel: #ffffff; --text: #1f1d1a; --muted: #6b665e; --line: #e7e2da;
+    --accent: #c2410c; --accent-soft: #fdebdd; --ok: #15803d; --ok-soft: #dcfce7;
+    --err: #b91c1c; --err-soft: #fee2e2; --todo-soft: #f1efeb; --code: #f4f1ec;
+    --shadow: 0 1px 2px rgba(31, 29, 26, .04), 0 4px 16px rgba(31, 29, 26, .05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151412; --panel: #1d1b19; --text: #ece8e2; --muted: #9c968c; --line: #2f2c28;
+      --accent: #f97316; --accent-soft: #3a2314; --ok: #4ade80; --ok-soft: #14301f;
+      --err: #f87171; --err-soft: #3a1818; --todo-soft: #262421; --code: #24221f; --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .86em; }
+  pre { background: var(--code); padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 14px; line-height: 1.55; }
+  pre code { background: none; padding: 0; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  .top { display: flex; align-items: center; gap: 16px; font-size: 14px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text); text-decoration: none; }
+  .logo { width: 24px; height: 24px; border-radius: 7px; background: var(--accent); color: #fff7ed; display: grid; place-items: center; font: 700 12px ui-monospace, Menlo, monospace; }
+  .top .spacer { flex: 1; }
+  .top a.link { color: var(--muted); text-decoration: none; }
+  .top a.link:hover { color: var(--text); }
+
+  .hero { padding: 64px 0 40px; }
+  .eyebrow { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 600; }
+  h1 { font-size: clamp(34px, 6vw, 52px); line-height: 1.08; letter-spacing: -0.03em; margin: 10px 0 18px; text-wrap: balance; }
+  .lede { font-size: 20px; color: var(--muted); max-width: 640px; margin: 0; text-wrap: pretty; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .btn { display: inline-block; background: var(--accent); color: #fff7ed; font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 10px; text-decoration: none; }
+  .btn.ghost { background: var(--panel); color: var(--text); border: 1px solid var(--line); }
+
+  section { margin-top: 64px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 8px; }
+  h3.title { font-size: 28px; line-height: 1.2; letter-spacing: -0.02em; margin: 0 0 16px; text-wrap: balance; }
+  p { text-wrap: pretty; }
+
+  .flip { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+  .flip div { border-radius: 14px; padding: 16px 18px; }
+  .flip .no { background: var(--err-soft); }
+  .flip .yes { background: var(--ok-soft); }
+  .flip strong { display: block; font-size: 14px; margin-bottom: 4px; }
+  .flip .no strong { color: var(--err); } .flip .yes strong { color: var(--ok); }
+  .flip p { margin: 0; font-size: 15.5px; }
+
+  .figure { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0 0; box-shadow: var(--shadow); overflow-x: auto; }
+  .figure svg { display: block; width: 100%; min-width: 620px; height: auto; }
+
+  .pieces { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .piece { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); min-width: 0; }
+  .piece .path { font: 12.5px ui-monospace, Menlo, monospace; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 99px; display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; }
+  .piece h4 { font-size: 18px; margin: 10px 0 6px; }
+  .piece p { margin: 0; font-size: 15.5px; color: var(--muted); }
+  .piece ul { margin: 8px 0 0; padding-left: 18px; font-size: 15px; color: var(--muted); }
+
+  ol.session { list-style: none; counter-reset: s; padding: 0; margin: 0; display: grid; gap: 10px; }
+  ol.session li { counter-increment: s; display: flex; gap: 14px; align-items: baseline; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+  ol.session li::before { content: counter(s); flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff7ed; display: grid; place-items: center; font: 700 12px system-ui, sans-serif; transform: translateY(2px); }
+  ol.session code { white-space: nowrap; }
+
+  .roadmap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .step { font-size: 14px; padding: 12px; border-radius: 10px; background: var(--todo-soft); color: var(--muted); min-width: 0; }
+  .step b { display: block; font-size: 12px; }
+  .step small { display: block; font-size: 12px; opacity: .85; }
+  .step.available { background: var(--accent-soft); color: var(--text); }
+  .step.available b { color: var(--accent); }
+  .legend { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  .adapt { background: var(--accent-soft); border-radius: 14px; padding: 6px 22px 10px; }
+  footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+
+  @media (max-width: 680px) {
+    .hero { padding: 40px 0 24px; }
+    .lede { font-size: 18px; }
+    .flip, .pieces { grid-template-columns: 1fr; }
+    .roadmap { grid-template-columns: repeat(2, 1fr); }
+    .figure { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="./"><span class="logo">rs</span>Learn Rust for web devs</a>
+    <span class="spacer"></span>
+    <a class="link" href="cours/">Les fiches</a>
+    <a class="link" href="https://github.com/matschik/learn-rust">GitHub</a>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow">Learn Rust for web devs · en français</div>
+    <h1>Apprendre Rust avec un agent IA qui ne code pas à ta place</h1>
+    <p class="lede">Un repo-modèle où Claude Code joue le tuteur. Le Rust Book sert de colonne vertébrale, les tests sont rouges au départ, et c'est toi qui écris chaque ligne. L'agent pose les questions, donne des indices et relit.</p>
+    <div class="ctas">
+      <a class="btn" href="cours/">Parcourir les fiches de cours →</a>
+      <a class="btn ghost" href="https://github.com/matschik/learn-rust">Voir le repo</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>L'idée</h2>
+    <h3 class="title">Inverser les rôles</h3>
+    <p>Un agent qui écrit le code te fait livrer, pas apprendre. Ici, le dispositif l'empêche de te donner la réponse et le pousse à faire ce qu'un bon prof fait : te faire prédire, te faire lire le compilateur, te faire expliquer ton code.</p>
+    <div class="flip">
+      <div class="no"><strong>L'agent comme assistant</strong><p>« Fais passer ce test. » Il écrit le code, le test passe, tu n'as rien appris sur l'ownership.</p></div>
+      <div class="yes"><strong>L'agent comme tuteur</strong><p>« Que devient <code>title</code> après l'appel ? » Tu réponds, tu corriges, et tu comprends pourquoi.</p></div>
+    </div>
+    <div class="figure" role="img" aria-label="La boucle d'apprentissage : tu écris le code, cargo test et rustc répondent, le tuteur t'aide à lire l'erreur sans toucher à ton code.">
+      <svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted,#6b665e)"/>
+          </marker>
+        </defs>
+        <!-- Toi -->
+        <rect x="20" y="80" width="170" height="90" rx="14" style="fill:var(--accent-soft,#fdebdd)"/>
+        <text x="105" y="118" text-anchor="middle" font-size="18" font-weight="700" style="fill:var(--accent,#c2410c)">Toi</text>
+        <text x="105" y="142" text-anchor="middle" font-size="13" style="fill:var(--text,#1f1d1a)">écris src/lib.rs</text>
+        <!-- Exercice -->
+        <rect x="295" y="80" width="170" height="90" rx="14" style="fill:var(--todo-soft,#f1efeb)"/>
+        <text x="380" y="118" text-anchor="middle" font-size="18" font-weight="700" style="fill:var(--text,#1f1d1a)">cargo test</text>
+        <text x="380" y="142" text-anchor="middle" font-size="13" style="fill:var(--muted,#6b665e)">rouge → vert, rustc</text>
+        <!-- Tuteur -->
+        <rect x="570" y="80" width="170" height="90" rx="14" style="fill:var(--ok-soft,#dcfce7)"/>
+        <text x="655" y="118" text-anchor="middle" font-size="18" font-weight="700" style="fill:var(--ok,#15803d)">Claude Code</text>
+        <text x="655" y="142" text-anchor="middle" font-size="13" style="fill:var(--text,#1f1d1a)">tuteur, CLAUDE.md</text>
+        <!-- Flèches -->
+        <line x1="194" y1="125" x2="290" y2="125" stroke-width="2" marker-end="url(#arr)" style="stroke:var(--muted,#6b665e)"/>
+        <text x="242" y="114" text-anchor="middle" font-size="12" style="fill:var(--muted,#6b665e)">prédis, lance</text>
+        <line x1="469" y1="125" x2="565" y2="125" stroke-width="2" marker-end="url(#arr)" style="stroke:var(--muted,#6b665e)"/>
+        <text x="517" y="114" text-anchor="middle" font-size="12" style="fill:var(--muted,#6b665e)">erreur E0382</text>
+        <path d="M655,174 C655,232 105,232 105,178" fill="none" stroke-width="2" marker-end="url(#arr)" style="stroke:var(--accent,#c2410c)"/>
+        <text x="380" y="240" text-anchor="middle" font-size="13" font-weight="600" style="fill:var(--accent,#c2410c)">une question, un indice, jamais la solution</text>
+        <!-- Le hook -->
+        <path d="M655,76 C655,22 380,22 380,72" fill="none" stroke-width="2" stroke-dasharray="5 5" style="stroke:var(--err,#b91c1c)"/>
+        <circle cx="517" cy="32" r="11" style="fill:var(--err-soft,#fee2e2);stroke:var(--err,#b91c1c)" stroke-width="2"/>
+        <path d="M512,27 L522,37 M522,27 L512,37" stroke-width="2.2" style="stroke:var(--err,#b91c1c)"/>
+        <text x="380" y="18" text-anchor="middle" font-size="12" style="fill:var(--err,#b91c1c)">hook : il ne peut pas éditer tes exercices</text>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le dispositif</h2>
+    <h3 class="title">Six pièces, toutes dans le repo</h3>
+    <div class="pieces">
+      <div class="piece">
+        <a class="path" href="https://github.com/matschik/learn-rust/blob/main/CLAUDE.md">CLAUDE.md</a>
+        <h4>Le contrat pédagogique</h4>
+        <p>Les règles non négociables du tuteur :</p>
+        <ul>
+          <li>ne jamais écrire la solution ;</li>
+          <li>des indices en 3 paliers ;</li>
+          <li>un pont avec TS pour chaque concept ;</li>
+          <li>prédire avant de compiler ;</li>
+          <li>le borrow checker expliqué par les permissions R/W/O.</li>
+        </ul>
+      </div>
+      <div class="piece">
+        <a class="path" href="https://github.com/matschik/learn-rust/tree/main/scripts">scripts/ + .claude/settings.json</a>
+        <h4>Des hooks, pas des promesses</h4>
+        <p>Une règle écrite peut se contourner, un hook non. L'un bloque toute édition de <code>modules/*/src/</code> par l'agent. L'autre lance clippy après chaque édition de Rust.</p>
+      </div>
+      <div class="piece">
+        <a class="path" href="https://github.com/matschik/learn-rust/tree/main/.claude/commands">.claude/commands/</a>
+        <h4>Le rituel de séance</h4>
+        <p><code>/next</code>, <code>/hint</code>, <code>/explain-error</code>, <code>/review</code>, <code>/quiz</code>. Chaque commande encode un geste de prof. Par exemple, <code>/review</code> te demande d'abord d'expliquer ton code.</p>
+      </div>
+      <div class="piece">
+        <a class="path" href="https://github.com/matschik/learn-rust/tree/main/modules">modules/*/*/</a>
+        <h4>Des tests rouges comme boucle de feedback</h4>
+        <p>Un crate par exercice, avec une fiche de cours puis une fiche pratique. Certains exercices ne compilent pas au départ : le message de <code>rustc</code> fait partie du cours.</p>
+      </div>
+      <div class="piece">
+        <a class="path" href="https://github.com/matschik/learn-rust/blob/main/PROGRESS.template.md">PROGRESS.md</a>
+        <h4>Une mémoire entre les séances</h4>
+        <p>L'agent y note ce que tu as validé, tes indices et tes erreurs récurrentes. Au début de la séance suivante, il te repose les concepts fragiles : c'est du rappel espacé.</p>
+      </div>
+      <div class="piece">
+        <a class="path" href="https://github.com/matschik/learn-rust/tree/main/projects/taskr">projects/taskr/</a>
+        <h4>Un fil rouge en <code>TODO(human)</code></h4>
+        <p>Une API de tâches qui grandit à chaque module, jusqu'à Axum et Postgres. L'agent pose l'échafaudage, les parties intéressantes te reviennent.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Une séance de 30 minutes</h2>
+    <h3 class="title">Cours, pratique, relecture</h3>
+    <ol class="session">
+      <li><span><code>/next</code> : quelques questions de rappel, puis la fiche de cours. Elle donne les sections du Rust Book à lire, leurs quiz, l'équivalent TS et un diagramme.</span></li>
+      <li><span>Tu prédis ce que va dire le compilateur, puis tu lances <code>cargo test</code>.</span></li>
+      <li><span>Tu es bloqué ? <code>/hint</code> donne d'abord une question, puis le concept, puis un exemple sur un autre cas.</span></li>
+      <li><span>Les tests sont verts ? <code>/review</code> : tu expliques ton code, puis l'agent le relit comme un dev Rust senior.</span></li>
+      <li><span>Le dashboard local te garde concentré sur l'exercice en cours.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Le parcours</h2>
+    <h3 class="title">Le Rust Book, chapitre par chapitre, jusqu'au backend</h3>
+    <p>Le parcours suit la <a href="https://rust-book.cs.brown.edu/">version Brown du Rust Book</a>, avec ses quiz et son modèle de permissions. Les modules 7 et 8 sortent du livre pour construire une vraie API.</p>
+    <div class="roadmap" id="roadmap"></div>
+    <div class="legend">En orange : les modules disponibles. Les autres arrivent au fil de l'eau.</div>
+  </section>
+
+  <section>
+    <h2>Démarrer</h2>
+    <h3 class="title">Trois commandes</h3>
+    <p>Tu as besoin de <a href="https://rustup.rs/">rustup</a>, de <a href="https://code.claude.com/docs">Claude Code</a>, de Node 22 ou plus récent et de <code>jq</code>.</p>
+<pre><code>git clone https://github.com/matschik/learn-rust.git
+cd learn-rust
+claude        # puis /next</code></pre>
+  </section>
+
+  <section>
+    <div class="adapt">
+      <h2 style="margin-top:16px">Adapter à toi</h2>
+      <p>Le repo sert surtout d'inspiration. Forke-le et décris-toi dans un <code>CLAUDE.local.md</code> : prénom, stack, préférences.</p>
+      <p>Tu peux aussi réécrire la section « L'apprenant » de <code>CLAUDE.md</code> pour un autre profil, un dev Python ou Go par exemple. Le pont avec TS devient alors un pont avec ton langage.</p>
+      <p>La recette marche pour n'importe quel sujet : un contrat dans <code>CLAUDE.md</code>, des hooks qui le garantissent, des tests rouges et une mémoire.</p>
+    </div>
+  </section>
+
+  <footer>
+    Fait avec <a href="https://claude.com/claude-code">Claude Code</a>, à partir du <a href="https://rust-book.cs.brown.edu/">Rust Book (Brown)</a>. Code et fiches sur <a href="https://github.com/matschik/learn-rust">GitHub</a>.
+  </footer>
+</div>
+<script>
+// La roadmap vient du même état que les fiches, pour rester à jour avec les modules du repo.
+fetch("cours/state.json").then((r) => r.json()).then((state) => {
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  document.getElementById("roadmap").innerHTML = state.roadmap.map((step) =>
+    `<div class="step ${step.available ? "available" : ""}"><b>${String(step.number).padStart(2, "0")}</b>${esc(step.title)}<small>${esc(step.chapters)}</small></div>`).join("");
+}).catch(() => {});
+</script>
+</body>
+</html>
