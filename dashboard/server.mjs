@@ -175,6 +175,12 @@ createServer(async (req, res) => {
   } catch (error) {
     send(res, 500, JSON.stringify({ error: String(error) }));
   }
-}).listen(PORT, "127.0.0.1", () => {
-  console.log(`Dashboard : http://localhost:${PORT}`);
-});
+})
+  .on("error", (error) => {
+    if (error.code !== "EADDRINUSE") throw error;
+    console.error(`Le port ${PORT} est déjà pris par une autre app. Relance avec : PORT=4400 node dashboard/server.mjs`);
+    process.exit(1);
+  })
+  .listen(PORT, "127.0.0.1", () => {
+    console.log(`Dashboard : http://localhost:${PORT}`);
+  });
