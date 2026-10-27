@@ -1,5 +1,5 @@
 [package]
-name = "m01_e07_capstone"
+name = "m02_e03_fixing_errors"
 version = "0.1.0"
 edition.workspace = true
 

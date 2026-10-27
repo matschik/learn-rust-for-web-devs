@@ -1,17 +1,6 @@
-# 01 - cargo
+# 01 - cargo · pratique
 
-`cargo` est ton `npm` + `tsc` + `vitest` en un seul outil.
-
-| npm | cargo |
-| --- | --- |
-| `npm init` | `cargo new mon-projet` (binaire) / `cargo new --lib` |
-| `package.json` | `Cargo.toml` |
-| `npm install zod` | `cargo add serde` |
-| `npm run build` | `cargo build` |
-| `npm test` | `cargo test` |
-| `node index.js` | `cargo run` |
-
-Ce dossier est un crate de type bibliothèque (`src/lib.rs`). Les tests sont dans le même fichier, sous `#[cfg(test)]`.
+Relis la fiche de cours (`COURS.md`) si besoin, puis lance-toi.
 
 ## À faire
 

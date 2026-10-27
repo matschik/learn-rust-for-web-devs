@@ -11,15 +11,16 @@ const PORT = Number(process.env.PORT ?? 4321);
 // Un target dir séparé pour ne pas bloquer le cargo (ou bacon) de l'apprenant.
 const CARGO_ENV = { ...process.env, CARGO_TARGET_DIR: join(ROOT, "target", "dashboard") };
 
+// Les modules suivent l'ordre des chapitres du Rust Book (version Brown).
 const ROADMAP = [
-  "Prise en main",
-  "Ownership et borrowing",
-  "Enums et erreurs",
-  "Traits, génériques, serde",
-  "Async et Tokio",
-  "HTTP avec Axum",
-  "Postgres avec sqlx",
-  "Production",
+  { title: "Prise en main", chapters: "ch. 1–3" },
+  { title: "Ownership et structs", chapters: "ch. 4–5" },
+  { title: "Enums, collections, erreurs", chapters: "ch. 6, 8, 9" },
+  { title: "Modules, génériques, traits, tests", chapters: "ch. 7, 10, 11" },
+  { title: "Closures, itérateurs, smart pointers", chapters: "ch. 13, 15" },
+  { title: "Concurrence et async", chapters: "ch. 16–17" },
+  { title: "API avec Axum et sqlx", chapters: "après le livre" },
+  { title: "Production", chapters: "après le livre" },
 ];
 
 function run(cmd, args) {
@@ -97,7 +98,7 @@ async function readProgress() {
 
 async function readTitle(file, fallback) {
   const md = await readFile(file, "utf8").catch(() => "");
-  return md.match(/^# (.+)$/m)?.[1] ?? fallback;
+  return md.match(/^# (.+)$/m)?.[1]?.replace(/ · (cours|pratique)$/, "") ?? fallback;
 }
 
 async function buildState() {
@@ -123,16 +124,17 @@ async function buildState() {
         pkg,
         title: await readTitle(join(dir, "README.md"), exDir),
         readme: relative(ROOT, join(dir, "README.md")),
+        cours: relative(ROOT, join(dir, "COURS.md")),
         status,
         tests,
         validated,
       });
     }
     const number = Number(moduleDir.slice(0, 2));
-    modules.push({ id: moduleDir, number, title: ROADMAP[number - 1] ?? moduleDir, readme: `modules/${moduleDir}/README.md`, exercises });
+    modules.push({ id: moduleDir, number, title: ROADMAP[number - 1]?.title ?? moduleDir, readme: `modules/${moduleDir}/README.md`, exercises });
   }
   const available = new Set(modules.map((m) => m.number));
-  const roadmap = ROADMAP.map((title, i) => ({ number: i + 1, title, available: available.has(i + 1) }));
+  const roadmap = ROADMAP.map((step, i) => ({ number: i + 1, ...step, available: available.has(i + 1) }));
   return {
     roadmap,
     modules,
@@ -164,11 +166,12 @@ createServer(async (req, res) => {
     } else if (url.pathname === "/api/state") {
       send(res, 200, JSON.stringify(await state()));
     } else if (url.pathname === "/api/file") {
-      // Seuls les fichiers markdown du repo sont servis.
+      // Seuls les fiches markdown et les diagrammes SVG du repo sont servis.
       const path = url.searchParams.get("path") ?? "";
       const full = join(ROOT, path);
-      if (!path.endsWith(".md") || relative(ROOT, full).startsWith("..")) return send(res, 400, "{}");
-      send(res, 200, await readFile(full), "text/markdown; charset=utf-8");
+      const type = path.endsWith(".md") ? "text/markdown; charset=utf-8" : path.endsWith(".svg") ? "image/svg+xml" : null;
+      if (!type || relative(ROOT, full).startsWith("..")) return send(res, 400, "{}");
+      send(res, 200, await readFile(full), type);
     } else {
       send(res, 404, "{}");
     }
