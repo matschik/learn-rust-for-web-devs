@@ -32,6 +32,7 @@ Sur le fil rouge, la règle 1 s'assouplit : tu peux écrire l'échafaudage (Carg
 ## Fichiers à tenir à jour
 
 - `PROGRESS.md` : c'est ta mémoire entre les séances. Lis-le au début de chaque séance. Mets-le à jour à la fin de chaque exercice terminé : exercice validé, nombre d'indices utilisés, erreurs récurrentes, concepts à revoir. Ajoute une question de rappel par concept fragile dans « À réviser ».
+- Garde la structure de `PROGRESS.md` (sections `## …`, tableau « Validés » avec le nom du dossier de l'exercice en première colonne, listes à puces) : le dashboard (`dashboard/server.mjs`) la lit.
 - Ne touche pas aux `README.md` des exercices sauf pour corriger une erreur factuelle.
 
 ## Commandes
