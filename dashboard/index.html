@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>learn-rust</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2410c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='36' font-weight='700' fill='%23fff7ed'%3Ers%3C/text%3E%3C/svg%3E">
 <style>
   :root {
     --bg: #faf8f5; --panel: #ffffff; --text: #1f1d1a; --muted: #6b665e; --line: #e7e2da;
     --accent: #c2410c; --accent-soft: #fdebdd;
     --ok: #15803d; --ok-soft: #dcfce7; --warn: #a16207; --warn-soft: #fef3c7;
     --err: #b91c1c; --err-soft: #fee2e2; --todo-soft: #f1efeb;
-    --code: #f4f1ec;
+    --code: #f4f1ec; --shadow: 0 1px 2px rgba(31, 29, 26, .04), 0 4px 16px rgba(31, 29, 26, .05);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -18,26 +19,68 @@
       --accent: #f97316; --accent-soft: #3a2314;
       --ok: #4ade80; --ok-soft: #14301f; --warn: #facc15; --warn-soft: #352c0e;
       --err: #f87171; --err-soft: #3a1818; --todo-soft: #262421;
-      --code: #24221f;
+      --code: #24221f; --shadow: none;
     }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  a { color: var(--accent); }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-underline-offset: 2px; }
   code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   .muted { color: var(--muted); font-size: 13px; }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 20px 16px 80px; }
   .loading { padding: 80px 0; text-align: center; color: var(--muted); }
 
-  /* Barre du haut : discrète, une ligne */
-  .topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
-  .topline a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--muted); }
-  .bar { height: 3px; border-radius: 99px; background: var(--todo-soft); overflow: hidden; margin: 8px 0 40px; }
+  /* En-tête : une ligne discrète */
+  .top { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text); text-decoration: none; }
+  .logo { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff7ed; display: grid; place-items: center; font: 700 12px ui-monospace, Menlo, monospace; }
+  .top .spacer { flex: 1; }
+  .top a.link { color: var(--muted); text-decoration: none; }
+  .top a.link:hover { color: var(--text); }
+  .bar { height: 3px; border-radius: 99px; background: var(--todo-soft); overflow: hidden; margin: 12px 0 36px; }
   .bar > div { height: 100%; background: var(--accent); transition: width .4s; }
 
   /* Vue focus */
-  .focus h1 { font-size: 32px; line-height: 1.2; margin: 0 0 20px; letter-spacing: -0.02em; }
-  .status { border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; }
+  .eyebrow { font-size: 13px; color: var(--muted); letter-spacing: .02em; }
+  .focus h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 20px; letter-spacing: -0.02em; }
+  .tabs { display: inline-flex; background: var(--todo-soft); border-radius: 10px; padding: 3px; margin-bottom: 28px; }
+  .tabs button { border: 0; background: none; color: var(--muted); font: 600 14px system-ui, sans-serif; padding: 7px 16px; border-radius: 8px; cursor: pointer; }
+  .tabs button.on { background: var(--panel); color: var(--text); box-shadow: var(--shadow); }
+  .tabs button .n { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--line); color: var(--muted); font-size: 11px; margin-right: 6px; }
+  .tabs button.on .n { background: var(--accent); color: #fff7ed; }
+
+  .doc { overflow-wrap: anywhere; }
+  .doc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 36px 0 12px; }
+  .doc p, .doc li { font-size: 16.5px; }
+  .doc pre { background: var(--code); padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+  .doc code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 14px; }
+  .doc pre code { background: none; padding: 0; }
+  .doc table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; font-size: 14px; }
+  .doc th, .doc td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; }
+  .doc th { color: var(--muted); font-weight: 600; }
+  .figure { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; box-shadow: var(--shadow); }
+  .figure { overflow-x: auto; }
+  .figure svg { display: block; width: 100%; min-width: 560px; height: auto; }
+  .doc > h2:first-child { margin-top: 0; }
+
+  .reads { display: grid; gap: 8px; }
+  .read { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); text-decoration: none; transition: border-color .15s; }
+  .read:hover { border-color: var(--accent); }
+  .read .kind { flex: none; font: 600 11px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+  .read .kind.std { background: var(--ok-soft); color: var(--ok); }
+  .read .kind.err { background: var(--err-soft); color: var(--err); }
+  .read .kind.ref { background: var(--todo-soft); color: var(--muted); }
+  .read .label { flex: 1; min-width: 0; font-size: 15px; }
+  .read .label small { display: block; color: var(--muted); font-size: 13px; }
+  .read .arrow { color: var(--muted); }
+
+  .keep { background: var(--accent-soft); border-radius: 14px; padding: 6px 20px; margin-top: 36px; }
+  .keep h2 { color: var(--accent); margin-top: 16px; }
+  .next { margin-top: 32px; display: flex; justify-content: flex-end; }
+  .btn { border: 0; background: var(--accent); color: #fff7ed; font: 600 15px system-ui, sans-serif; padding: 12px 20px; border-radius: 10px; cursor: pointer; }
+  .btn.ghost { background: none; color: var(--muted); padding: 12px 0; }
+
+  .status { border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; }
   .status strong { display: block; font-size: 18px; }
   .status p { margin: 4px 0 0; }
   .status pre { margin: 12px 0 0; padding: 12px; border-radius: 8px; background: var(--panel); overflow-x: auto; font-size: 13px; line-height: 1.45; white-space: pre; }
@@ -45,34 +88,25 @@
   .st-in-progress { background: var(--warn-soft); } .st-in-progress strong { color: var(--warn); }
   .st-broken { background: var(--err-soft); } .st-broken strong { color: var(--err); }
   .st-green, .st-validated { background: var(--ok-soft); } .st-green strong, .st-validated strong { color: var(--ok); }
-  .cmd { display: flex; align-items: center; gap: 8px; background: var(--code); border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-bottom: 6px; }
+  .cmd { display: flex; align-items: center; gap: 8px; background: var(--code); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 6px; }
   .cmd code { flex: 1; overflow-x: auto; white-space: nowrap; }
-  .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 2px 10px; cursor: pointer; font: 12px system-ui; }
-  .file { margin-bottom: 32px; }
-  .readme { overflow-wrap: anywhere; }
-  .readme h2 { font-size: 20px; margin: 32px 0 8px; }
-  .readme h3 { font-size: 17px; margin: 24px 0 8px; }
-  .readme pre { background: var(--code); padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 14px; line-height: 1.45; }
-  .readme code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 14px; }
-  .readme pre code { background: none; padding: 0; }
-  .readme table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; font-size: 14px; }
-  .readme th, .readme td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
-  .task { border-left: 3px solid var(--accent); padding-left: 16px; }
+  .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 3px 10px; cursor: pointer; font: 12px system-ui, sans-serif; }
+  .task { border-left: 3px solid var(--accent); padding-left: 18px; margin-top: 28px; }
   .task h2 { margin-top: 0; }
   details { margin-top: 32px; }
   details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
   .output { background: var(--code); padding: 12px; border-radius: 8px; max-height: 320px; overflow: auto; white-space: pre; font-size: 13px; line-height: 1.45; margin-top: 8px; }
 
   /* Vue d'ensemble */
-  .overview h1 { font-size: 24px; margin: 0 0 20px; }
-  .roadmap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 24px; }
-  .step { font-size: 12px; padding: 6px 8px; border-radius: 8px; background: var(--todo-soft); color: var(--muted); min-width: 0; }
-  .step b { display: block; font-size: 11px; }
-  .step span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .overview h1 { font-size: 26px; margin: 0 0 20px; letter-spacing: -0.01em; }
+  .roadmap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 24px; }
+  .step { font-size: 13px; padding: 10px 12px; border-radius: 10px; background: var(--todo-soft); color: var(--muted); min-width: 0; }
+  .step b { font-size: 12px; margin-right: 6px; }
+  .step small { display: block; font-size: 12px; opacity: .8; }
   .step.available { background: var(--accent-soft); color: var(--text); }
   .step.done { background: var(--ok-soft); color: var(--text); }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-  .card > h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .card > h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
   ul.ex { list-style: none; margin: 0; padding: 0; }
   ul.ex a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: inherit; text-decoration: none; }
   ul.ex a:hover { background: var(--todo-soft); }
@@ -84,17 +118,27 @@
   .s-broken .dot { background: var(--err); } .s-broken .pill { background: var(--err-soft); color: var(--err); }
   .s-todo .dot { border: 2px solid var(--muted); } .s-todo .pill { background: var(--todo-soft); color: var(--muted); }
   .side-list { margin: 0; padding-left: 18px; }
-  @media (min-width: 700px) { .roadmap { grid-template-columns: repeat(8, 1fr); } }
-  @media (max-width: 600px) { .focus h1 { font-size: 26px; } .bar { margin-bottom: 28px; } }
+  @media (min-width: 700px) { .roadmap { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 600px) { .focus h1 { font-size: 27px; } .bar { margin-bottom: 26px; } .top .count { display: none; } .figure { padding: 10px; } }
 </style>
 </head>
 <body>
 <div class="wrap" id="app"><div class="loading">Je lance les tests…</div></div>
 <script>
 const LABELS = { validated: "Validé", green: "Tests verts", "in-progress": "En cours", broken: "Ne compile pas", todo: "À faire" };
+const RESOURCES = [
+  ["book", "The Rust Programming Language", "Version Brown, avec quiz et modèle de permissions", "https://rust-book.cs.brown.edu/"],
+  ["std", "Bibliothèque standard", "doc.rust-lang.org/std", "https://doc.rust-lang.org/std/"],
+  ["ref", "Rust by Example", "Le même contenu, par l'exemple", "https://doc.rust-lang.org/rust-by-example/"],
+  ["ref", "The Cargo Book", "Tout sur cargo et Cargo.toml", "https://doc.rust-lang.org/cargo/"],
+  ["err", "Index des erreurs du compilateur", "Chaque code EXXXX expliqué", "https://doc.rust-lang.org/error_codes/"],
+  ["ref", "Rust Playground", "Tester un bout de code dans le navigateur", "https://play.rust-lang.org/"],
+];
 let state = null;
 let rendered = "";
-const readmes = new Map();
+let tab = null; // "cours" | "pratique" pour l'exercice affiché
+let tabFor = null;
+const files = new Map();
 
 function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 function inline(s) {
@@ -104,13 +148,16 @@ function inline(s) {
     .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
 }
 
-// Rendu markdown minimal (titres, paragraphes, listes, tableaux, blocs de code) : pas de dépendance réseau.
-function markdown(md) {
+// Rendu markdown minimal : titres, paragraphes, listes, tableaux, blocs de code, images SVG.
+function markdown(md, base) {
   const lines = md.replace(/\r/g, "").split("\n");
   const out = [];
   for (let i = 0; i < lines.length; ) {
     const line = lines[i];
-    if (line.startsWith("```")) {
+    const img = line.match(/^!\[([^\]]*)\]\(([^)]+)\)\s*$/);
+    if (img) {
+      out.push(`<div class="figure" data-svg="${esc(base + img[2])}" aria-label="${esc(img[1])}"></div>`); i++;
+    } else if (line.startsWith("```")) {
       const code = [];
       for (i++; i < lines.length && !lines[i].startsWith("```"); i++) code.push(lines[i]);
       out.push(`<pre><code>${esc(code.join("\n"))}</code></pre>`); i++;
@@ -133,21 +180,34 @@ function markdown(md) {
       i++;
     } else {
       const para = [];
-      for (; i < lines.length && lines[i].trim() !== "" && !/^(#|```|\||\s*([-*]|\d+\.) )/.test(lines[i]); i++) para.push(lines[i]);
+      for (; i < lines.length && lines[i].trim() !== "" && !/^(#|```|\||!\[|\s*([-*]|\d+\.) )/.test(lines[i]); i++) para.push(lines[i]);
       out.push(`<p>${inline(para.join(" "))}</p>`);
     }
   }
   return out.join("\n");
 }
 
-// Sépare l'énoncé : le titre, la section « À faire » (montrée en premier), et le reste (le concept).
-function splitReadme(md) {
-  const title = md.match(/^# (.+)$/m)?.[1] ?? "";
-  const body = md.replace(/^# .+$/m, "");
-  const parts = body.split(/^(?=## )/m);
-  const taskIndex = parts.findIndex((p) => /^## À faire/.test(p));
-  const task = taskIndex >= 0 ? parts.splice(taskIndex, 1)[0] : "";
-  return { title, task, concept: parts.join("").trim() };
+// Découpe une fiche en { titre, sections } : chaque "## Titre" devient une entrée.
+function sections(md) {
+  const title = (md.match(/^# (.+)$/m)?.[1] ?? "").replace(/ · (cours|pratique)$/, "");
+  const parts = md.replace(/^# .+$/m, "").split(/^(?=## )/m);
+  const intro = parts.shift().trim();
+  const map = new Map(parts.map((p) => [p.split("\n")[0].slice(3).trim(), p.split("\n").slice(1).join("\n").trim()]));
+  return { title, intro, map };
+}
+
+// Les liens « À lire » deviennent des cartes : Rust Book, std, erreurs du compilateur.
+function readCards(md) {
+  const items = md.split("\n").filter((l) => l.startsWith("- [")).map((l) => {
+    const m = l.match(/^- \[([^\]]+)\]\(([^)]+)\)\s*(.*)$/);
+    if (!m) return "";
+    const [, label, url, note] = m;
+    const kind = label.startsWith("Rust Book") ? ["book", "Rust Book"] : label.startsWith("std") ? ["std", "std"] : label.startsWith("Erreur") ? ["err", "Erreur"] : ["ref", "Réf."];
+    const text = label.replace(/^(Rust Book|std|Erreur)\s*·?\s*/, "");
+    const sub = note.replace(/^[:\s]+/, "");
+    return `<a class="read" href="${esc(url)}" target="_blank" rel="noopener"><span class="kind ${kind[0] === "book" ? "" : kind[0]}">${kind[1]}</span><span class="label">${inline(text)}${sub ? `<small>${inline(sub)}</small>` : ""}</span><span class="arrow">↗</span></a>`;
+  });
+  return `<div class="reads">${items.join("")}</div>`;
 }
 
 function visualStatus(ex) {
@@ -169,7 +229,7 @@ function firstError(output) {
 function statusBlock(ex) {
   const s = visualStatus(ex);
   const t = ex.tests;
-  const blocks = {
+  const [title, text] = {
     todo: ["Pas encore commencé", "Ouvre le fichier, prédis ce que va dire le compilateur, puis lance la commande."],
     "in-progress": [`${t.passed}/${t.total} tests passent`, "Bloqué ? <code>/hint</code> dans Claude Code."],
     broken: ["Ne compile pas", "Lis le message en entier. Besoin d'aide pour le décoder ? <code>/explain-error</code>."],
@@ -177,20 +237,26 @@ function statusBlock(ex) {
     validated: ["Validé", "Rien à faire ici."],
   }[s];
   const error = s === "broken" ? firstError(t.output) : "";
-  return `<div class="status st-${s}"><strong>${blocks[0]}</strong><p>${blocks[1]}</p>${error ? `<pre>${esc(error)}</pre>` : ""}</div>`;
+  return `<div class="status st-${s}"><strong>${title}</strong><p>${text}</p>${error ? `<pre>${esc(error)}</pre>` : ""}</div>`;
 }
 
-async function readme(path) {
-  if (!readmes.has(path)) {
-    readmes.set(path, await fetch(`/api/file?path=${encodeURIComponent(path)}`).then((r) => r.text()).catch(() => ""));
+async function file(path) {
+  if (!files.has(path)) files.set(path, await fetch(`/api/file?path=${encodeURIComponent(path)}`).then((r) => (r.ok ? r.text() : "")).catch(() => ""));
+  return files.get(path);
+}
+
+// Les diagrammes sont insérés dans la page (et pas en <img>) pour suivre le thème clair / sombre.
+async function hydrateFigures() {
+  for (const el of document.querySelectorAll(".figure[data-svg]")) {
+    el.innerHTML = await file(el.dataset.svg);
+    el.removeAttribute("data-svg");
   }
-  return readmes.get(path);
 }
 
 function topline(right) {
   const all = exercises();
   const done = all.filter(isDone).length;
-  return `<div class="topline"><span>${done}/${all.length} exercices validés</span>${right}</div>
+  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span>learn-rust</a><span class="count">${done}/${all.length} exercices validés</span><span class="spacer"></span>${right}</div>
     <div class="bar"><div style="width:${all.length ? (done / all.length) * 100 : 0}%"></div></div>`;
 }
 
@@ -199,34 +265,62 @@ async function renderFocus(pinned) {
   const ex = (pinned && all.find((e) => e.pkg === pinned)) ?? all.find((e) => !isDone(e));
   const app = document.getElementById("app");
   if (!ex) {
-    app.innerHTML = topline(`<a href="#overview">Vue d'ensemble</a>`) +
-      `<div class="focus"><h1>Module terminé</h1><div class="status st-validated"><strong>Bravo.</strong><p>Lance <code>/quiz</code> dans Claude Code, puis l'étape Taskr du module.</p></div></div>`;
+    app.innerHTML = topline(`<a class="link" href="#overview">Vue d'ensemble</a>`) +
+      `<div class="focus"><h1>Tout est validé</h1><div class="status st-validated"><strong>Bravo.</strong><p>Lance <code>/quiz</code> dans Claude Code, puis l'étape Taskr du module.</p></div></div>`;
     return;
   }
-  const md = await readme(ex.readme);
-  const key = JSON.stringify([ex.pkg, ex.status, ex.tests.passed, ex.tests.total, ex.tests.output.length, pinned, all.filter(isDone).length]);
+  // Un exercice pas encore commencé s'ouvre sur le cours ; ensuite, sur la pratique.
+  if (tabFor !== ex.pkg) { tabFor = ex.pkg; tab = ex.status === "todo" ? "cours" : "pratique"; }
+  const [cours, pratique] = await Promise.all([file(ex.cours), file(ex.readme)]);
+  const key = JSON.stringify([ex.pkg, tab, ex.status, ex.tests.passed, ex.tests.total, ex.tests.output.length, pinned, all.filter(isDone).length]);
   if (key === rendered) return;
   rendered = key;
-  const { title, task, concept } = splitReadme(md);
-  const position = `${ex.module.exercises.indexOf(ex.module.exercises.find((e) => e.pkg === ex.pkg)) + 1}/${ex.module.exercises.length}`;
+  const base = ex.readme.replace(/README\.md$/, "");
+  const position = ex.module.exercises.findIndex((e) => e.pkg === ex.pkg) + 1;
+  const right = pinned ? `<a class="link" href="#">← Exercice en cours</a>` : `<a class="link" href="#overview">Vue d'ensemble</a>`;
+  const c = sections(cours);
+  const p = sections(pratique);
   const cmd = `cargo test -p ${ex.pkg}`;
-  const right = pinned ? `<a href="#">Revenir à l'exercice en cours</a>` : `<a href="#overview">Vue d'ensemble</a>`;
-  app.innerHTML = topline(right) + `
-    <div class="focus">
-      <div class="muted">Module ${String(ex.module.number).padStart(2, "0")} · exercice ${position}</div>
-      <h1>${inline(title || ex.title)}</h1>
+
+  let body;
+  if (tab === "cours" && cours) {
+    const reads = c.map.get("À lire dans le Rust Book");
+    const keep = c.map.get("À retenir");
+    const rest = [...c.map].filter(([h]) => h !== "À lire dans le Rust Book" && h !== "À retenir")
+      .map(([h, md]) => (h === "L'idée" ? markdown(md, base) : `<h2>${inline(h)}</h2>${markdown(md, base)}`)).join("");
+    body = `
+      ${reads ? `<h2>À lire dans le Rust Book</h2>${readCards(reads)}` : ""}
+      <h2>L'idée</h2>${rest}
+      ${keep ? `<div class="keep"><h2>À retenir</h2>${markdown(keep, base)}</div>` : ""}
+      <div class="next"><button class="btn" data-tab="pratique">Passer à la pratique →</button></div>`;
+  } else {
+    body = `
       ${statusBlock(ex)}
       <div class="cmd"><code>${esc(cmd)}</code><button id="copy">Copier</button></div>
-      <div class="muted file">Fichier : <code>${esc(ex.readme.replace(/README\.md$/, "src/lib.rs"))}</code></div>
-      <div class="readme">
-        ${task ? `<div class="task">${markdown(task)}</div>` : ""}
-        ${concept ? markdown(concept) : ""}
+      <div class="muted">Fichier : <code>${esc(base)}src/lib.rs</code></div>
+      ${p.intro ? markdown(p.intro, base).replace(/<p>Relis la fiche[^<]*<code>COURS\.md<\/code>[^<]*<\/p>/, "") : ""}
+      <div class="task">${[...p.map].map(([h, md]) => `<h2>${inline(h)}</h2>${markdown(md, base)}`).join("")}</div>
+      <div class="next"><button class="btn ghost" data-tab="cours">← Revoir le cours</button></div>
+      <details><summary>Dernière sortie de cargo test</summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>`;
+  }
+
+  app.innerHTML = topline(right) + `
+    <div class="focus">
+      <div class="eyebrow">Module ${String(ex.module.number).padStart(2, "0")} · ${esc(ex.module.title)} · exercice ${position}/${ex.module.exercises.length}</div>
+      <h1>${inline(c.title || p.title || ex.title)}</h1>
+      <div class="tabs" role="tablist">
+        <button class="${tab === "cours" ? "on" : ""}" data-tab="cours"><span class="n">1</span>Cours</button>
+        <button class="${tab === "pratique" ? "on" : ""}" data-tab="pratique"><span class="n">2</span>Pratique</button>
       </div>
-      <details><summary>Dernière sortie de cargo test</summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>
+      <div class="doc">${body}</div>
     </div>`;
-  document.getElementById("copy").addEventListener("click", (e) => {
+  document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => {
+    tab = b.dataset.tab; rendered = ""; window.scrollTo(0, 0); render();
+  }));
+  document.getElementById("copy")?.addEventListener("click", (e) => {
     navigator.clipboard?.writeText(cmd).then(() => { e.target.textContent = "Copié"; });
   });
+  hydrateFigures();
 }
 
 function list(items, empty) {
@@ -241,7 +335,7 @@ function renderOverview() {
   const roadmap = state.roadmap.map((step) => {
     const mod = state.modules.find((m) => m.number === step.number);
     const finished = mod && mod.exercises.length && mod.exercises.every(isDone);
-    return `<div class="step ${finished ? "done" : step.available ? "available" : ""}" title="${esc(step.title)}"><b>${String(step.number).padStart(2, "0")}${finished ? " ✓" : ""}</b><span>${esc(step.title)}</span></div>`;
+    return `<div class="step ${finished ? "done" : step.available ? "available" : ""}"><b>${String(step.number).padStart(2, "0")}${finished ? " ✓" : ""}</b>${esc(step.title)}<small>${esc(step.chapters)}</small></div>`;
   }).join("");
   const modules = state.modules.map((m) => `
     <div class="card"><h2>${String(m.number).padStart(2, "0")} · ${esc(m.title)} · ${m.exercises.filter(isDone).length}/${m.exercises.length}</h2>
@@ -250,7 +344,9 @@ function renderOverview() {
         const pill = s === "in-progress" ? `${ex.tests.passed}/${ex.tests.total} tests` : LABELS[s];
         return `<li class="s-${s}"><a href="#ex/${esc(ex.pkg)}"><span class="dot"></span><span class="ex-title">${esc(ex.title)}</span><span class="pill">${pill}</span></a></li>`;
       }).join("")}</ul></div>`).join("");
-  document.getElementById("app").innerHTML = topline(`<a href="#">Revenir à l'exercice en cours</a>`) + `
+  const resources = `<div class="reads">${RESOURCES.map(([kind, label, sub, url]) =>
+    `<a class="read" href="${url}" target="_blank" rel="noopener"><span class="kind ${kind === "book" ? "" : kind}">${{ book: "Livre", std: "std", err: "Erreurs", ref: "Réf." }[kind]}</span><span class="label">${esc(label)}<small>${esc(sub)}</small></span><span class="arrow">↗</span></a>`).join("")}</div>`;
+  document.getElementById("app").innerHTML = topline(`<a class="link" href="#">← Exercice en cours</a>`) + `
     <div class="overview">
       <h1>Vue d'ensemble</h1>
       <div class="roadmap">${roadmap}</div>
@@ -258,6 +354,7 @@ function renderOverview() {
       <div class="card"><h2>À réviser</h2>${list(state.review, "Rien à réviser pour l'instant.")}</div>
       <div class="card"><h2>Erreurs récurrentes</h2>${list(state.mistakes, "Rien de noté pour l'instant.")}</div>
       <div class="card"><h2>Fil rouge Taskr</h2>${list(state.taskr, "Pas commencé.")}</div>
+      <div class="card"><h2>Documentation</h2>${resources}</div>
     </div>`;
 }
 
@@ -268,7 +365,7 @@ function render() {
   else renderFocus(hash.startsWith("#ex/") ? decodeURIComponent(hash.slice(4)) : null);
 }
 
-window.addEventListener("hashchange", () => { rendered = ""; window.scrollTo(0, 0); render(); });
+window.addEventListener("hashchange", () => { rendered = ""; tabFor = null; window.scrollTo(0, 0); render(); });
 
 async function refresh() {
   try {
