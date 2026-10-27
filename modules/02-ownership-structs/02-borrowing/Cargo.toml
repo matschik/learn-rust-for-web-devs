@@ -1,5 +1,5 @@
 [package]
-name = "m01_e06_methods"
+name = "m02_e02_borrowing"
 version = "0.1.0"
 edition.workspace = true
 

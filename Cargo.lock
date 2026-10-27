@@ -19,15 +19,31 @@ name = "m01_e04_control_flow"
 version = "0.1.0"
 
 [[package]]
-name = "m01_e05_structs"
+name = "m02_e01_move"
 version = "0.1.0"
 
 [[package]]
-name = "m01_e06_methods"
+name = "m02_e02_borrowing"
 version = "0.1.0"
 
 [[package]]
-name = "m01_e07_capstone"
+name = "m02_e03_fixing_errors"
+version = "0.1.0"
+
+[[package]]
+name = "m02_e04_slices"
+version = "0.1.0"
+
+[[package]]
+name = "m02_e05_structs"
+version = "0.1.0"
+
+[[package]]
+name = "m02_e06_methods"
+version = "0.1.0"
+
+[[package]]
+name = "m02_e07_capstone"
 version = "0.1.0"
 
 [[package]]
