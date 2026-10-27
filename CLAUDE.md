@@ -48,3 +48,7 @@ Sur le fil rouge, la règle 1 s'assouplit : tu peux écrire l'échafaudage (Carg
 - Tester un exercice : `cargo test -p <package>` (le nom du package est dans son `Cargo.toml`).
 - Vérifier : `cargo check -p <package>`, `cargo clippy -p <package>`.
 - Les exercices « fais-le compiler » ne compilent pas au départ : c'est voulu. Ne lance jamais `cargo test` sur tout le workspace.
+
+## Workflow git
+
+Mathieu veut que les PRs soient mergées directement : ouvre une PR pour chaque changement (contenu, nouveaux modules, dashboard), puis merge-la sans attendre sa relecture. Les exercices résolus par Mathieu restent sur sa machine, ne les pousse pas.
