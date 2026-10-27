@@ -24,4 +24,4 @@ _Rien pour l'instant._
 
 ## Fil rouge Taskr
 
-- Étape actuelle : pas commencé (démarre à la fin du module 1).
+- Étape actuelle : pas commencé (démarre à la fin du module 2).

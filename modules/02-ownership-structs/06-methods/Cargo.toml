@@ -1,5 +1,5 @@
 [package]
-name = "m01_e05_structs"
+name = "m02_e06_methods"
 version = "0.1.0"
 edition.workspace = true
 

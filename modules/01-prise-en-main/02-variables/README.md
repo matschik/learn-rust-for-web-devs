@@ -1,13 +1,6 @@
-# 02 - Variables
+# 02 - Variables · pratique
 
-En Rust, `let` est immuable par défaut : c'est le `const` de TS. Pour qu'une variable puisse changer, il faut `let mut`.
-
-```ts
-const done = 0;      // let done = 0;      en Rust
-let todo = 3;        // let mut todo = 3;  en Rust
-```
-
-Le **shadowing** permet de redéclarer une variable du même nom, même avec un autre type. Ce n'est pas une mutation : c'est une nouvelle variable.
+Relis la fiche de cours (`COURS.md`) si besoin, puis lance-toi.
 
 ## À faire
 

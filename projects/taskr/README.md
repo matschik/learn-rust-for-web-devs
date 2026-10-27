@@ -4,14 +4,13 @@ L'API de gestion de tâches qui sert de fil rouge. Chaque étape démarre à la 
 
 | Étape | Après le module | Ce que Taskr gagne |
 | --- | --- | --- |
-| 1 | 01 Prise en main | Le modèle métier : `User`, `Project`, `Task`, en structs et méthodes |
-| 2 | 02 Ownership | Un store en mémoire (`Vec`, `HashMap`) avec ajout, recherche, suppression |
-| 3 | 03 Enums et erreurs | Statut de tâche en `enum`, erreurs métier typées, validation |
-| 4 | 04 Traits et serde | Sérialisation JSON, un trait `Repository` |
-| 5 | 05 Async et Tokio | Store partagé entre tâches concurrentes (`Arc<Mutex<_>>`) |
-| 6 | 06 Axum | API HTTP CRUD complète, encore en mémoire |
-| 7 | 07 sqlx + Postgres | Persistance réelle, migrations, tests d'intégration sur Postgres dans Docker |
-| 8 | 08 Production | Auth JWT, config, `tracing`, Docker multi-stage, benchmark face à Fastify |
+| 1 | 02 Ownership et structs | Le modèle métier : `User`, `Project`, `Task`, en structs et méthodes |
+| 2 | 03 Enums, collections, erreurs | Statut de tâche en `enum`, store en mémoire (`Vec`, `HashMap`), erreurs métier typées |
+| 3 | 04 Modules, génériques, traits, tests | Découpage en modules, un trait `Repository`, sérialisation JSON avec serde, tests |
+| 4 | 05 Closures, itérateurs, smart pointers | Requêtes sur le store avec des itérateurs (filtres, tris, stats) |
+| 5 | 06 Concurrence et async | Store partagé entre tâches concurrentes (`Arc<Mutex<_>>`), Tokio |
+| 6 | 07 API avec Axum et sqlx | API HTTP CRUD, persistance Postgres, migrations, tests d'intégration |
+| 7 | 08 Production | Auth JWT, config, `tracing`, Docker multi-stage, benchmark face à Fastify |
 
 ## Étape 1 : le modèle métier
 
