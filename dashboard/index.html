@@ -22,90 +22,80 @@
     }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  header { padding: 20px 24px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
-  .top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  h1 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
-  h1 span { color: var(--accent); }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: var(--accent); }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   .muted { color: var(--muted); font-size: 13px; }
-  .bar { height: 8px; border-radius: 99px; background: var(--todo-soft); overflow: hidden; margin-top: 12px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  .loading { padding: 80px 0; text-align: center; color: var(--muted); }
+
+  /* Barre du haut : discrète, une ligne */
+  .topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
+  .topline a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--muted); }
+  .bar { height: 3px; border-radius: 99px; background: var(--todo-soft); overflow: hidden; margin: 8px 0 40px; }
   .bar > div { height: 100%; background: var(--accent); transition: width .4s; }
-  .roadmap { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 14px; }
+
+  /* Vue focus */
+  .focus h1 { font-size: 32px; line-height: 1.2; margin: 0 0 20px; letter-spacing: -0.02em; }
+  .status { border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; }
+  .status strong { display: block; font-size: 18px; }
+  .status p { margin: 4px 0 0; }
+  .status pre { margin: 12px 0 0; padding: 12px; border-radius: 8px; background: var(--panel); overflow-x: auto; font-size: 13px; line-height: 1.45; white-space: pre; }
+  .st-todo { background: var(--todo-soft); }
+  .st-in-progress { background: var(--warn-soft); } .st-in-progress strong { color: var(--warn); }
+  .st-broken { background: var(--err-soft); } .st-broken strong { color: var(--err); }
+  .st-green, .st-validated { background: var(--ok-soft); } .st-green strong, .st-validated strong { color: var(--ok); }
+  .cmd { display: flex; align-items: center; gap: 8px; background: var(--code); border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-bottom: 6px; }
+  .cmd code { flex: 1; overflow-x: auto; white-space: nowrap; }
+  .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 2px 10px; cursor: pointer; font: 12px system-ui; }
+  .file { margin-bottom: 32px; }
+  .readme { overflow-wrap: anywhere; }
+  .readme h2 { font-size: 20px; margin: 32px 0 8px; }
+  .readme h3 { font-size: 17px; margin: 24px 0 8px; }
+  .readme pre { background: var(--code); padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 14px; line-height: 1.45; }
+  .readme code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 14px; }
+  .readme pre code { background: none; padding: 0; }
+  .readme table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; font-size: 14px; }
+  .readme th, .readme td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+  .task { border-left: 3px solid var(--accent); padding-left: 16px; }
+  .task h2 { margin-top: 0; }
+  details { margin-top: 32px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  .output { background: var(--code); padding: 12px; border-radius: 8px; max-height: 320px; overflow: auto; white-space: pre; font-size: 13px; line-height: 1.45; margin-top: 8px; }
+
+  /* Vue d'ensemble */
+  .overview h1 { font-size: 24px; margin: 0 0 20px; }
+  .roadmap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 24px; }
   .step { font-size: 12px; padding: 6px 8px; border-radius: 8px; background: var(--todo-soft); color: var(--muted); min-width: 0; }
   .step b { display: block; font-size: 11px; }
   .step span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .step.available { background: var(--accent-soft); color: var(--text); }
   .step.done { background: var(--ok-soft); color: var(--text); }
-  main > * { min-width: 0; }
-  main { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 20px; padding: 20px 24px; max-width: 1400px; margin: 0 auto; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-  .card > h2 { margin: 0 0 10px; font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
-  .module-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-  .module-head strong { font-size: 15px; }
+  .card > h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
   ul.ex { list-style: none; margin: 0; padding: 0; }
-  ul.ex li button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 0; border-radius: 8px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
-  ul.ex li button:hover { background: var(--todo-soft); }
-  ul.ex li button.selected { background: var(--accent-soft); }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--line); }
+  ul.ex a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: inherit; text-decoration: none; }
+  ul.ex a:hover { background: var(--todo-soft); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
   .ex-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pill { font-size: 12px; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
-  .s-validated .dot { background: var(--ok); } .s-validated .pill { background: var(--ok-soft); color: var(--ok); }
-  .s-green .dot { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); } .s-green .pill { background: var(--ok-soft); color: var(--ok); }
+  .s-validated .dot, .s-green .dot { background: var(--ok); } .s-validated .pill, .s-green .pill { background: var(--ok-soft); color: var(--ok); }
   .s-in-progress .dot { background: var(--warn); } .s-in-progress .pill { background: var(--warn-soft); color: var(--warn); }
   .s-broken .dot { background: var(--err); } .s-broken .pill { background: var(--err-soft); color: var(--err); }
-  .s-todo .dot { background: none; border: 2px solid var(--muted); }
-  .s-todo .pill { background: var(--todo-soft); color: var(--muted); }
+  .s-todo .dot { border: 2px solid var(--muted); } .s-todo .pill { background: var(--todo-soft); color: var(--muted); }
   .side-list { margin: 0; padding-left: 18px; }
-  .side-list li { margin: 4px 0; }
-  .detail-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
-  .cmd { display: flex; align-items: center; gap: 8px; background: var(--code); border-radius: 8px; padding: 8px 10px; font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .cmd code { flex: 1; overflow-x: auto; white-space: nowrap; }
-  .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 2px 8px; cursor: pointer; font: 12px system-ui; }
-  .readme { overflow-wrap: anywhere; }
-  .readme h1 { font-size: 22px; margin: 4px 0 12px; }
-  .readme h2 { font-size: 17px; margin: 20px 0 8px; }
-  .readme pre, .output { background: var(--code); padding: 12px; border-radius: 8px; overflow-x: auto; font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .readme code { background: var(--code); padding: 1px 5px; border-radius: 4px; font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .readme pre code { background: none; padding: 0; }
-  .readme table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
-  .readme th, .readme td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
-  .readme a { color: var(--accent); }
-  details summary { cursor: pointer; color: var(--muted); font-size: 13px; margin-top: 12px; }
-  .output { max-height: 320px; overflow: auto; white-space: pre; margin-top: 8px; }
-  .loading { padding: 40px; text-align: center; color: var(--muted); }
-  @media (max-width: 860px) {
-    main { grid-template-columns: 1fr; padding: 16px; }
-    header { padding: 16px; }
-    .roadmap { grid-template-columns: repeat(4, 1fr); }
-  }
+  @media (min-width: 700px) { .roadmap { grid-template-columns: repeat(8, 1fr); } }
+  @media (max-width: 600px) { .focus h1 { font-size: 26px; } .bar { margin-bottom: 28px; } }
 </style>
 </head>
 <body>
-<header>
-  <div class="top">
-    <h1><span>learn-rust</span> · progression</h1>
-    <div class="muted" id="summary">Chargement…</div>
-  </div>
-  <div class="bar"><div id="bar" style="width:0"></div></div>
-  <div class="roadmap" id="roadmap"></div>
-</header>
-<main>
-  <aside>
-    <div id="modules"><div class="loading">Je lance les tests…</div></div>
-    <div class="card"><h2>À réviser</h2><div id="review"></div></div>
-    <div class="card"><h2>Erreurs récurrentes</h2><div id="mistakes"></div></div>
-    <div class="card"><h2>Fil rouge Taskr</h2><div id="taskr"></div></div>
-  </aside>
-  <section class="card" id="detail"><div class="loading">Choisis un exercice.</div></section>
-</main>
+<div class="wrap" id="app"><div class="loading">Je lance les tests…</div></div>
 <script>
-const LABELS = { validated: "Validé", green: "Tests verts · /review", "in-progress": "En cours", broken: "Ne compile pas", todo: "À faire" };
+const LABELS = { validated: "Validé", green: "Tests verts", "in-progress": "En cours", broken: "Ne compile pas", todo: "À faire" };
 let state = null;
-let selected = load("selected");
-let renderedDetail = "";
+let rendered = "";
+const readmes = new Map();
 
-function load(key) { try { return localStorage.getItem(key); } catch { return null; } }
-function save(key, value) { try { localStorage.setItem(key, value); } catch {} }
 function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 function inline(s) {
   return esc(s)
@@ -150,97 +140,143 @@ function markdown(md) {
   return out.join("\n");
 }
 
+// Sépare l'énoncé : le titre, la section « À faire » (montrée en premier), et le reste (le concept).
+function splitReadme(md) {
+  const title = md.match(/^# (.+)$/m)?.[1] ?? "";
+  const body = md.replace(/^# .+$/m, "");
+  const parts = body.split(/^(?=## )/m);
+  const taskIndex = parts.findIndex((p) => /^## À faire/.test(p));
+  const task = taskIndex >= 0 ? parts.splice(taskIndex, 1)[0] : "";
+  return { title, task, concept: parts.join("").trim() };
+}
+
 function visualStatus(ex) {
   if (ex.status === "in-progress" && !ex.tests.compiles) return "broken";
   return ex.status;
 }
-function pillText(ex) {
-  const s = visualStatus(ex);
-  if (s === "in-progress") return `${ex.tests.passed}/${ex.tests.total} tests`;
-  return LABELS[s];
-}
 const isDone = (ex) => ex.status === "validated";
+const exercises = () => state.modules.flatMap((m) => m.exercises.map((ex) => ({ ...ex, module: m })));
 
-function list(items, empty) {
-  return items.length ? `<ul class="side-list">${items.map((i) => `<li>${inline(i)}</li>`).join("")}</ul>` : `<div class="muted">${empty}</div>`;
+// La première erreur du compilateur, sans le bruit de cargo autour.
+function firstError(output) {
+  const lines = output.split("\n");
+  const start = lines.findIndex((l) => /^error(\[E\d+\])?:/.test(l));
+  if (start < 0) return "";
+  const end = lines.findIndex((l, i) => i > start && l.trim() === "");
+  return lines.slice(start, end < 0 ? start + 15 : end).join("\n");
 }
 
-function render() {
-  const all = state.modules.flatMap((m) => m.exercises);
-  const done = all.filter(isDone).length;
-  const green = all.filter((e) => e.status === "green").length;
-  const modulesDone = state.modules.filter((m) => m.exercises.length && m.exercises.every(isDone)).length;
-  document.getElementById("summary").textContent =
-    `${done}/${all.length} exercices validés` + (green ? ` · ${green} à faire relire` : "") + ` · module ${modulesDone + 1 > 8 ? 8 : modulesDone + 1}/8`;
-  document.getElementById("bar").style.width = `${all.length ? (done / all.length) * 100 : 0}%`;
-
-  document.getElementById("roadmap").innerHTML = state.roadmap.map((step) => {
-    const mod = state.modules.find((m) => m.number === step.number);
-    const finished = mod && mod.exercises.length && mod.exercises.every(isDone);
-    const cls = finished ? "done" : step.available ? "available" : "";
-    return `<div class="step ${cls}" title="${esc(step.title)}"><b>${String(step.number).padStart(2, "0")}${finished ? " ✓" : ""}</b><span>${esc(step.title)}</span></div>`;
-  }).join("");
-
-  if (!selected || !all.some((e) => e.pkg === selected)) {
-    selected = (all.find((e) => !isDone(e)) ?? all[0])?.pkg ?? null;
-  }
-
-  document.getElementById("modules").innerHTML = state.modules.map((m) => {
-    const d = m.exercises.filter(isDone).length;
-    return `<div class="card">
-      <div class="module-head"><strong>${String(m.number).padStart(2, "0")} · ${esc(m.title)}</strong><span class="muted">${d}/${m.exercises.length}</span></div>
-      <ul class="ex">${m.exercises.map((ex) => `
-        <li class="s-${visualStatus(ex)}"><button data-pkg="${esc(ex.pkg)}" class="${ex.pkg === selected ? "selected" : ""}">
-          <span class="dot"></span><span class="ex-title">${esc(ex.title)}</span><span class="pill">${pillText(ex)}</span>
-        </button></li>`).join("")}
-      </ul></div>`;
-  }).join("") + `<p class="muted">Pour l'instant seul le module 01 existe : le tuteur génère les suivants au fur et à mesure.</p>`;
-
-  document.querySelectorAll("button[data-pkg]").forEach((b) => b.addEventListener("click", () => {
-    selected = b.dataset.pkg; save("selected", selected); render();
-  }));
-
-  document.getElementById("review").innerHTML = list(state.review.filter((r) => !r.startsWith("_")), "Rien à réviser pour l'instant.");
-  document.getElementById("mistakes").innerHTML = list(state.mistakes, "Rien de noté pour l'instant.");
-  document.getElementById("taskr").innerHTML = list(state.taskr, "Pas commencé.");
-
-  renderDetail(all.find((e) => e.pkg === selected));
-}
-
-async function renderDetail(ex) {
-  const el = document.getElementById("detail");
-  if (!ex) { el.innerHTML = `<div class="loading">Aucun exercice.</div>`; return; }
-  const key = JSON.stringify([ex.pkg, ex.status, ex.tests.passed, ex.tests.total, ex.tests.output.length]);
-  if (key === renderedDetail) return;
-  renderedDetail = key;
-  const md = await fetch(`/api/file?path=${encodeURIComponent(ex.readme)}`).then((r) => r.text()).catch(() => "");
-  const html = markdown(md);
-  const cmd = `cargo test -p ${ex.pkg}`;
+function statusBlock(ex) {
   const s = visualStatus(ex);
-  const hint = {
-    todo: "Pas encore commencé. Dans Claude Code : <code>/next</code>.",
-    "in-progress": "Bloqué ? <code>/hint</code> pour un indice.",
-    broken: "Le compilateur râle : <code>/explain-error</code> t'aide à lire le message.",
-    green: "Tous les tests passent. Lance <code>/review</code> pour valider l'exercice.",
-    validated: `Validé${ex.validated?.date ? ` le ${esc(ex.validated.date)}` : ""} avec ${ex.validated?.hints ?? 0} indice(s).`,
+  const t = ex.tests;
+  const blocks = {
+    todo: ["Pas encore commencé", "Ouvre le fichier, prédis ce que va dire le compilateur, puis lance la commande."],
+    "in-progress": [`${t.passed}/${t.total} tests passent`, "Bloqué ? <code>/hint</code> dans Claude Code."],
+    broken: ["Ne compile pas", "Lis le message en entier. Besoin d'aide pour le décoder ? <code>/explain-error</code>."],
+    green: ["Tous les tests passent", "Lance <code>/review</code> dans Claude Code pour valider l'exercice."],
+    validated: ["Validé", "Rien à faire ici."],
   }[s];
-  el.innerHTML = `
-    <div class="detail-head s-${s}"><span class="pill">${pillText(ex)}</span><span class="muted">${esc(ex.readme)}</span></div>
-    <div class="cmd"><code>${esc(cmd)}</code><button id="copy">Copier</button></div>
-    <p class="muted">${hint}</p>
-    <div class="readme">${html}</div>
-    <details><summary>Dernière sortie de <code>cargo test</code></summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>`;
+  const error = s === "broken" ? firstError(t.output) : "";
+  return `<div class="status st-${s}"><strong>${blocks[0]}</strong><p>${blocks[1]}</p>${error ? `<pre>${esc(error)}</pre>` : ""}</div>`;
+}
+
+async function readme(path) {
+  if (!readmes.has(path)) {
+    readmes.set(path, await fetch(`/api/file?path=${encodeURIComponent(path)}`).then((r) => r.text()).catch(() => ""));
+  }
+  return readmes.get(path);
+}
+
+function topline(right) {
+  const all = exercises();
+  const done = all.filter(isDone).length;
+  return `<div class="topline"><span>${done}/${all.length} exercices validés</span>${right}</div>
+    <div class="bar"><div style="width:${all.length ? (done / all.length) * 100 : 0}%"></div></div>`;
+}
+
+async function renderFocus(pinned) {
+  const all = exercises();
+  const ex = (pinned && all.find((e) => e.pkg === pinned)) ?? all.find((e) => !isDone(e));
+  const app = document.getElementById("app");
+  if (!ex) {
+    app.innerHTML = topline(`<a href="#overview">Vue d'ensemble</a>`) +
+      `<div class="focus"><h1>Module terminé</h1><div class="status st-validated"><strong>Bravo.</strong><p>Lance <code>/quiz</code> dans Claude Code, puis l'étape Taskr du module.</p></div></div>`;
+    return;
+  }
+  const md = await readme(ex.readme);
+  const key = JSON.stringify([ex.pkg, ex.status, ex.tests.passed, ex.tests.total, ex.tests.output.length, pinned, all.filter(isDone).length]);
+  if (key === rendered) return;
+  rendered = key;
+  const { title, task, concept } = splitReadme(md);
+  const position = `${ex.module.exercises.indexOf(ex.module.exercises.find((e) => e.pkg === ex.pkg)) + 1}/${ex.module.exercises.length}`;
+  const cmd = `cargo test -p ${ex.pkg}`;
+  const right = pinned ? `<a href="#">Revenir à l'exercice en cours</a>` : `<a href="#overview">Vue d'ensemble</a>`;
+  app.innerHTML = topline(right) + `
+    <div class="focus">
+      <div class="muted">Module ${String(ex.module.number).padStart(2, "0")} · exercice ${position}</div>
+      <h1>${inline(title || ex.title)}</h1>
+      ${statusBlock(ex)}
+      <div class="cmd"><code>${esc(cmd)}</code><button id="copy">Copier</button></div>
+      <div class="muted file">Fichier : <code>${esc(ex.readme.replace(/README\.md$/, "src/lib.rs"))}</code></div>
+      <div class="readme">
+        ${task ? `<div class="task">${markdown(task)}</div>` : ""}
+        ${concept ? markdown(concept) : ""}
+      </div>
+      <details><summary>Dernière sortie de cargo test</summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>
+    </div>`;
   document.getElementById("copy").addEventListener("click", (e) => {
     navigator.clipboard?.writeText(cmd).then(() => { e.target.textContent = "Copié"; });
   });
 }
+
+function list(items, empty) {
+  const real = items.filter((i) => !i.startsWith("_"));
+  return real.length ? `<ul class="side-list">${real.map((i) => `<li>${inline(i)}</li>`).join("")}</ul>` : `<div class="muted">${empty}</div>`;
+}
+
+function renderOverview() {
+  const key = JSON.stringify(["overview", state.modules, state.review, state.mistakes, state.taskr]);
+  if (key === rendered) return;
+  rendered = key;
+  const roadmap = state.roadmap.map((step) => {
+    const mod = state.modules.find((m) => m.number === step.number);
+    const finished = mod && mod.exercises.length && mod.exercises.every(isDone);
+    return `<div class="step ${finished ? "done" : step.available ? "available" : ""}" title="${esc(step.title)}"><b>${String(step.number).padStart(2, "0")}${finished ? " ✓" : ""}</b><span>${esc(step.title)}</span></div>`;
+  }).join("");
+  const modules = state.modules.map((m) => `
+    <div class="card"><h2>${String(m.number).padStart(2, "0")} · ${esc(m.title)} · ${m.exercises.filter(isDone).length}/${m.exercises.length}</h2>
+      <ul class="ex">${m.exercises.map((ex) => {
+        const s = visualStatus(ex);
+        const pill = s === "in-progress" ? `${ex.tests.passed}/${ex.tests.total} tests` : LABELS[s];
+        return `<li class="s-${s}"><a href="#ex/${esc(ex.pkg)}"><span class="dot"></span><span class="ex-title">${esc(ex.title)}</span><span class="pill">${pill}</span></a></li>`;
+      }).join("")}</ul></div>`).join("");
+  document.getElementById("app").innerHTML = topline(`<a href="#">Revenir à l'exercice en cours</a>`) + `
+    <div class="overview">
+      <h1>Vue d'ensemble</h1>
+      <div class="roadmap">${roadmap}</div>
+      ${modules}
+      <div class="card"><h2>À réviser</h2>${list(state.review, "Rien à réviser pour l'instant.")}</div>
+      <div class="card"><h2>Erreurs récurrentes</h2>${list(state.mistakes, "Rien de noté pour l'instant.")}</div>
+      <div class="card"><h2>Fil rouge Taskr</h2>${list(state.taskr, "Pas commencé.")}</div>
+    </div>`;
+}
+
+function render() {
+  if (!state) return;
+  const hash = location.hash;
+  if (hash === "#overview") renderOverview();
+  else renderFocus(hash.startsWith("#ex/") ? decodeURIComponent(hash.slice(4)) : null);
+}
+
+window.addEventListener("hashchange", () => { rendered = ""; window.scrollTo(0, 0); render(); });
 
 async function refresh() {
   try {
     state = await fetch("/api/state").then((r) => r.json());
     render();
   } catch {
-    document.getElementById("summary").textContent = "Serveur injoignable : lance node dashboard/server.mjs";
+    document.getElementById("app").innerHTML = `<div class="loading">Serveur injoignable.</div>`;
+    rendered = "";
   }
   setTimeout(refresh, 3000);
 }
