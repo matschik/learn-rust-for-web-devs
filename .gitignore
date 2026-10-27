@@ -1,3 +1,8 @@
 /target
 /scratch/*
 !/scratch/.gitkeep
+
+# Propre à chaque apprenant
+/PROGRESS.md
+/CLAUDE.local.md
+/_site
