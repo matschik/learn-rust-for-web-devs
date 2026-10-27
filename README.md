@@ -6,6 +6,18 @@ Apprendre Rust quand on est dev web full-stack TypeScript, pour écrire des back
 
 Le repo sert aussi d'exemple pour apprendre avec un agent IA. [Claude Code](https://claude.com/claude-code) joue le rôle de tuteur : il t'explique, te pose des questions et te donne des indices, mais il n'écrit pas tes exercices à ta place.
 
+## Pourquoi apprendre Rust à l'ère du dev agentique
+
+Si les agents écrivent le code, pourquoi apprendre un langage aussi exigeant ? Justement parce qu'ils l'écrivent.
+
+- **Le compilateur Rust est un garde-fou pour le code d'un agent.** Les types, l'ownership et `Result` font remonter à la compilation des bugs que TS laisse passer jusqu'en prod : erreurs ignorées, exceptions non typées, accès concurrents à un état partagé. Un agent qui itère contre `rustc` reçoit un feedback précis, et toi aussi.
+- **Mais il faut savoir relire.** Un agent produit vite du Rust qui compile et reste mauvais : des `.clone()` partout pour faire taire le borrow checker, des `unwrap()`, des `Arc<Mutex<_>>` inutiles, parfois de l'`unsafe`. Pour juger ce code, et en assumer la responsabilité en prod, tu dois comprendre l'ownership et les lifetimes.
+- **Apprendre avec l'agent, pas lui déléguer.** Une [étude d'Anthropic](https://www.anthropic.com/research/AI-assistance-coding-skills) sur l'apprentissage d'une nouvelle bibliothèque arrive à deux constats. Les devs qui déléguaient le code à l'IA ont moins bien compris que ceux qui codaient eux-mêmes. Ceux qui utilisaient l'IA pour poser des questions de compréhension apprenaient bien. Ce repo est construit sur ce constat : l'agent explique et questionne, toi tu écris.
+- **Le tooling web est déjà en Rust.** Oxc, Rolldown, Biome, SWC, Turbopack, Rspack, Lightning CSS : les outils que tu utilises tous les jours sont écrits en Rust, et peu de devs connaissent à la fois l'écosystème JS et Rust. Avec [napi-rs](https://napi.rs/), tu peux aussi écrire un module natif pour Node quand un bout de ton backend doit aller vite.
+- **Ça change ta façon de coder en TS.** Une fois que tu as intégré l'ownership, tu ne penses plus pareil l'état partagé, les mutations et la gestion d'erreurs.
+
+Soyons honnêtes : tous les backends TS ne vont pas passer à Rust. Pour une API CRUD classique, le goulot c'est la base de données, et TS reste plus rapide à écrire. Rust gagne quand la perf, la mémoire ou la fiabilité comptent vraiment : services très chargés, edge et WASM, traitements lourds, outillage. La courbe est raide au début : en séances courtes, compte deux à trois mois avant d'être à l'aise.
+
 ## Pour qui
 
 - Tu codes en TS tous les jours, front et back (Svelte ou React, Node, Fastify ou Express).
