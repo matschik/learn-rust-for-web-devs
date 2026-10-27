@@ -2,43 +2,49 @@
 
 Apprendre Rust quand on est dev web full-stack TypeScript, pour écrire des backends. En français, avec les termes techniques en anglais (ownership, borrow checker, trait, crate).
 
-**Site : https://matschik.github.io/learn-rust-for-web-devs/** (fiches de cours en lecture, et l'approche expliquée).
+Le site présente l'approche et donne accès aux fiches de cours : https://matschik.github.io/learn-rust-for-web-devs/
 
 Le repo sert aussi d'exemple pour apprendre avec un agent IA. [Claude Code](https://claude.com/claude-code) joue le rôle de tuteur : il t'explique, te pose des questions et te donne des indices, mais il n'écrit pas tes exercices à ta place.
 
 ## Pourquoi apprendre Rust à l'ère du dev agentique
 
-Si les agents écrivent le code, pourquoi apprendre un langage aussi exigeant ? Justement parce qu'ils l'écrivent.
+Si les agents écrivent le code, à quoi bon apprendre un langage aussi exigeant ? Parce que quelqu'un doit relire ce qu'ils écrivent, et que Rust rend cette relecture rentable.
 
-- **Le compilateur Rust est un garde-fou pour le code d'un agent.** Les types, l'ownership et `Result` font remonter à la compilation des bugs que TS laisse passer jusqu'en prod : erreurs ignorées, exceptions non typées, accès concurrents à un état partagé. Un agent qui itère contre `rustc` reçoit un feedback précis, et toi aussi.
-- **Mais il faut savoir relire.** Un agent produit vite du Rust qui compile et reste mauvais : des `.clone()` partout pour faire taire le borrow checker, des `unwrap()`, des `Arc<Mutex<_>>` inutiles, parfois de l'`unsafe`. Pour juger ce code, et en assumer la responsabilité en prod, tu dois comprendre l'ownership et les lifetimes.
-- **Apprendre avec l'agent, pas lui déléguer.** Une [étude d'Anthropic](https://www.anthropic.com/research/AI-assistance-coding-skills) sur l'apprentissage d'une nouvelle bibliothèque arrive à deux constats. Les devs qui déléguaient le code à l'IA ont moins bien compris que ceux qui codaient eux-mêmes. Ceux qui utilisaient l'IA pour poser des questions de compréhension apprenaient bien. Ce repo est construit sur ce constat : l'agent explique et questionne, toi tu écris.
-- **Le tooling web est déjà en Rust.** Oxc, Rolldown, Biome, SWC, Turbopack, Rspack, Lightning CSS : les outils que tu utilises tous les jours sont écrits en Rust, et peu de devs connaissent à la fois l'écosystème JS et Rust. Avec [napi-rs](https://napi.rs/), tu peux aussi écrire un module natif pour Node quand un bout de ton backend doit aller vite.
-- **Ça change ta façon de coder en TS.** Une fois que tu as intégré l'ownership, tu ne penses plus pareil l'état partagé, les mutations et la gestion d'erreurs.
+Le compilateur Rust surveille aussi l'agent. Les types, l'ownership et `Result` font remonter à la compilation des bugs que TS laisse filer jusqu'en prod : erreurs ignorées, exceptions non typées, accès concurrents à un état partagé. Un agent qui itère contre `rustc` reçoit un feedback précis, et toi aussi.
 
-Soyons honnêtes : tous les backends TS ne vont pas passer à Rust. Pour une API CRUD classique, le goulot c'est la base de données, et TS reste plus rapide à écrire. Rust gagne quand la perf, la mémoire ou la fiabilité comptent vraiment : services très chargés, edge et WASM, traitements lourds, outillage. La courbe est raide au début : en séances courtes, compte deux à trois mois avant d'être à l'aise.
+Encore faut-il savoir lire ce qui compile. Un agent produit vite du Rust valide mais mauvais : des `.clone()` partout pour calmer le borrow checker, des `unwrap()`, des `Arc<Mutex<_>>` en trop, parfois de l'`unsafe`. Pour juger ce code et en répondre en prod, il faut comprendre l'ownership et les lifetimes.
+
+Reste à apprendre sans tout déléguer. Une [étude d'Anthropic](https://www.anthropic.com/research/AI-assistance-coding-skills) sur l'apprentissage d'une nouvelle bibliothèque a observé que les devs qui laissaient l'IA écrire le code comprenaient moins bien que ceux qui le tapaient eux-mêmes, alors que ceux qui s'en servaient pour poser des questions de compréhension apprenaient bien. Ce repo part de là : l'agent explique et questionne, tu écris.
+
+Côté web, le pari est déjà en partie gagné. Oxc, Rolldown, Biome, SWC, Turbopack, Rspack et Lightning CSS sont écrits en Rust, et peu de devs connaissent à la fois l'écosystème JS et Rust. Avec [napi-rs](https://napi.rs/), tu peux aussi écrire un module natif pour Node quand une partie de ton backend doit aller vite. Et une fois l'ownership intégré, tu ne regardes plus l'état partagé, les mutations et la gestion d'erreurs de la même façon en TS.
+
+Tous les backends TS ne vont pas passer à Rust pour autant. Pour une API CRUD classique, le goulot reste la base de données, et TS s'écrit plus vite. Rust gagne quand la perf, la mémoire ou la fiabilité comptent vraiment : services très chargés, edge et WASM, traitements lourds, outillage. La courbe est raide au début. En séances courtes, compte deux à trois mois avant d'être à l'aise.
 
 ## Pour qui
 
 - Tu codes en TS tous les jours, front et back (Svelte ou React, Node, Fastify ou Express).
 - Tu pars de zéro en Rust.
 - Tu veux à terme écrire des APIs en Rust (Axum, sqlx, Postgres).
-- Tu as 30 à 45 minutes par séance, pas des journées entières.
+- Tu as 30 à 45 minutes par séance.
 
 Pas besoin de cours sur ce qu'est une fonction ou une closure : le parcours va droit à ce qui est nouveau en Rust (ownership, borrowing, traits, `Result`) et le compare à ce que tu fais déjà en TS.
 
 ## Comment ça marche
 
-- **Le Rust Book est la colonne vertébrale.** Le parcours suit la [version Brown](https://rust-book.cs.brown.edu/) du livre, avec ses quiz et son modèle de permissions (Read, Write, Own) pour comprendre le borrow checker.
-- **Cours, puis pratique.** Chaque exercice a une fiche de cours (`COURS.md`) : les sections du livre à lire, l'idée avec son équivalent TS, un diagramme et ce qu'il faut retenir. Vient ensuite la fiche pratique (`README.md`).
-- **Les tests sont rouges au départ.** Chaque exercice est un crate avec des tests qui échouent, et certains ne compilent même pas : c'est voulu, le compilateur fait partie du cours. Tu as fini quand `cargo test` est vert.
-- **Un tuteur qui ne donne pas les réponses.** Les règles du tuteur sont dans [CLAUDE.md](CLAUDE.md) :
-  - les indices viennent en 3 paliers ;
-  - il te demande de prédire si ton code compile avant de lancer `cargo` ;
-  - il t'apprend à lire les erreurs de `rustc` ;
-  - un hook l'empêche d'éditer tes fichiers d'exercice.
-- **Un fil rouge.** [Taskr](projects/taskr/README.md) est une API de gestion de tâches. Elle grandit à chaque module, du modèle métier jusqu'à une API Axum + Postgres en production. Claude pose l'échafaudage, tu écris les parties marquées `TODO(human)`.
-- **De la mémoire entre les séances.** Le tuteur note dans `PROGRESS.md` ce que tu as validé, les indices utilisés et les concepts fragiles. Il te repose ces concepts au début des séances suivantes (rappel espacé).
+Le parcours suit la [version Brown du Rust Book](https://rust-book.cs.brown.edu/), avec ses quiz et son modèle de permissions (Read, Write, Own) pour comprendre le borrow checker.
+
+Chaque exercice commence par une fiche de cours (`COURS.md`) : les sections du livre à lire, l'idée avec son équivalent TS, un diagramme et ce qu'il faut retenir. La fiche pratique (`README.md`) vient ensuite. L'exercice est un crate avec des tests rouges, et certains ne compilent même pas au départ, exprès : le compilateur fait partie du cours. Tu as fini quand `cargo test` passe.
+
+Le tuteur suit les règles de [CLAUDE.md](CLAUDE.md) :
+
+- il donne ses indices en trois paliers ;
+- il te demande de prédire si ton code compile avant de lancer `cargo` ;
+- il t'apprend à lire les erreurs de `rustc` ;
+- un hook l'empêche d'éditer tes fichiers d'exercice.
+
+Il note dans `PROGRESS.md` ce que tu as validé, les indices utilisés et les notions fragiles, et te les repose au début des séances suivantes.
+
+À la fin de chaque module, [Taskr](projects/taskr/README.md), une API de gestion de tâches, gagne une étape, du modèle métier jusqu'à Axum et Postgres en production. Claude pose l'échafaudage, tu écris les parties marquées `TODO(human)`.
 
 ## Démarrer
 
@@ -100,12 +106,12 @@ Le serveur n'a aucune dépendance npm.
 
 | Module | Rust Book | État |
 | --- | --- | --- |
-| 1. Prise en main | ch. 1–3 | disponible |
-| 2. Ownership et structs | ch. 4–5 | disponible |
+| 1. Prise en main | ch. 1 à 3 | disponible |
+| 2. Ownership et structs | ch. 4 et 5 | disponible |
 | 3. Enums, collections, erreurs | ch. 6, 8, 9 | à venir |
 | 4. Modules, génériques, traits, tests | ch. 7, 10, 11 | à venir |
 | 5. Closures, itérateurs, smart pointers | ch. 13, 15 | à venir |
-| 6. Concurrence et async | ch. 16–17 | à venir |
+| 6. Concurrence et async | ch. 16 et 17 | à venir |
 | 7. API avec Axum et sqlx | après le livre | à venir |
 | 8. Production | après le livre | à venir |
 

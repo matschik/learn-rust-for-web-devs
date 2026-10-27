@@ -4,12 +4,12 @@ import { join, relative } from "node:path";
 
 // Les modules suivent l'ordre des chapitres du Rust Book (version Brown).
 export const ROADMAP = [
-  { title: "Prise en main", chapters: "ch. 1–3" },
-  { title: "Ownership et structs", chapters: "ch. 4–5" },
+  { title: "Prise en main", chapters: "ch. 1 à 3" },
+  { title: "Ownership et structs", chapters: "ch. 4 et 5" },
   { title: "Enums, collections, erreurs", chapters: "ch. 6, 8, 9" },
   { title: "Modules, génériques, traits, tests", chapters: "ch. 7, 10, 11" },
   { title: "Closures, itérateurs, smart pointers", chapters: "ch. 13, 15" },
-  { title: "Concurrence et async", chapters: "ch. 16–17" },
+  { title: "Concurrence et async", chapters: "ch. 16 et 17" },
   { title: "API avec Axum et sqlx", chapters: "après le livre" },
   { title: "Production", chapters: "après le livre" },
 ];

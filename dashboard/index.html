@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Learn Rust for web devs</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2410c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='36' font-weight='700' fill='%23fff7ed'%3Ers%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,650&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #faf8f5; --panel: #ffffff; --text: #1f1d1a; --muted: #6b665e; --line: #e7e2da;
@@ -23,6 +26,7 @@
     }
   }
   * { box-sizing: border-box; }
+  .i { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.14em; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
   a { color: var(--accent); text-underline-offset: 2px; }
   code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -42,7 +46,8 @@
 
   /* Vue focus */
   .eyebrow { font-size: 13px; color: var(--muted); letter-spacing: .02em; }
-  .focus h1 { font-size: 34px; line-height: 1.15; margin: 4px 0 20px; letter-spacing: -0.02em; }
+  .focus h1 { font-family: "Fraunces", Georgia, serif; font-weight: 650; font-size: 38px; line-height: 1.1; margin: 8px 0 22px; letter-spacing: -0.02em; }
+  .eyebrow .mod { font: 600 12px ui-monospace, Menlo, monospace; color: var(--accent); background: var(--accent-soft); padding: 2px 7px; border-radius: 6px; margin-right: 6px; }
   .tabs { display: inline-flex; background: var(--todo-soft); border-radius: 10px; padding: 3px; margin-bottom: 28px; }
   .tabs button { border: 0; background: none; color: var(--muted); font: 600 14px system-ui, sans-serif; padding: 7px 16px; border-radius: 8px; cursor: pointer; }
   .tabs button.on { background: var(--panel); color: var(--text); box-shadow: var(--shadow); }
@@ -50,7 +55,8 @@
   .tabs button.on .n { background: var(--accent); color: #fff7ed; }
 
   .doc { overflow-wrap: anywhere; }
-  .doc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 36px 0 12px; }
+  .doc h2 { font-size: 19px; font-weight: 650; color: var(--text); margin: 40px 0 12px; display: flex; align-items: center; gap: 10px; }
+  .doc h2 .i { color: var(--accent); }
   .doc p, .doc li { font-size: 16.5px; }
   .doc pre { background: var(--code); padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
   .doc code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 14px; }
@@ -66,7 +72,7 @@
   .reads { display: grid; gap: 8px; }
   .read { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); text-decoration: none; transition: border-color .15s; }
   .read:hover { border-color: var(--accent); }
-  .read .kind { flex: none; font: 600 11px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+  .read .kind { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-size: 17px; background: var(--accent-soft); color: var(--accent); }
   .read .kind.std { background: var(--ok-soft); color: var(--ok); }
   .read .kind.err { background: var(--err-soft); color: var(--err); }
   .read .kind.ref { background: var(--todo-soft); color: var(--muted); }
@@ -90,7 +96,7 @@
   .st-green, .st-validated { background: var(--ok-soft); } .st-green strong, .st-validated strong { color: var(--ok); }
   .cmd { display: flex; align-items: center; gap: 8px; background: var(--code); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 6px; }
   .cmd code { flex: 1; overflow-x: auto; white-space: nowrap; }
-  .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 3px 10px; cursor: pointer; font: 12px system-ui, sans-serif; }
+  .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 4px 10px; cursor: pointer; font: 12px system-ui, sans-serif; display: inline-flex; align-items: center; gap: 6px; }
   .task { border-left: 3px solid var(--accent); padding-left: 18px; margin-top: 28px; }
   .task h2 { margin-top: 0; }
   details { margin-top: 32px; }
@@ -98,7 +104,7 @@
   .output { background: var(--code); padding: 12px; border-radius: 8px; max-height: 320px; overflow: auto; white-space: pre; font-size: 13px; line-height: 1.45; margin-top: 8px; }
 
   /* Vue d'ensemble */
-  .overview h1 { font-size: 26px; margin: 0 0 20px; letter-spacing: -0.01em; }
+  .overview h1 { font-family: "Fraunces", Georgia, serif; font-weight: 650; font-size: 32px; margin: 0 0 20px; letter-spacing: -0.015em; }
   .roadmap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 24px; }
   .step { font-size: 13px; padding: 10px 12px; border-radius: 10px; background: var(--todo-soft); color: var(--muted); min-width: 0; }
   .step b { font-size: 12px; margin-right: 6px; }
@@ -106,11 +112,14 @@
   .step.available { background: var(--accent-soft); color: var(--text); }
   .step.done { background: var(--ok-soft); color: var(--text); }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
-  .card > h2 { margin: 0 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .card > h2 { margin: 0 0 10px; font-size: 17px; font-weight: 650; display: flex; align-items: center; gap: 10px; }
+  .card > h2 .i { color: var(--accent); }
+  .card > h2 .n { margin-left: auto; font: 500 13px ui-monospace, Menlo, monospace; color: var(--muted); }
   ul.ex { list-style: none; margin: 0; padding: 0; }
   ul.ex a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: inherit; text-decoration: none; }
   ul.ex a:hover { background: var(--todo-soft); }
   .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .ex-title .num { font: 500 12px ui-monospace, Menlo, monospace; color: var(--muted); margin-right: 8px; }
   .ex-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .pill { font-size: 12px; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
   .s-validated .dot, .s-green .dot { background: var(--ok); } .s-validated .pill, .s-green .pill { background: var(--ok-soft); color: var(--ok); }
@@ -119,7 +128,7 @@
   .s-todo .dot { border: 2px solid var(--muted); } .s-todo .pill { background: var(--todo-soft); color: var(--muted); }
   .side-list { margin: 0; padding-left: 18px; }
   @media (min-width: 700px) { .roadmap { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 600px) { .focus h1 { font-size: 27px; } .bar { margin-bottom: 26px; } .top .count { display: none; } .figure { padding: 10px; } }
+  @media (max-width: 600px) { .focus h1 { font-size: 27px; } .bar { margin-bottom: 26px; } .top .count, .brand .name { display: none; } .figure { padding: 10px; } }
 </style>
 </head>
 <body>
@@ -136,6 +145,24 @@ const RESOURCES = [
 ];
 // En version statique (GitHub Pages), pas de serveur : les fiches sont lues en lecture seule, sans tests ni progression.
 const STATIC = window.LEARN_RUST_STATIC === true;
+// Icônes : Lucide (ISC), https://lucide.dev
+const ICONS = {
+  book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  std: '<path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>',
+  err: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  ref: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  bulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+  pin: '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>',
+  task: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/>',
+  copy: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  review: '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+  wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  layers: '<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
+  out: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
+};
+const icon = (name) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+const HEADING_ICONS = { "À faire": "task", "À lire dans le Rust Book": "book", "L'idée": "bulb", "À retenir": "pin" };
+const heading = (h) => `<h2>${HEADING_ICONS[h] ? icon(HEADING_ICONS[h]) : ""}${inline(h)}</h2>`;
 let state = null;
 let rendered = "";
 let tab = null; // "cours" | "pratique" pour l'exercice affiché
@@ -204,10 +231,10 @@ function readCards(md) {
     const m = l.match(/^- \[([^\]]+)\]\(([^)]+)\)\s*(.*)$/);
     if (!m) return "";
     const [, label, url, note] = m;
-    const kind = label.startsWith("Rust Book") ? ["book", "Rust Book"] : label.startsWith("std") ? ["std", "std"] : label.startsWith("Erreur") ? ["err", "Erreur"] : ["ref", "Réf."];
-    const text = label.replace(/^(Rust Book|std|Erreur)\s*·?\s*/, "");
-    const sub = note.replace(/^[:\s]+/, "");
-    return `<a class="read" href="${esc(url)}" target="_blank" rel="noopener"><span class="kind ${kind[0] === "book" ? "" : kind[0]}">${kind[1]}</span><span class="label">${inline(text)}${sub ? `<small>${inline(sub)}</small>` : ""}</span><span class="arrow">↗</span></a>`;
+    const kind = label.startsWith("Rust Book") ? ["book", "Rust Book"] : label.startsWith("std") ? ["std", "Bibliothèque standard"] : label.startsWith("Erreur") ? ["err", "Erreur du compilateur"] : ["ref", "Référence"];
+    const text = label.replace(/^(Rust Book|std|Erreur)\s*·?\s*/, "").replace(" · ", " ");
+    const sub = note.replace(/^[:\s]+/, "").replace(/^\((.*)\)$/, "$1");
+    return `<a class="read" href="${esc(url)}" target="_blank" rel="noopener"><span class="kind ${kind[0] === "book" ? "" : kind[0]}" title="${kind[1]}">${icon(kind[0])}</span><span class="label">${inline(text)}<small>${kind[1]}${sub ? `, ${inline(sub)}` : ""}</small></span><span class="arrow">${icon("out")}</span></a>`;
   });
   return `<div class="reads">${items.join("")}</div>`;
 }
@@ -216,6 +243,8 @@ function visualStatus(ex) {
   if (ex.status === "in-progress" && !ex.tests.compiles) return "broken";
   return ex.status;
 }
+// « 01 - Move » devient « Move » : le numéro est déjà affiché à côté.
+const shortTitle = (t) => t.replace(/^\d+\s*-\s*/, "");
 const isDone = (ex) => ex.status === "validated";
 const exercises = () => state.modules.flatMap((m) => m.exercises.map((ex) => ({ ...ex, module: m })));
 
@@ -261,7 +290,7 @@ function topline(right) {
   const done = all.filter(isDone).length;
   const count = STATIC ? `${all.length} exercices` : `${done}/${all.length} exercices validés`;
   const home = STATIC ? `<a class="link" href="../">Le projet</a>` : "";
-  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span>Learn Rust for web devs</a><span class="count">${count}</span><span class="spacer"></span>${home}${right}</div>
+  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span><span class="name">Learn Rust for web devs</span></a><span class="count">${count}</span><span class="spacer"></span>${home}${right}</div>
     <div class="bar"><div style="width:${all.length ? (done / all.length) * 100 : 0}%"></div></div>`;
 }
 
@@ -292,27 +321,27 @@ async function renderFocus(pinned) {
     const reads = c.map.get("À lire dans le Rust Book");
     const keep = c.map.get("À retenir");
     const rest = [...c.map].filter(([h]) => h !== "À lire dans le Rust Book" && h !== "À retenir")
-      .map(([h, md]) => (h === "L'idée" ? markdown(md, base) : `<h2>${inline(h)}</h2>${markdown(md, base)}`)).join("");
+      .map(([h, md]) => (h === "L'idée" ? markdown(md, base) : `${heading(h)}${markdown(md, base)}`)).join("");
     body = `
-      ${reads ? `<h2>À lire dans le Rust Book</h2>${readCards(reads)}` : ""}
-      <h2>L'idée</h2>${rest}
-      ${keep ? `<div class="keep"><h2>À retenir</h2>${markdown(keep, base)}</div>` : ""}
+      ${reads ? `${heading("À lire dans le Rust Book")}${readCards(reads)}` : ""}
+      ${heading("L'idée")}${rest}
+      ${keep ? `<div class="keep">${heading("À retenir")}${markdown(keep, base)}</div>` : ""}
       <div class="next"><button class="btn" data-tab="pratique">Passer à la pratique →</button></div>`;
   } else {
     body = `
       ${statusBlock(ex)}
-      <div class="cmd"><code>${esc(cmd)}</code><button id="copy">Copier</button></div>
+      <div class="cmd"><code>${esc(cmd)}</code><button id="copy">${icon("copy")}Copier</button></div>
       <div class="muted">Fichier : <code>${esc(base)}src/lib.rs</code></div>
       ${p.intro ? markdown(p.intro, base).replace(/<p>Relis la fiche[^<]*<code>COURS\.md<\/code>[^<]*<\/p>/, "") : ""}
-      <div class="task">${[...p.map].map(([h, md]) => `<h2>${inline(h)}</h2>${markdown(md, base)}`).join("")}</div>
+      <div class="task">${[...p.map].map(([h, md]) => `${heading(h)}${markdown(md, base)}`).join("")}</div>
       <div class="next"><button class="btn ghost" data-tab="cours">← Revoir le cours</button></div>
       ${STATIC ? "" : `<details><summary>Dernière sortie de cargo test</summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>`}`;
   }
 
   app.innerHTML = topline(right) + `
     <div class="focus">
-      <div class="eyebrow">Module ${String(ex.module.number).padStart(2, "0")} · ${esc(ex.module.title)} · exercice ${position}/${ex.module.exercises.length}</div>
-      <h1>${inline(c.title || p.title || ex.title)}</h1>
+      <div class="eyebrow"><span class="mod">${String(ex.module.number).padStart(2, "0")}</span>${esc(ex.module.title)}, exercice ${position} sur ${ex.module.exercises.length}</div>
+      <h1>${inline(shortTitle(c.title || p.title || ex.title))}</h1>
       <div class="tabs" role="tablist">
         <button class="${tab === "cours" ? "on" : ""}" data-tab="cours"><span class="n">1</span>Cours</button>
         <button class="${tab === "pratique" ? "on" : ""}" data-tab="pratique"><span class="n">2</span>Pratique</button>
@@ -323,7 +352,7 @@ async function renderFocus(pinned) {
     tab = b.dataset.tab; rendered = ""; window.scrollTo(0, 0); render();
   }));
   document.getElementById("copy")?.addEventListener("click", (e) => {
-    navigator.clipboard?.writeText(cmd).then(() => { e.target.textContent = "Copié"; });
+    navigator.clipboard?.writeText(cmd).then(() => { e.currentTarget.innerHTML = `${icon("task")}Copié`; });
   });
   hydrateFigures();
 }
@@ -343,24 +372,24 @@ function renderOverview() {
     return `<div class="step ${finished ? "done" : step.available ? "available" : ""}"><b>${String(step.number).padStart(2, "0")}${finished ? " ✓" : ""}</b>${esc(step.title)}<small>${esc(step.chapters)}</small></div>`;
   }).join("");
   const modules = state.modules.map((m) => `
-    <div class="card"><h2>${String(m.number).padStart(2, "0")} · ${esc(m.title)} · ${m.exercises.filter(isDone).length}/${m.exercises.length}</h2>
+    <div class="card"><h2>${icon("layers")}${String(m.number).padStart(2, "0")} ${esc(m.title)}<span class="n">${m.exercises.filter(isDone).length}/${m.exercises.length}</span></h2>
       <ul class="ex">${m.exercises.map((ex) => {
         const s = visualStatus(ex);
         const pill = s === "in-progress" ? `${ex.tests.passed}/${ex.tests.total} tests` : LABELS[s];
-        return `<li class="s-${s}"><a href="#ex/${esc(ex.pkg)}"><span class="dot"></span><span class="ex-title">${esc(ex.title)}</span><span class="pill">${pill}</span></a></li>`;
+        return `<li class="s-${s}"><a href="#ex/${esc(ex.pkg)}"><span class="dot"></span><span class="ex-title"><span class="num">${esc(ex.id.slice(0, 2))}</span>${esc(shortTitle(ex.title))}</span><span class="pill">${pill}</span></a></li>`;
       }).join("")}</ul></div>`).join("");
   const resources = `<div class="reads">${RESOURCES.map(([kind, label, sub, url]) =>
-    `<a class="read" href="${url}" target="_blank" rel="noopener"><span class="kind ${kind === "book" ? "" : kind}">${{ book: "Livre", std: "std", err: "Erreurs", ref: "Réf." }[kind]}</span><span class="label">${esc(label)}<small>${esc(sub)}</small></span><span class="arrow">↗</span></a>`).join("")}</div>`;
+    `<a class="read" href="${url}" target="_blank" rel="noopener"><span class="kind ${kind === "book" ? "" : kind}">${icon(kind)}</span><span class="label">${esc(label)}<small>${esc(sub)}</small></span><span class="arrow">${icon("out")}</span></a>`).join("")}</div>`;
   document.getElementById("app").innerHTML = topline(`<a class="link" href="#">← Exercice en cours</a>`) + `
     <div class="overview">
       <h1>Vue d'ensemble</h1>
       <div class="roadmap">${roadmap}</div>
       ${modules}
       ${STATIC ? "" : `
-      <div class="card"><h2>À réviser</h2>${list(state.review, "Rien à réviser pour l'instant.")}</div>
-      <div class="card"><h2>Erreurs récurrentes</h2>${list(state.mistakes, "Rien de noté pour l'instant.")}</div>
-      <div class="card"><h2>Fil rouge Taskr</h2>${list(state.taskr, "Pas commencé.")}</div>`}
-      <div class="card"><h2>Documentation</h2>${resources}</div>
+      <div class="card"><h2>${icon("review")}À réviser</h2>${list(state.review, "Rien à réviser pour l'instant.")}</div>
+      <div class="card"><h2>${icon("err")}Erreurs récurrentes</h2>${list(state.mistakes, "Rien de noté pour l'instant.")}</div>
+      <div class="card"><h2>${icon("wrench")}Fil rouge Taskr</h2>${list(state.taskr, "Pas commencé.")}</div>`}
+      <div class="card"><h2>${icon("book")}Documentation</h2>${resources}</div>
     </div>`;
 }
 
