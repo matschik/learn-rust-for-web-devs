@@ -8,7 +8,7 @@ En TS, tu choisis entre `const` et `let`. Rust fait le même choix, mais dans l'
 - Lire les erreurs E0384 et E0308.
 - Utiliser le shadowing pour réutiliser un nom, même avec un autre type.
 
-## let, c'est ton const
+## `let`, c'est ton `const`
 
 En Rust, une variable déclarée avec `let` ne peut plus changer. C'est le `const` que tu mets déjà partout en TS. Pour une variable qui bouge, tu ajoutes `mut` :
 
@@ -28,7 +28,7 @@ Pourquoi ce choix ? Quand tu lis du code Rust, chaque `mut` te signale un endroi
 
 ![02 - Variables](cours.svg)
 
-## Quand tu oublies mut
+## Quand tu oublies `mut`
 
 Tu oublieras `mut`, c'est normal. Voici ce que le compilateur répond :
 
@@ -64,7 +64,7 @@ Lis-le de haut en bas :
 
 Ici, la proposition est la bonne. Ce ne sera pas toujours le cas, car le compilateur propose la correction la plus simple, pas forcément celle que tu voulais. Lis toujours la cause avant d'appliquer le `help`.
 
-## Le shadowing : un nouveau let avec le même nom
+## Le shadowing : un nouveau `let` avec le même nom
 
 Rust te laisse redéclarer une variable qui porte le même nom qu'une autre. La nouvelle « cache » l'ancienne, d'où le nom de shadowing :
 

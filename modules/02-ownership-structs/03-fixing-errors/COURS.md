@@ -41,11 +41,11 @@ error[E0106]: missing lifetime specifier
   = help: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
 ```
 
-Applique la méthode. `tag` appartient à la fonction. À la fin de la fonction, `tag` sort du scope et la String est libérée. La référence renvoyée pointerait vers une donnée qui n'existe plus. En JS, ce problème n'existe pas, parce que le GC garde l'objet en vie tant que quelqu'un le référence. En Rust, c'est le propriétaire qui décide quand la donnée meurt.
+Applique la méthode. `tag` appartient à la fonction. À la fin de la fonction, `tag` sort du scope et la `String` est libérée. La référence renvoyée pointerait vers une donnée qui n'existe plus. En JS, ce problème n'existe pas, parce que le GC garde l'objet en vie tant que quelqu'un le référence. En Rust, c'est le propriétaire qui décide quand la donnée meurt.
 
 Le message `help` propose deux pistes :
 
-- `&'static String` : c'est la mauvaise. `'static` veut dire « vit pendant tout le programme », ce qui est faux pour une String créée dans la fonction. Ça ne compilera pas mieux.
+- `&'static String` : c'est la mauvaise. `'static` veut dire « vit pendant tout le programme », ce qui est faux pour une `String` créée dans la fonction. Ça ne compilera pas mieux.
 - Renvoyer `String` au lieu de `&String` : c'est la bonne. La fonction crée la valeur, elle la **donne** à l'appelant, qui en devient propriétaire.
 
 Retiens-le comme ça : une fonction qui fabrique une valeur la renvoie par valeur.
@@ -95,16 +95,16 @@ error[E0507]: cannot move out of index of `Vec<String>`
   |                ^^^^^^^^ move occurs because value has type `String`, which does not implement the `Copy` trait
 ```
 
-En JS, `const next = queue[0]` copie une référence, sans conséquence. En Rust, `let next = queue[0]` essaie de **déplacer** la String hors de la liste. Ça pose deux problèmes. La fonction n'a qu'un emprunt de `queue` (pas de permission O), et une liste avec un trou au milieu n'aurait pas de sens.
+En JS, `const next = queue[0]` copie une référence, sans conséquence. En Rust, `let next = queue[0]` essaie de **déplacer** la `String` hors de la liste. Ça pose deux problèmes. La fonction n'a qu'un emprunt de `queue` (pas de permission O), et une liste avec un trou au milieu n'aurait pas de sens.
 
 Le compilateur propose deux corrections :
 
-- `queue[0].clone()` : ça compile, mais copie toute la String juste pour la lire. C'est la mauvaise ici.
+- `queue[0].clone()` : ça compile, mais copie toute la `String` juste pour la lire. C'est la mauvaise ici.
 - `&queue[0]` : emprunte l'élément au lieu de le déplacer. C'est la bonne, puisqu'on veut seulement le lire.
 
 Avec un `Vec<u32>`, `queue[0]` aurait marché directement, parce qu'un `u32` est `Copy`. C'est pour les types qui ne sont pas `Copy`, comme `String`, que la question se pose.
 
-## Le .clone() réflexe
+## Le `.clone()` réflexe
 
 Dans les trois cas, `.clone()` aurait pu faire taire le compilateur. C'est tentant, et c'est la correction qu'un agent IA propose le plus souvent. Mais un clone copie la donnée, et cache la vraie question, celle de savoir qui possède quoi, et pour combien de temps.
 

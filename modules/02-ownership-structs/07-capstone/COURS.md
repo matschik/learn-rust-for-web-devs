@@ -15,7 +15,7 @@ Le sprint a une capacité en minutes et cinq cases, stockées dans un tableau de
 
 ![07 - Capstone : un sprint](cours.svg)
 
-## Option : la case peut être vide
+## `Option` : la case peut être vide
 
 En TS, une case vide serait `Task | null`, et rien ne t'empêcherait d'écrire `slot.title` sur un `null`. En Rust, il n'y a pas de `null`. À la place, une case vide est une `Option<Task>`, qui vaut :
 
@@ -42,7 +42,7 @@ if let Some(x) = maybe {
 
 `Option` a aussi de petites méthodes pratiques. `is_some()` et `is_none()` répondent à « y a-t-il quelque chose ? ».
 
-## Parcourir pour lire : &
+## Parcourir pour lire avec `&`
 
 Pour l'exemple, prenons une étagère de livres, avec des cases qui peuvent être vides :
 
@@ -71,7 +71,7 @@ impl Shelf {
 
 Le `&` devant `self.slots` est important. Sans lui, `for` essaierait de **déplacer** les livres hors du tableau, ce que `&self` n'autorise pas. Comme `slot` est une référence, `book` en est une aussi, un `&Book`. On lit, on ne prend rien.
 
-## Parcourir pour modifier : &mut
+## Parcourir pour modifier avec `&mut`
 
 Pour modifier les livres en place, il faut les emprunter **en écriture**. Donc `&mut self` sur la méthode, et `&mut self.slots` dans la boucle :
 

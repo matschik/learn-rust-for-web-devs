@@ -9,7 +9,7 @@
 - Sortir d'une `loop` avec `break` et une valeur.
 - Écrire des plages : `0..5` et `0..=5`.
 
-## if renvoie une valeur
+## `if` renvoie une valeur
 
 En TS, quand tu veux choisir une valeur selon une condition, tu prends le ternaire :
 
@@ -61,11 +61,11 @@ error[E0308]: `if` and `else` have incompatible types
 
 Le compilateur prend le type de la première branche comme référence, puis te montre la branche qui ne suit pas. En TS, tu aurais eu un `string | number` sans t'en rendre compte.
 
-## Un mot sur &'static str
+## Un mot sur `&'static str`
 
 Dans l'exercice, une fonction renvoie `&'static str`. Ça a l'air barbare, mais c'est simple. C'est le type d'un texte écrit en dur dans ton code, comme `"gel"`. Le `'static` dit que ce texte existe pendant toute la vie du programme. Tu peux donc le renvoyer sans souci. On reviendra sur ces apostrophes au module des lifetimes.
 
-## for parcourt, les plages comptent
+## `for` parcourt, les plages comptent
 
 `for` parcourt tout ce qui se parcourt, comme `for...of` en TS :
 
@@ -95,7 +95,7 @@ Les plages servent aussi à tester un intervalle. `(1..=7).contains(&day)` vaut 
 
 `while` existe aussi et marche comme en TS. Et `continue` passe au tour suivant, comme en TS.
 
-## loop et break avec une valeur
+## `loop`, et `break` avec une valeur
 
 `loop` est une boucle infinie. Tu en sors avec `break`, et c'est là que Rust a une idée que TS n'a pas. `break` peut renvoyer une valeur, qui devient la valeur de toute la boucle.
 

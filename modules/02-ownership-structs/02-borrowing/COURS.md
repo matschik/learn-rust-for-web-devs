@@ -29,7 +29,7 @@ En TS, rien de tout ça ne se voit. La fonction pourrait garder l'objet, le modi
 
 ![02 - Références et borrowing](cours.svg)
 
-## Emprunter pour modifier : &mut
+## Emprunter pour modifier : `&mut`
 
 Si la fonction doit modifier la valeur, il faut une référence mutable, `&mut T` :
 
@@ -117,18 +117,18 @@ Dans l'exercice, tu vas chercher des méthodes dans la doc de la bibliothèque s
 pub fn push_str(&mut self, string: &str)
 ```
 
-- `&mut self` : la méthode modifie la String sur laquelle tu l'appelles. Il te faut donc un accès en écriture.
+- `&mut self` : la méthode modifie la `String` sur laquelle tu l'appelles. Il te faut donc un accès en écriture.
 - `string: &str` : elle lit le texte à ajouter, sans le prendre.
 - Pas de `->` : elle ne renvoie rien, elle modifie en place.
 
-À l'inverse, `pub fn len(&self) -> usize` prend `&self`, c'est une simple lecture. La page de String liste des dizaines de méthodes. Le module `std::mem` contient aussi des outils qui travaillent sur des `&mut`, comme `swap`, qui échange deux valeurs.
+À l'inverse, `pub fn len(&self) -> usize` prend `&self`, c'est une simple lecture. La page de `String` liste des dizaines de méthodes. Le module `std::mem` contient aussi des outils qui travaillent sur des `&mut`, comme `swap`, qui échange deux valeurs.
 
 ## Teste-toi
 
 1. Une fonction a la signature `fn rename(task: &mut String)`. Qu'écris-tu à l'appel, et à quelle condition sur la variable ?
 2. Ce code compile-t-il ? `let s = String::from("a"); let r1 = &s; let r2 = &s; println!("{r1}{r2}");`
 3. Et celui-ci ? `let mut s = String::from("a"); let r = &s; s.push('b'); println!("{r}");`
-4. D'après sa signature `pub fn clear(&mut self)`, que fait `clear` à la String ?
+4. D'après sa signature `pub fn clear(&mut self)`, que fait `clear` à la `String` ?
 
 > **Réponses**
 > 1. `rename(&mut task)`, et la variable doit avoir été déclarée avec `let mut`.
@@ -148,5 +148,5 @@ pub fn push_str(&mut self, string: &str)
 Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 4.2 · References and Borrowing](https://rust-book.cs.brown.edu/ch04-02-references-and-borrowing.html) : avec ses quiz et les schémas de permissions ligne par ligne.
-- [std · String](https://doc.rust-lang.org/std/string/struct.String.html) : toutes les méthodes de String.
+- [std · String](https://doc.rust-lang.org/std/string/struct.String.html) : toutes les méthodes de `String`.
 - [std · mem::swap](https://doc.rust-lang.org/std/mem/fn.swap.html)

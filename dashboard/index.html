@@ -59,6 +59,7 @@
   .doc { overflow-wrap: anywhere; }
   .doc h2 { font-size: 19px; font-weight: 650; color: var(--text); margin: 40px 0 12px; display: flex; align-items: center; gap: 10px; }
   .doc h2 .i { color: var(--accent); }
+  .doc h2 code { font-size: 0.9em; padding: 1px 6px; }
   .doc p, .doc li { font-size: 16.5px; }
   .doc pre { background: var(--code); padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
   .doc code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 14px; }
@@ -195,7 +196,7 @@ const ICONS = {
 };
 const icon = (name) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
 const HEADING_ICONS = { "À faire": "task", "Étapes": "task", "Avant de commencer": "task", "À la fin du module": "pin", "À retenir": "pin", "Ce que tu vas apprendre": "task", "Teste-toi": "bulb", "Pour aller plus loin": "book" };
-const heading = (h) => `<h2>${HEADING_ICONS[h] ? icon(HEADING_ICONS[h]) : ""}${inline(h)}</h2>`;
+const heading = (h) => `<h2>${HEADING_ICONS[h] ? icon(HEADING_ICONS[h]) : ""}<span>${inline(h)}</span></h2>`;
 let state = null;
 let rendered = "";
 let tab = null; // "cours" | "pratique" pour l'exercice affiché

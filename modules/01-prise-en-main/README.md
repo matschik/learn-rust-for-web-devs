@@ -6,7 +6,7 @@ Tout ce qu'il te faut est dans les leçons. Si tu as envie d'aller plus loin, el
 
 ## Sommaire
 
-1. [Cargo](01-cargo/) : lancer un projet, écrire tes premières fonctions et construire du texte. *En TS : `npm init`, `export function`, les template strings.*
+1. [Hello, cargo](01-cargo/) : ton premier Hello World, puis tes premières fonctions et du texte construit avec `format!`. *En TS : `console.log`, `npm init`, les template strings.*
 2. [Variables](02-variables/) : `let` immuable par défaut, `mut` quand ça bouge, et le shadowing. *En TS : `const` partout, `let` quand ça change.*
 3. [Types numériques](03-types/) : entiers, flottants, conversions avec `as` et tableaux de taille fixe. *En TS : un seul `number` pour tout.*
 4. [Contrôle de flux](04-control-flow/) : `if` qui renvoie une valeur, `for`, `loop` et `while`. *En TS : le ternaire et `for...of`.*
@@ -23,7 +23,7 @@ Pour chaque exercice, tu lis d'abord la leçon, puis tu passes à la pratique. T
 
 Tu sauras :
 
-- créer et tester un projet avec cargo ;
+- créer, lancer et tester un projet avec cargo ;
 - déclarer des variables, et choisir quand les rendre `mut` ;
 - choisir le bon type numérique et convertir sans mauvaise surprise ;
 - écrire des fonctions et des boucles, en te servant de `if` comme d'une expression.

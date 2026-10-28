@@ -1,13 +1,54 @@
-# 01 - cargo · cours
+# 01 - Hello, cargo · cours
 
-Bonne nouvelle pour commencer : tu connais déjà npm, tsc et vitest, et cargo fait le travail des trois. Dans cette leçon, on va ouvrir un projet Rust comme tu ouvrirais un projet Node, puis tu écriras tes deux premières fonctions. Prévois un petit quart d'heure.
+Comme dans tout bon début, tu vas commencer par un Hello World. Tu verras au passage que cargo fait à lui seul le travail de npm, tsc et vitest. Ensuite, tu écriras tes deux premières fonctions. Prévois un petit quart d'heure.
 
 ## Ce que tu vas apprendre
 
+- Créer et lancer ton premier programme avec `cargo new` et `cargo run`.
 - Lancer les tests d'un projet Rust avec cargo.
 - Lire la signature d'une fonction Rust.
 - Renvoyer une valeur sans écrire `return`.
 - Construire une chaîne avec `format!`, l'équivalent des template strings.
+
+## Ton premier programme
+
+En TS, un Hello World tient en une ligne. Tu écris `console.log("Hello, world!")` dans un fichier, puis tu lances `node index.js`. En Rust, on passe par cargo dès le début. Dans un dossier à toi, en dehors de ce repo, tape :
+
+```
+cargo new hello
+cd hello
+cargo run
+```
+
+`cargo new` crée un projet complet :
+
+```
+hello/
+├── Cargo.toml     ← l'équivalent du package.json
+└── src/
+    └── main.rs    ← le point d'entrée
+```
+
+Et `src/main.rs` contient déjà ton Hello World :
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+`cargo run` compile le programme, puis le lance :
+
+```
+   Compiling hello v0.1.0 (/…/hello)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
+     Running `target/debug/hello`
+Hello, world!
+```
+
+Regarde trois choses. D'abord, `fn main()` est la fonction que Rust appelle au démarrage. Il n'y a pas de code qui s'exécute « au niveau du fichier » comme en JS. Ensuite, `println!` est ton `console.log` (on verra plus bas pourquoi il a un `!`). Enfin, cargo a produit un vrai exécutable, `target/debug/hello`, que tu peux lancer sans cargo ni runtime.
+
+Les exercices de ce repo sont un peu différents. Ce sont des bibliothèques, dans `src/lib.rs`, sans `main`. On les fait tourner avec des tests, et c'est ce qu'on voit juste après.
 
 ## Cargo, c'est npm, tsc et vitest à la fois
 
@@ -103,7 +144,7 @@ Prends le temps de lire ce message, c'est un bon exemple de ce que fait `rustc` 
 
 `return` existe quand même. On le garde pour sortir tôt d'une fonction, comme une garde en TS.
 
-## String et &str, juste ce qu'il faut pour l'instant
+## `String` et `&str`, juste ce qu'il faut pour l'instant
 
 Rust a deux types de texte là où TS n'a que `string` :
 
@@ -114,7 +155,7 @@ Un littéral comme `"Bonjour"` est un `&str`. Pour en faire une `String`, écris
 
 Pourquoi deux types ? C'est toute l'histoire de l'ownership, au module 02. Pour l'instant, retiens juste ceci : `&str` en entrée, `String` en sortie.
 
-## format!, ta template string
+## `format!`, ta template string
 
 En TS, tu construis du texte avec une template string :
 
@@ -134,19 +175,22 @@ Le `!` signale une macro, c'est-à-dire du code qui en génère d'autre à la co
 
 ## Teste-toi
 
-Avant de passer à la pratique, réponds de tête à ces trois questions.
+Avant de passer à la pratique, réponds de tête à ces quatre questions.
 
 1. Cette fonction compile-t-elle ? `fn triple(x: i32) -> i32 { x * 3; }`
 2. Que vaut `format!("{} + {}", 1, 2)` ?
 3. Tu veux une fonction qui prend un nom et renvoie un message. Quel type pour le paramètre, quel type pour le retour ?
+4. Dans ton projet `hello`, tu renommes `main` en `start`. Que dit `cargo run` ?
 
 > **Réponses**
 > 1. Non : le point-virgule fait renvoyer `()` au lieu d'un `i32`, c'est l'erreur E0308 vue plus haut.
 > 2. La `String` `"1 + 2"`. `format!` ne calcule rien, il remplace chaque `{}` par la valeur suivante.
 > 3. `&str` en entrée pour lire le nom, `String` en sortie parce que tu construis un nouveau texte.
+> 4. Il refuse de compiler, avec l'erreur E0601 : « `main` function not found ». Un programme a besoin d'un `main` pour savoir par où commencer.
 
 ## À retenir
 
+- `cargo new` crée un projet, `cargo run` le compile et le lance à partir de `fn main()`.
 - `cargo test -p <crate>` compile puis lance les tests. Une erreur de type bloque tout.
 - La dernière expression d'un bloc, sans point-virgule, est sa valeur.
 - `&str` pour lire du texte, `String` pour en renvoyer un nouveau.

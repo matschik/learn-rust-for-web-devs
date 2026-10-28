@@ -1,4 +1,4 @@
-# 01 - cargo · pratique
+# 01 - Hello, cargo · pratique
 
 Coche les étapes au fil de l'eau dans le dashboard. Le tuteur s'en sert aussi pour savoir où tu en es.
 
@@ -11,6 +11,8 @@ Coche les étapes au fil de l'eau dans le dashboard. Le tuteur s'en sert aussi p
 
 ### Pratique
 
+- [ ] En dehors de ce repo, crée un projet avec `cargo new hello` et lance-le avec `cargo run`. Tu dois voir « Hello, world! ».
+- [ ] Change le message dans `src/main.rs`, puis relance `cargo run`.
 - [ ] Ouvre `src/lib.rs` et lis les tests en bas du fichier : ils décrivent ce qui est attendu.
 - [ ] Lance `cargo test -p m01_e01_cargo` et regarde quels tests échouent.
 - [ ] Écris `greeting`. Rappel : la dernière expression d'un bloc, sans point-virgule, est sa valeur de retour.

@@ -51,7 +51,7 @@ pub fn publish() {
 }
 ```
 
-Après `send(report)`, c'est le paramètre de `send` qui possède la String. Et à la fin de `send`, elle est libérée. Si Rust te laissait lire `report` ensuite, tu lirais de la mémoire déjà rendue. C'est exactement le genre de bug que Rust interdit à la compilation.
+Après `send(report)`, c'est le paramètre de `send` qui possède la `String`. Et à la fin de `send`, elle est libérée. Si Rust te laissait lire `report` ensuite, tu lirais de la mémoire déjà rendue. C'est exactement le genre de bug que Rust interdit à la compilation.
 
 ![01 - Move](cours.svg)
 
@@ -67,8 +67,8 @@ Reprenons `publish` ligne par ligne :
 
 | Ligne | Ce qui se passe | Permissions de `report` |
 | --- | --- | --- |
-| `let report = String::from(...)` | `report` reçoit la String | R et O |
-| `send(report)` | la String est déplacée | plus rien |
+| `let report = String::from(...)` | `report` reçoit la `String` | R et O |
+| `send(report)` | la `String` est déplacée | plus rien |
 | `println!("{report}")` | il faudrait R | manquante : erreur |
 
 (Pas de W ici, parce que `report` n'est pas `mut`.)
@@ -106,7 +106,7 @@ send(report);                             // puis on déplace
 // words vaut 2, et on n'a plus besoin de report
 ```
 
-## Les nombres se copient, les String se déplacent
+## Les nombres se copient, les `String` se déplacent
 
 Tu as peut-être remarqué qu'avec des nombres, aucun souci :
 
@@ -120,7 +120,7 @@ Les types simples, dont la taille est petite et connue (`i32`, `u32`, `f64`, `bo
 
 C'est ce que dit la fin du message d'erreur, « `String`, which does not implement the `Copy` trait ».
 
-## Quand clone est la bonne réponse
+## Quand `clone` est la bonne réponse
 
 `.clone()` crée une copie complète et indépendante :
 
@@ -131,7 +131,7 @@ let backup = original.clone();   // deux String, deux propriétaires
 
 Il est légitime quand tu as besoin de **deux propriétaires**, par exemple pour stocker la même valeur à deux endroits qui vivront chacun leur vie. Il est suspect quand il sert juste à faire taire le compilateur alors qu'un réordonnancement ou un emprunt suffirait. Le tuteur te signalera ces `.clone()`-là.
 
-## Un mot sur Vec
+## Un mot sur `Vec`
 
 L'exercice utilise un `Vec<String>`, la liste qui grandit, l'équivalent d'un `string[]` en TS :
 
@@ -147,11 +147,11 @@ let ids = vec![1, 2, 3];           // vec! crée une liste directement
 
 1. Après `let a = String::from("x"); let b = a;`, peut-on lire `a` ?
 2. Après `let a = 42; let b = a;`, peut-on lire `a` ?
-3. Une fonction reçoit une `String` par valeur. Qui libère cette String, et quand ?
+3. Une fonction reçoit une `String` par valeur. Qui libère cette `String`, et quand ?
 4. Dans `list.push(name); println!("{name}");`, avec `name` une `String`, quelle erreur attends-tu, et sur quelle ligne pointe « value moved here » ?
 
 > **Réponses**
-> 1. Non. La String est déplacée dans `b`, `a` perd ses permissions R et O.
+> 1. Non. La `String` est déplacée dans `b`, `a` perd ses permissions R et O.
 > 2. Oui. Un entier est `Copy` : `b` reçoit une copie, `a` garde tout.
 > 3. La fonction, à la fin de son scope, sauf si elle la renvoie ou la déplace ailleurs.
 > 4. E0382, « borrow of moved value ». « value moved here » pointe sur `list.push(name)`.

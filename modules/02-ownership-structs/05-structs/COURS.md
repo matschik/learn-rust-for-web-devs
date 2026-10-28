@@ -44,7 +44,7 @@ Rust n'a pas d'objet littéral anonyme. Tu écris toujours `User { ... }`, et to
 
 ![05 - Structs](cours.svg)
 
-## Tout ou rien pour mut
+## Tout ou rien pour `mut`
 
 Pour modifier un champ, toute l'instance doit être `mut`. Rust ne permet pas de marquer un seul champ comme modifiable :
 
@@ -59,7 +59,7 @@ error[E0594]: cannot assign to `user.active`, as `user` is not declared as mutab
 
 La correction, tu la connais déjà, c'est `let mut user`. Et tu retrouves le modèle des permissions, puisque W s'applique à la variable entière, donc à tous ses champs.
 
-## Le champ possède sa donnée : String plutôt que &str
+## Le champ possède sa donnée : `String` plutôt que `&str`
 
 Pourquoi `email: String` et pas `email: &str` ? Parce qu'une struct qui possède ses champs est autonome. Quand elle est libérée, ses `String` le sont avec elle. Avec un `&str`, la struct emprunterait du texte qui appartient à quelqu'un d'autre, et il faudrait prouver au compilateur que ce texte vit assez longtemps. Ça demande des lifetimes, un sujet pour plus tard.
 
@@ -84,7 +84,7 @@ let user = User { email, name, active: true, login_count: 0 };
 
 Ça ne marche que si `email` et `name` ont déjà le bon type, ici `String`.
 
-## La mise à jour avec .. : le spread de Rust
+## La mise à jour avec `..`, le spread de Rust
 
 Pour créer une instance à partir d'une autre en changeant quelques champs, TS a le spread. Rust a `..` :
 
@@ -101,7 +101,7 @@ let grace = User {
 
 Deux différences avec TS. D'abord, `..ada` se met **à la fin**, et les champs écrits explicitement l'emportent. Ensuite, et c'est le plus important, `..` ne fait pas de copie : il **déplace** les champs repris.
 
-## Ce que .. déplace
+## Ce que `..` déplace
 
 Dans l'exemple, `grace` reprend `name`, `active` et `login_count` de `ada`. `active` et `login_count` sont `Copy`, donc copiés. Mais `name` est une `String`, elle est donc déplacée de `ada` vers `grace`. Du coup, `ada` est **partiellement déplacée** :
 
@@ -125,7 +125,7 @@ error[E0382]: borrow of partially moved value: `ada`
 
 C'est la règle des moves de la leçon 01, appliquée champ par champ. Si une fonction prend une struct par valeur pour en fabriquer une autre avec `..`, c'est exactement ce qu'on veut, puisque l'ancienne ne sert plus.
 
-## derive : afficher et comparer
+## `derive` : afficher et comparer
 
 Par défaut, une struct ne sait ni s'afficher ni se comparer. Tu demandes au compilateur de générer ce code avec un attribut :
 

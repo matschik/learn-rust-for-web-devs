@@ -9,7 +9,7 @@ En TS, un nombre est un `number`, point. Rust, lui, te demande de choisir s'il s
 - Éviter l'overflow quand une soustraction peut passer sous zéro.
 - Utiliser un tableau de taille fixe, `[u32; 3]`.
 
-## Un number, plein de types
+## Un `number`, plein de types
 
 Le `number` de TS est toujours un flottant 64 bits. En Rust, tu as le choix :
 
@@ -67,7 +67,7 @@ let c = (7 / 2) as f64;         // 3.0 : la division a eu lieu avant la conversi
 
 Regarde bien la dernière ligne. Si tu veux un résultat à virgule, convertis **avant** de diviser.
 
-## as peut tronquer sans prévenir
+## `as` peut tronquer sans prévenir
 
 `as` ne vérifie rien. Il convertit, quitte à perdre de l'information :
 
@@ -80,7 +80,7 @@ let wrapped = negative as u32;  // 4294967295
 
 Entre entiers et `f64`, dans le sens entier vers flottant, il n'y a pas de souci pour des valeurs courantes. Dans l'autre sens, ou vers un type plus petit, réfléchis à deux fois. Plus tard, tu verras `From` et `TryFrom`, des conversions qui refusent de perdre de l'information.
 
-## Un u32 ne devient jamais négatif
+## Un `u32` ne devient jamais négatif
 
 Si une soustraction de `u32` devrait donner un nombre négatif, Rust ne te renvoie pas une valeur bizarre. En mode debug, le programme s'arrête net :
 

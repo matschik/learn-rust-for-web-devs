@@ -44,7 +44,7 @@ println!("{host}");
 
 C'est ce qui rend la vue sûre. En C, tu pourrais vider la chaîne et garder un pointeur vers du vide. Ici, le compilateur refuse.
 
-## &str partout pour lire du texte
+## `&str` partout pour lire du texte
 
 Tu as déjà croisé `&str` dans les leçons précédentes. En fait, c'est une slice de texte. Un littéral `"Deploy"` est un `&str` qui pointe dans le binaire du programme, et `&ma_string[..]` est un `&str` qui pointe dans une `String`.
 
@@ -64,7 +64,7 @@ Avec `&String` en paramètre, le premier appel ne compilerait pas. Rust converti
 
 Et une fonction peut **renvoyer** une slice de son paramètre, comme `fn host(url: &str) -> &str`. Le résultat pointe dans le texte reçu, sans copie. Le compilateur comprend que le résultat emprunte le paramètre.
 
-## Les méthodes de str
+## Les méthodes de `str`
 
 Le type `str` a beaucoup de méthodes qui renvoient des slices, sans rien copier. Les plus utiles :
 
@@ -80,7 +80,7 @@ Le type `str` a beaucoup de méthodes qui renvoient des slices, sans rien copier
 
 Tu as remarqué les `Some(...)` ? C'est le sujet de la section suivante.
 
-## Option, en version courte
+## `Option`, en version courte
 
 Que doit renvoyer `find` quand le caractère n'est pas là ? En JS, `indexOf` renvoie `-1`, et tout le monde a déjà oublié de le tester. Rust, lui, renvoie une `Option`, qui vaut soit `Some(valeur)`, soit `None`.
 
@@ -101,7 +101,7 @@ let comma_at = match tags.find(',') {
 
 `match` est une expression, comme `if`, et chaque branche donne une valeur, du même type. `Some(i)` récupère ce qu'il y a dans la boîte et l'appelle `i`. Quand l'`Option` contient un tuple, comme avec `split_once`, tu écris `Some((a, b))`, et `_` pour une partie dont tu ne te sers pas. `Option` et `match` ont un module entier plus tard. Pour l'instant, ce motif suffit.
 
-## Les slices de listes : &[T]
+## Les slices de listes : `&[T]`
 
 Le même principe marche pour les tableaux et les `Vec`. Une `&[T]` est une vue sur une suite d'éléments :
 
@@ -140,7 +140,7 @@ Le programme panique, parce que couper au milieu d'un caractère produirait du t
 > 1. Non : `"hey"` est un `&str`, pas un `&String`. Il faut que la fonction prenne `&str`, et elle acceptera les deux.
 > 2. `Some(("a", "b:c"))` : la coupe se fait au premier `:` seulement.
 > 3. Non, erreur E0502 : `h` emprunte `s` et sert encore après le `push`.
-> 4. Oui dans les deux cas : une slice de Vec et un tableau emprunté sont tous deux des `&[u32]`.
+> 4. Oui dans les deux cas : une slice de `Vec` et un tableau emprunté sont tous deux des `&[u32]`.
 
 ## À retenir
 

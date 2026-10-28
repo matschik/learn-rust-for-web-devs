@@ -9,7 +9,7 @@ Tes structs ont des données, mais pas encore de comportement. En TS, tu écrira
 - Écrire une fonction associée, comme le constructeur `new`.
 - Construire un affichage lisible avec `format!`.
 
-## Pas de class : une struct et un impl
+## Pas de `class` : une `struct` et un `impl`
 
 Voici un petit compteur, en TS puis en Rust :
 
@@ -66,7 +66,7 @@ Ce sont exactement les emprunts et les moves des leçons précédentes, appliqu�
 
 Choisis toujours le minimum. `&self` si lire suffit, `&mut self` si tu modifies, `self` seulement si l'objet ne doit plus servir après.
 
-## Quand l'objet n'est pas mut
+## Quand l'objet n'est pas `mut`
 
 Appeler une méthode `&mut self` demande une permission W. Si la variable n'est pas `mut` :
 
@@ -85,7 +85,7 @@ error[E0596]: cannot borrow `c` as mutable, as it is not declared as mutable
 
 Rust prête l'objet en `&mut` à la méthode sans que tu l'écrives, mais il lui faut quand même le droit de le faire. Il suffit d'écrire `let mut c`.
 
-## self tout court : la méthode consomme l'objet
+## `self` tout court : la méthode consomme l'objet
 
 Une méthode qui prend `self` par valeur reçoit l'objet, comme une fonction qui reçoit une `String`. Après l'appel, l'objet est déplacé :
 
@@ -103,7 +103,7 @@ println!("{}", c.get());   // erreur E0382 : c a été déplacé dans into_label
 
 Le compilateur l'explique dans sa note, « `Counter::into_label` takes ownership of the receiver `self`, which moves `c` ». C'est utile quand l'objet se transforme en autre chose et n'a plus de raison d'exister. Par convention, ces méthodes commencent souvent par `into_`.
 
-## new n'a rien de magique
+## `new` n'a rien de magique
 
 Rust n'a pas de mot-clé `constructor`. `new` est une **fonction associée**. Elle est dans le bloc `impl`, mais ne prend pas de `self`. On l'appelle avec `::`, sur le type :
 
