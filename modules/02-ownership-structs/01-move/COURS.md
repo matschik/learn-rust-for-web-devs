@@ -1,6 +1,6 @@
 # 01 - Move · cours
 
-Bienvenue dans le module le plus important du parcours. L'ownership, c'est la manière dont Rust gère la mémoire sans garbage collector, et tout le reste du langage s'appuie dessus. Ne te presse pas : cette leçon prend vingt minutes, et c'est normal de la relire.
+Bienvenue dans le module le plus important du parcours. L'ownership, c'est la façon dont Rust gère la mémoire sans garbage collector, et tout le reste du langage s'appuie dessus. Ne te presse pas. La leçon prend une vingtaine de minutes, et c'est tout à fait normal d'avoir besoin de la relire.
 
 ## Ce que tu vas apprendre
 
@@ -20,11 +20,11 @@ archive(tags);
 tags.length;   // aucun souci, tags est toujours là
 ```
 
-Qui libère la mémoire de `tags` ? Le garbage collector, plus tard, quand plus personne ne s'en sert. C'est confortable, mais ça a un coût : des pauses imprévisibles, de la mémoire qui traîne, et des bugs quand deux bouts de code modifient le même objet sans se prévenir.
+Qui libère la mémoire de `tags` ? Le garbage collector, plus tard, quand plus personne ne s'en sert. C'est confortable, mais ça se paie en pauses imprévisibles, de la mémoire qui traîne, et des bugs quand deux bouts de code modifient le même objet sans se prévenir.
 
 ## En Rust, une valeur a un seul propriétaire
 
-Rust choisit une autre règle : chaque valeur a **un seul propriétaire**, la variable qui la détient. Quand ce propriétaire sort de son scope (la fin des accolades), la valeur est libérée immédiatement. Pas de GC, pas de pause.
+Rust fait un autre choix. Chaque valeur a **un seul propriétaire**, la variable qui la détient. Quand ce propriétaire sort de son scope (la fin des accolades), la valeur est libérée immédiatement. Pas de GC, pas de pause.
 
 ```rust
 {
@@ -87,11 +87,11 @@ error[E0382]: borrow of moved value: `report`
   |                ^^^^^^ value borrowed here after move
 ```
 
-Les trois annotations racontent l'histoire : où la variable naît, où elle est déplacée, où tu essaies de t'en servir après. Quand tu vois E0382, cherche la ligne « value moved here ».
+Les trois annotations racontent l'histoire. Tu vois où la variable naît, où elle est déplacée, où tu essaies de t'en servir après. Quand tu vois E0382, cherche la ligne « value moved here ».
 
 ## Trois façons de s'en sortir
 
-Le compilateur propose souvent `.clone()`. C'est rarement la meilleure réponse. Pose-toi d'abord la question : de quoi as-tu besoin, et à quel moment ?
+Le compilateur propose souvent `.clone()`. C'est rarement la meilleure réponse. Demande-toi d'abord de quoi tu as besoin, et à quel moment.
 
 1. **Changer l'ordre.** Si tu as besoin d'une info sur la valeur, prends-la avant de la déplacer.
 2. **Emprunter au lieu de déplacer.** Si la fonction a juste besoin de lire, elle peut prendre une référence. C'est la leçon suivante.
@@ -118,7 +118,7 @@ println!("{count}"); // ok
 
 Les types simples, dont la taille est petite et connue (`i32`, `u32`, `f64`, `bool`, `char`), implémentent le trait **`Copy`**. Ils sont copiés bit à bit, c'est gratuit, donc pas de move. Une `String`, elle, pointe vers du texte de taille variable stocké ailleurs en mémoire (sur le tas). La copier coûte quelque chose, donc Rust ne le fait jamais sans que tu le demandes.
 
-C'est ce que dit la fin du message d'erreur : « `String`, which does not implement the `Copy` trait ».
+C'est ce que dit la fin du message d'erreur, « `String`, which does not implement the `Copy` trait ».
 
 ## Quand clone est la bonne réponse
 
@@ -141,7 +141,7 @@ queue.push(String::from("a"));     // la String est déplacée dans la liste
 let ids = vec![1, 2, 3];           // vec! crée une liste directement
 ```
 
-`push` prend possession de ce que tu lui donnes : après `queue.push(s)`, la variable `s` est déplacée dans la liste.
+`push` prend possession de ce que tu lui donnes. Après `queue.push(s)`, la variable `s` est déplacée dans la liste.
 
 ## Teste-toi
 
@@ -165,7 +165,7 @@ let ids = vec![1, 2, 3];           // vec! crée une liste directement
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 4.1 · What is Ownership?](https://rust-book.cs.brown.edu/ch04-01-what-is-ownership.html) : avec ses quiz et les schémas de la pile et du tas.
 - [Erreur E0382 · use of moved value](https://doc.rust-lang.org/error_codes/E0382.html)

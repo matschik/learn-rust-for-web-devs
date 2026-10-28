@@ -1,6 +1,6 @@
 # 03 - Types numériques · cours
 
-En TS, un nombre est un `number`, et c'est tout. Rust te demande de choisir : entier ou flottant, signé ou pas, sur combien de bits. Ça paraît lourd au début, mais c'est ce qui permet au compilateur d'attraper des bugs que JS laisse passer en silence. Compte un quart d'heure.
+En TS, un nombre est un `number`, point. Rust, lui, te demande de choisir s'il s'agit d'un entier ou d'un nombre à virgule, s'il peut être négatif, et quelle taille il fait. Ça paraît lourd au début, mais c'est justement ce qui permet au compilateur d'attraper des bugs que JS laisse passer sans rien dire. Compte environ un quart d'heure.
 
 ## Ce que tu vas apprendre
 
@@ -53,7 +53,7 @@ let done: u32 = 7;
 let as_float = done as f64;    // 7.0
 ```
 
-Et une fois en `f64`, tous les opérandes doivent l'être aussi : `as_float / 2` ne compile pas, il faut écrire `as_float / 2.0`.
+Et une fois en `f64`, tous les opérandes doivent l'être aussi. `as_float / 2` ne compile pas, il faut écrire `as_float / 2.0`.
 
 ## La division entière tronque
 
@@ -89,7 +89,7 @@ thread 'main' panicked at src/main.rs:4:20:
 attempt to subtract with overflow
 ```
 
-C'est un **panic** : l'équivalent d'une exception que personne n'attrape. Les tests tournent en mode debug, donc tu le verras là.
+C'est un **panic**, l'équivalent d'une exception que personne n'attrape. Les tests tournent en mode debug, donc tu le verras là.
 
 Pour soustraire sans risque, les entiers ont des méthodes dédiées :
 
@@ -145,7 +145,7 @@ for d in durations {
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 3.2 · Data Types](https://rust-book.cs.brown.edu/ch03-02-data-types.html) : avec son quiz, surtout « Integer Overflow ».
 - [std · u32](https://doc.rust-lang.org/std/primitive.u32.html) : toutes les méthodes des entiers, dont `saturating_sub` et `checked_sub`.

@@ -1,6 +1,6 @@
 # 04 - Contrôle de flux · cours
 
-`if`, `for`, `while` : tu connais déjà tout ça en TS. Ce qui change en Rust, c'est que `if` et `loop` produisent une valeur, comme le ternaire. Une fois que ce réflexe est pris, ton code perd beaucoup de variables temporaires. Compte un quart d'heure.
+`if`, `for`, `while`, tu connais tout ça par cœur en TS. La vraie différence, c'est qu'en Rust `if` et `loop` produisent une valeur, un peu comme le ternaire. Une fois que tu as pris le pli, ton code se débarrasse de pas mal de variables temporaires. Ça se lit en un quart d'heure.
 
 ## Ce que tu vas apprendre
 
@@ -17,7 +17,7 @@ En TS, quand tu veux choisir une valeur selon une condition, tu prends le ternai
 const fee = isWeekend ? 5 : 3;
 ```
 
-En Rust, pas de ternaire : `if` fait déjà le travail, parce que c'est une expression.
+Rust n'a pas de ternaire, et il n'en a pas besoin : `if` est une expression, il fait déjà le travail.
 
 ```rust
 let fee = if is_weekend { 5 } else { 3 };
@@ -37,7 +37,7 @@ let weather = if temp < 0 {
 };
 ```
 
-Note les deux détails : pas de parenthèses autour de la condition, et des accolades obligatoires, même pour une seule ligne.
+Remarque deux petits détails. Il n'y a pas de parenthèses autour de la condition, et les accolades sont obligatoires, même pour une seule ligne.
 
 ![04 - Contrôle de flux](cours.svg)
 
@@ -63,7 +63,7 @@ Le compilateur prend le type de la première branche comme référence, puis te 
 
 ## Un mot sur &'static str
 
-Dans l'exercice, une fonction renvoie `&'static str`. Ça a l'air barbare, mais c'est simple : c'est le type d'un texte écrit en dur dans ton code, comme `"gel"`. Le `'static` dit que ce texte existe pendant toute la vie du programme. Tu peux donc le renvoyer sans souci. On reviendra sur ces apostrophes au module des lifetimes.
+Dans l'exercice, une fonction renvoie `&'static str`. Ça a l'air barbare, mais c'est simple. C'est le type d'un texte écrit en dur dans ton code, comme `"gel"`. Le `'static` dit que ce texte existe pendant toute la vie du programme. Tu peux donc le renvoyer sans souci. On reviendra sur ces apostrophes au module des lifetimes.
 
 ## for parcourt, les plages comptent
 
@@ -91,13 +91,13 @@ for day in 1..=7 {
 }
 ```
 
-Les plages servent aussi à tester un intervalle : `(1..=7).contains(&day)` vaut `true` si `day` est entre 1 et 7. Le `&` devant `day` sera expliqué au module 02, recopie-le tel quel pour l'instant.
+Les plages servent aussi à tester un intervalle. `(1..=7).contains(&day)` vaut `true` si `day` est entre 1 et 7. Le `&` devant `day` sera expliqué au module 02, recopie-le tel quel pour l'instant.
 
 `while` existe aussi et marche comme en TS. Et `continue` passe au tour suivant, comme en TS.
 
 ## loop et break avec une valeur
 
-`loop` est une boucle infinie. Tu en sors avec `break`, et c'est là que Rust a une idée que TS n'a pas : `break` peut renvoyer une valeur, qui devient la valeur de toute la boucle.
+`loop` est une boucle infinie. Tu en sors avec `break`, et c'est là que Rust a une idée que TS n'a pas. `break` peut renvoyer une valeur, qui devient la valeur de toute la boucle.
 
 ```rust
 let mut attempt = 0;
@@ -133,7 +133,7 @@ En TS, tu déclarerais une variable avant la boucle, tu l'affecterais dedans, pu
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 3.5 · Control Flow](https://rust-book.cs.brown.edu/ch03-05-control-flow.html) : avec son quiz.
 - [Rust Reference · loop expressions](https://doc.rust-lang.org/reference/expressions/loop-expr.html) : les règles exactes des boucles et des labels.

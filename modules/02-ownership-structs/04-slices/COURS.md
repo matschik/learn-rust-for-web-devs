@@ -1,6 +1,6 @@
 # 04 - Slices · cours
 
-En TS, `line.slice(0, 7)` crée une nouvelle chaîne. Rust a une meilleure idée : regarder une partie du texte **sans le copier**. C'est la slice, une référence vers un morceau de donnée. Tu vas t'en servir partout, notamment pour parser des requêtes dans tes backends. Compte vingt minutes.
+En TS, `line.slice(0, 7)` crée une nouvelle chaîne. Rust a une idée plus maline, qui consiste à regarder un morceau du texte **sans le copier**. C'est ce qu'on appelle une slice. Tu vas t'en servir partout, par exemple pour découper des requêtes dans tes backends. Compte une vingtaine de minutes.
 
 ## Ce que tu vas apprendre
 
@@ -12,7 +12,7 @@ En TS, `line.slice(0, 7)` crée une nouvelle chaîne. Rust a une meilleure idée
 
 ## Une vue, pas une copie
 
-Une slice, c'est une référence vers une partie d'une donnée. Elle contient juste deux choses : où commence le morceau, et sa longueur.
+Une slice, c'est une référence vers une partie d'une donnée. Elle retient juste deux choses, l'endroit où commence le morceau et sa longueur.
 
 ```ts
 const url = "api.taskr.dev/projects";
@@ -27,7 +27,7 @@ let path = &url[14..];     // "projects", jusqu'à la fin
 
 Aucune mémoire n'est allouée pour `host` ou `path`. Elles pointent dans `url`. Sur un serveur qui découpe des milliers de requêtes par seconde, cette différence compte.
 
-Les plages marchent comme dans la leçon sur le contrôle de flux : `[0..13]` exclut 13, `[14..]` va jusqu'au bout, `[..5]` part du début.
+Les plages marchent comme dans la leçon sur le contrôle de flux. `[0..13]` exclut 13, `[14..]` va jusqu'au bout, `[..5]` part du début.
 
 ![04 - Slices](cours.svg)
 
@@ -48,7 +48,7 @@ C'est ce qui rend la vue sûre. En C, tu pourrais vider la chaîne et garder un 
 
 Tu as déjà croisé `&str` dans les leçons précédentes. En fait, c'est une slice de texte. Un littéral `"Deploy"` est un `&str` qui pointe dans le binaire du programme, et `&ma_string[..]` est un `&str` qui pointe dans une `String`.
 
-D'où la règle : une fonction qui lit du texte prend `&str`. Elle accepte alors les deux :
+C'est pour ça qu'une fonction qui lit du texte prend `&str`. Elle accepte alors les deux :
 
 ```rust
 pub fn is_urgent(title: &str) -> bool {
@@ -62,7 +62,7 @@ is_urgent(&t);                              // une String, prêtée
 
 Avec `&String` en paramètre, le premier appel ne compilerait pas. Rust convertit automatiquement `&String` en `&str`, mais pas l'inverse.
 
-Et une fonction peut **renvoyer** une slice de son paramètre : `fn host(url: &str) -> &str`. Le résultat pointe dans le texte reçu, sans copie. Le compilateur comprend que le résultat emprunte le paramètre.
+Et une fonction peut **renvoyer** une slice de son paramètre, comme `fn host(url: &str) -> &str`. Le résultat pointe dans le texte reçu, sans copie. Le compilateur comprend que le résultat emprunte le paramètre.
 
 ## Les méthodes de str
 
@@ -76,13 +76,13 @@ Le type `str` a beaucoup de méthodes qui renvoient des slices, sans rien copier
 | `split_once(c)` | `"clé=valeur".split_once('=')` | `Some(("clé", "valeur"))` |
 | `starts_with(s)` | `"[urgent] x".starts_with("[urgent]")` | `true` |
 
-`split_whitespace()` renvoie un **itérateur** : tu peux le parcourir avec `for`, ou lui demander son premier élément avec `.next()`. Les itérateurs auront leur module plus tard.
+`split_whitespace()` renvoie un **itérateur**. Tu peux le parcourir avec `for`, ou lui demander son premier élément avec `.next()`. Les itérateurs auront leur module plus tard.
 
 Tu as remarqué les `Some(...)` ? C'est le sujet de la section suivante.
 
 ## Option, en version courte
 
-Que doit renvoyer `find` quand le caractère n'est pas là ? En JS, `indexOf` renvoie `-1`, et tout le monde a déjà oublié de le tester. Rust renvoie une `Option` : soit `Some(valeur)`, soit `None`.
+Que doit renvoyer `find` quand le caractère n'est pas là ? En JS, `indexOf` renvoie `-1`, et tout le monde a déjà oublié de le tester. Rust, lui, renvoie une `Option`, qui vaut soit `Some(valeur)`, soit `None`.
 
 ```rust
 "clé=valeur".split_once('=')   // Some(("clé", "valeur"))
@@ -99,7 +99,7 @@ let comma_at = match tags.find(',') {
 };
 ```
 
-`match` est une expression, comme `if` : chaque branche donne une valeur, du même type. `Some(i)` récupère ce qu'il y a dans la boîte et l'appelle `i`. Quand l'`Option` contient un tuple, comme avec `split_once`, tu écris `Some((a, b))`, et `_` pour une partie dont tu ne te sers pas. `Option` et `match` ont un module entier plus tard. Pour l'instant, ce motif suffit.
+`match` est une expression, comme `if`, et chaque branche donne une valeur, du même type. `Some(i)` récupère ce qu'il y a dans la boîte et l'appelle `i`. Quand l'`Option` contient un tuple, comme avec `split_once`, tu écris `Some((a, b))`, et `_` pour une partie dont tu ne te sers pas. `Option` et `match` ont un module entier plus tard. Pour l'instant, ce motif suffit.
 
 ## Les slices de listes : &[T]
 
@@ -127,7 +127,7 @@ thread 'main' panicked at src/main.rs:2:22:
 end byte index 1 is not a char boundary; it is inside 'É' (bytes 0..2 of string)
 ```
 
-Le programme panique, parce que couper au milieu d'un caractère produirait du texte invalide. La parade : n'écris pas d'index à la main sur du texte. Utilise les positions que te donnent `find` ou `split_once`, ou les méthodes comme `split_whitespace`. Elles coupent toujours au bon endroit.
+Le programme panique, parce que couper au milieu d'un caractère produirait du texte invalide. Pour l'éviter, n'écris pas d'index à la main sur du texte. Utilise les positions que te donnent `find` ou `split_once`, ou les méthodes comme `split_whitespace`. Elles coupent toujours au bon endroit.
 
 ## Teste-toi
 
@@ -152,7 +152,7 @@ Le programme panique, parce que couper au milieu d'un caractère produirait du t
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 4.4 · The Slice Type](https://rust-book.cs.brown.edu/ch04-04-slices.html) : avec ses quiz.
 - [std · str](https://doc.rust-lang.org/std/primitive.str.html) : toutes les méthodes de texte.

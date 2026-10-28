@@ -1,6 +1,6 @@
 # 01 - cargo · cours
 
-Tu connais déjà npm, tsc et vitest. Cargo fait les trois. Dans cette leçon, tu vas lire un projet Rust comme tu lirais un projet Node, puis écrire tes deux premières fonctions. Compte un quart d'heure.
+Bonne nouvelle pour commencer : tu connais déjà npm, tsc et vitest, et cargo fait le travail des trois. Dans cette leçon, on va ouvrir un projet Rust comme tu ouvrirais un projet Node, puis tu écriras tes deux premières fonctions. Prévois un petit quart d'heure.
 
 ## Ce que tu vas apprendre
 
@@ -11,7 +11,7 @@ Tu connais déjà npm, tsc et vitest. Cargo fait les trois. Dans cette leçon, t
 
 ## Cargo, c'est npm, tsc et vitest à la fois
 
-En TS, tu jongles avec plusieurs outils : npm installe, tsc compile, vitest teste. En Rust, une seule commande fait tout ça : `cargo`.
+En TS, tu jongles avec plusieurs outils. npm installe, tsc compile, vitest teste. En Rust, une seule commande fait tout ça, et c'est `cargo`.
 
 | En TS | En Rust |
 | --- | --- |
@@ -50,7 +50,7 @@ mod tests {
 
 `#[cfg(test)]` veut dire « ne compile ce bloc que pour les tests ». `assert_eq!` correspond à `expect(a).toBe(b)`.
 
-Une différence change tout : Rust compile **tout** le fichier avant de lancer le moindre test. Une seule erreur de type, même dans une fonction que personne ne teste, et rien ne tourne. C'est frustrant au début, puis tu t'y fais : ce qui compile marche déjà bien plus souvent qu'en TS.
+Il y a une différence qui change tout. Rust compile **tout** le fichier avant de lancer le moindre test. Une seule erreur de type, même dans une fonction que personne ne teste, et rien ne tourne. C'est frustrant au début, puis tu t'y fais, parce que ce qui compile marche déjà bien plus souvent qu'en TS.
 
 ## Lire une fonction Rust quand on vient de TS
 
@@ -112,7 +112,7 @@ Rust a deux types de texte là où TS n'a que `string` :
 
 Un littéral comme `"Bonjour"` est un `&str`. Pour en faire une `String`, écris `"Bonjour".to_string()` ou `String::from("Bonjour")`.
 
-Pourquoi deux types ? C'est toute l'histoire de l'ownership, au module 02. Pour l'instant, retiens la règle : `&str` en entrée, `String` en sortie.
+Pourquoi deux types ? C'est toute l'histoire de l'ownership, au module 02. Pour l'instant, retiens juste ceci : `&str` en entrée, `String` en sortie.
 
 ## format!, ta template string
 
@@ -130,7 +130,7 @@ let label = format!("{n} tâches restantes");     // "3 tâches restantes"
 let ratio = format!("{} sur {}", 2, n);          // "2 sur 3"
 ```
 
-Le `!` signale une macro : du code qui en génère d'autre à la compilation. `println!` et `assert_eq!` en sont aussi. Pas besoin d'en savoir plus pour l'instant.
+Le `!` signale une macro, c'est-à-dire du code qui en génère d'autre à la compilation. `println!` et `assert_eq!` en sont aussi. Pas besoin d'en savoir plus pour l'instant.
 
 ## Teste-toi
 
@@ -154,7 +154,7 @@ Avant de passer à la pratique, réponds de tête à ces trois questions.
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 1.3 · Hello, Cargo!](https://rust-book.cs.brown.edu/ch01-03-hello-cargo.html) : avec son quiz.
 - [Rust Book 3.3 · Functions](https://rust-book.cs.brown.edu/ch03-03-how-functions-work.html) : la partie « Functions with Return Values ».

@@ -1,6 +1,6 @@
 # 06 - Méthodes · cours
 
-Tu as des structs. Il leur manque du comportement : en TS, tu écrirais une `class`. Rust n'a pas de classes. Il sépare la donnée, dans la `struct`, et le comportement, dans un bloc `impl`. Et le premier paramètre de chaque méthode te dit exactement ce qu'elle fait de l'objet, grâce à tout ce que tu sais sur l'ownership. Compte un quart d'heure.
+Tes structs ont des données, mais pas encore de comportement. En TS, tu écrirais une `class`. Rust n'a pas de classes, il range la donnée dans la `struct` et le comportement dans un bloc `impl`. Et grâce à tout ce que tu sais déjà sur l'ownership, la signature de chaque méthode te dira exactement ce qu'elle fait de l'objet. Ça se lit en un quart d'heure.
 
 ## Ce que tu vas apprendre
 
@@ -64,7 +64,7 @@ C'est la partie la plus importante. Le premier paramètre d'une méthode, c'est 
 
 Ce sont exactement les emprunts et les moves des leçons précédentes, appliqués à l'objet sur lequel tu appelles la méthode. En TS, n'importe quelle méthode peut modifier `this` sans que l'appelant le sache. En Rust, la signature le dit, et le compilateur le vérifie.
 
-Choisis toujours le minimum : `&self` si lire suffit, `&mut self` si tu modifies, `self` seulement si l'objet ne doit plus servir après.
+Choisis toujours le minimum. `&self` si lire suffit, `&mut self` si tu modifies, `self` seulement si l'objet ne doit plus servir après.
 
 ## Quand l'objet n'est pas mut
 
@@ -83,7 +83,7 @@ error[E0596]: cannot borrow `c` as mutable, as it is not declared as mutable
    |     ^ cannot borrow as mutable
 ```
 
-Rust prête l'objet en `&mut` à la méthode sans que tu l'écrives, mais il lui faut quand même le droit de le faire. La correction : `let mut c`.
+Rust prête l'objet en `&mut` à la méthode sans que tu l'écrives, mais il lui faut quand même le droit de le faire. Il suffit d'écrire `let mut c`.
 
 ## self tout court : la méthode consomme l'objet
 
@@ -101,11 +101,11 @@ let label = c.into_label();
 println!("{}", c.get());   // erreur E0382 : c a été déplacé dans into_label
 ```
 
-Le compilateur l'explique dans sa note : « `Counter::into_label` takes ownership of the receiver `self`, which moves `c` ». C'est utile quand l'objet se transforme en autre chose et n'a plus de raison d'exister. Par convention, ces méthodes commencent souvent par `into_`.
+Le compilateur l'explique dans sa note, « `Counter::into_label` takes ownership of the receiver `self`, which moves `c` ». C'est utile quand l'objet se transforme en autre chose et n'a plus de raison d'exister. Par convention, ces méthodes commencent souvent par `into_`.
 
 ## new n'a rien de magique
 
-Rust n'a pas de mot-clé `constructor`. `new` est une **fonction associée** : elle est dans le bloc `impl`, mais ne prend pas de `self`. On l'appelle avec `::`, sur le type :
+Rust n'a pas de mot-clé `constructor`. `new` est une **fonction associée**. Elle est dans le bloc `impl`, mais ne prend pas de `self`. On l'appelle avec `::`, sur le type :
 
 ```rust
 let c = Counter::new("visites");   // comme une méthode static en TS
@@ -127,7 +127,7 @@ impl Counter {
 // Counter "visites" à 120 : "🔥 visites : 120"
 ```
 
-Et pour tester un texte « vide ou fait seulement d'espaces », `str` a ce qu'il faut : `trim()` enlève les espaces autour, `is_empty()` dit si le résultat est vide.
+Et pour tester un texte « vide ou fait seulement d'espaces », `str` a ce qu'il faut. `trim()` enlève les espaces autour, `is_empty()` dit si le résultat est vide.
 
 ## Teste-toi
 
@@ -151,7 +151,7 @@ Et pour tester un texte « vide ou fait seulement d'espaces », `str` a ce qu'il
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 5.3 · Methods](https://rust-book.cs.brown.edu/ch05-03-method-syntax.html) : avec ses quiz sur les méthodes et l'ownership.
 - [std · str::trim](https://doc.rust-lang.org/std/primitive.str.html#method.trim)

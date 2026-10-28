@@ -1,6 +1,6 @@
 # 07 - Capstone : un sprint · cours
 
-Dernier exercice du module : tu vas écrire une petite struct métier complète, un sprint qui contient jusqu'à cinq tâches. Il reprend tout le module, moves, emprunts, structs et méthodes, et ajoute un seul nouvel outil : `Option`, pour les cases vides. Cette leçon le présente, puis montre comment parcourir un tableau pour lire ou pour modifier. Compte vingt minutes.
+Te voilà au dernier exercice du module ! Tu vas écrire une petite struct métier complète, un sprint qui peut contenir jusqu'à cinq tâches. Il mobilise tout ce que tu as vu, des moves aux méthodes, et n'ajoute qu'un seul nouvel outil, `Option`, pour représenter une case vide. La leçon te présente cet outil, puis montre comment parcourir un tableau pour le lire ou le modifier. Compte une vingtaine de minutes.
 
 ## Ce que tu vas apprendre
 
@@ -11,7 +11,7 @@ Dernier exercice du module : tu vas écrire une petite struct métier complète,
 
 ## Le sprint en une phrase
 
-Le sprint a une capacité en minutes et cinq cases, stockées dans un tableau de taille fixe : `[Option<Task>; 5]`. Chaque case contient soit une tâche, soit rien. La struct `Task` est déjà écrite pour toi, c'est celle de l'exercice précédent.
+Le sprint a une capacité en minutes et cinq cases, stockées dans un tableau de taille fixe, `[Option<Task>; 5]`. Chaque case contient soit une tâche, soit rien. La struct `Task` est déjà écrite pour toi, c'est celle de l'exercice précédent.
 
 ![07 - Capstone : un sprint](cours.svg)
 
@@ -22,7 +22,7 @@ En TS, une case vide serait `Task | null`, et rien ne t'empêcherait d'écrire `
 - `Some(task)` : il y a une tâche dedans ;
 - `None` : la case est vide.
 
-Tu as déjà croisé `Option` dans la leçon sur les slices, avec `find` et `split_once`. La règle est la même : pour atteindre la tâche, tu dois d'abord vérifier qu'elle est là. Le compilateur ne te laisse pas l'oublier.
+Tu as déjà croisé `Option` dans la leçon sur les slices, avec `find` et `split_once`. C'est la même idée. Pour atteindre la tâche, tu dois d'abord vérifier qu'elle est là. Le compilateur ne te laisse pas l'oublier.
 
 ```rust
 let maybe: Option<u32> = None;
@@ -40,7 +40,7 @@ if let Some(x) = maybe {
 }
 ```
 
-`Option` a aussi de petites méthodes pratiques : `is_some()` et `is_none()` répondent à « y a-t-il quelque chose ? ».
+`Option` a aussi de petites méthodes pratiques. `is_some()` et `is_none()` répondent à « y a-t-il quelque chose ? ».
 
 ## Parcourir pour lire : &
 
@@ -69,7 +69,7 @@ impl Shelf {
 }
 ```
 
-Le `&` devant `self.slots` est important. Sans lui, `for` essaierait de **déplacer** les livres hors du tableau, ce que `&self` n'autorise pas. Comme `slot` est une référence, `book` en est une aussi : `&Book`. On lit, on ne prend rien.
+Le `&` devant `self.slots` est important. Sans lui, `for` essaierait de **déplacer** les livres hors du tableau, ce que `&self` n'autorise pas. Comme `slot` est une référence, `book` en est une aussi, un `&Book`. On lit, on ne prend rien.
 
 ## Parcourir pour modifier : &mut
 
@@ -100,7 +100,7 @@ Tu peux aussi écrire `self.slots.iter()` et `self.slots.iter_mut()`, c'est la m
 
 ## Remplir une case vide
 
-Pour ranger une valeur dans une case, tu affectes une nouvelle `Option` à la case : `self.slots[i] = Some(book)`. Et pour trouver la première case libre, tu combines un parcours et `is_none()`. `enumerate()` te donne l'index en plus de la case :
+Pour ranger une valeur dans une case, tu affectes une nouvelle `Option` à la case, avec `self.slots[i] = Some(book)`. Et pour trouver la première case libre, tu combines un parcours et `is_none()`. `enumerate()` te donne l'index en plus de la case :
 
 ```rust
 for (i, slot) in self.slots.iter().enumerate() {
@@ -110,9 +110,9 @@ for (i, slot) in self.slots.iter().enumerate() {
 }
 ```
 
-Une fonction peut sortir de la boucle dès qu'elle a trouvé, avec `return`. C'est l'usage normal de `return` en Rust : sortir tôt.
+Une fonction peut sortir de la boucle dès qu'elle a trouvé, avec `return`. C'est l'usage normal de `return` en Rust, sortir tôt.
 
-Un point d'ownership à garder en tête : une méthode qui prend un livre par valeur, `fn add(&mut self, book: Book)`, le reçoit **dans tous les cas**. Si elle refuse de le ranger, le livre est simplement libéré à la fin de la méthode. L'appelant ne le récupère pas.
+Garde un point d'ownership en tête. Une méthode qui prend un livre par valeur, `fn add(&mut self, book: Book)`, le reçoit **dans tous les cas**. Si elle refuse de le ranger, le livre est simplement libéré à la fin de la méthode. L'appelant ne le récupère pas.
 
 ## Un pourcentage avec des entiers
 
@@ -123,7 +123,7 @@ Pour calculer un pourcentage avec des `u32`, l'ordre des opérations compte, à 
 30 * 100 / 70     // 42 : on multiplie d'abord, puis on divise
 ```
 
-Multiplie d'abord, divise ensuite. Et pense au cas où le dénominateur vaut 0 : une division entière par zéro fait paniquer.
+Multiplie d'abord, divise ensuite. Et pense au cas où le dénominateur vaut 0, car une division entière par zéro fait paniquer.
 
 ## Teste-toi
 
@@ -148,7 +148,7 @@ Multiplie d'abord, divise ensuite. Et pense au cas où le dénominateur vaut 0 :
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 6.3 · if let](https://rust-book.cs.brown.edu/ch06-03-if-let.html) : `if let` en détail, en avance sur le module 03.
 - [std · Option](https://doc.rust-lang.org/std/option/enum.Option.html) : toutes les méthodes d'`Option`.

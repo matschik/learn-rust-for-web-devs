@@ -1,6 +1,6 @@
 # 02 - Références et borrowing · cours
 
-Dans la leçon précédente, passer une `String` à une fonction la faisait disparaître. Pas très pratique quand la fonction veut juste la lire. La solution, c'est l'**emprunt** (borrow) : tu prêtes la valeur, et tu la récupères après. Compte vingt minutes.
+Dans la leçon précédente, passer une `String` à une fonction la faisait disparaître. Pas très pratique quand la fonction veut juste la lire ! Heureusement, Rust te permet de la prêter. On appelle ça un **emprunt** (borrow), et tu récupères ta valeur juste après. Compte une vingtaine de minutes.
 
 ## Ce que tu vas apprendre
 
@@ -23,9 +23,9 @@ let n = count_words(&note);   // on prête note
 println!("{note}");           // note est toujours là
 ```
 
-Deux choses à noter. La fonction annonce dans sa signature qu'elle veut juste lire : `&String` et pas `String`. Et l'appelant l'écrit aussi, avec `&note`. Tu vois à l'appel que la valeur est seulement prêtée.
+Remarque deux choses. La fonction annonce dans sa signature qu'elle veut juste lire, avec `&String` et pas `String`. Et l'appelant l'écrit aussi, avec `&note`. Tu vois à l'appel que la valeur est seulement prêtée.
 
-En TS, rien de tout ça ne se voit : la fonction pourrait garder l'objet, le modifier, le stocker. Ici, la signature est un contrat.
+En TS, rien de tout ça ne se voit. La fonction pourrait garder l'objet, le modifier, le stocker. Ici, la signature est un contrat.
 
 ![02 - Références et borrowing](cours.svg)
 
@@ -79,7 +79,7 @@ error[E0499]: cannot borrow `note` as mutable more than once at a time
    |     - first borrow later used here
 ```
 
-Pourquoi si strict ? Parce que c'est la source d'une famille entière de bugs : une liste qu'on modifie pendant qu'on la parcourt, deux requêtes qui écrivent dans le même objet, un cache qui change sous tes pieds. En TS, tu les trouves en prod. En Rust, ils ne compilent pas.
+Pourquoi si strict ? Parce que c'est la source d'une famille entière de bugs. Pense à une liste qu'on modifie pendant qu'on la parcourt, deux requêtes qui écrivent dans le même objet, un cache qui change sous tes pieds. En TS, tu les trouves en prod. En Rust, ils ne compilent pas.
 
 ## Les permissions pendant un emprunt
 
@@ -92,11 +92,11 @@ Reprenons le modèle R, W, O de la leçon précédente. Quand tu crées une réf
 | `println!("{r}");` | R W O, rendues après ce dernier usage de `r` | `r` n'existe plus |
 | `note.push_str("!");` | R W O | |
 
-Pendant que `r` existe, `note` garde le droit de lire, mais perd W et O. Logique : si `note` pouvait changer ou être libérée, `r` pointerait sur une donnée périmée.
+Pendant que `r` existe, `note` garde le droit de lire, mais perd W et O. C'est logique, car si `note` pouvait changer ou être libérée, `r` pointerait sur une donnée périmée.
 
-Avec `&mut`, c'est encore plus net : le propriétaire perd **tout**, même R, tant que la référence mutable est utilisée. L'emprunteur a l'exclusivité.
+Avec `&mut`, c'est encore plus net. Le propriétaire perd **tout**, même R, tant que la référence mutable est utilisée. L'emprunteur a l'exclusivité.
 
-Le point clé : les permissions reviennent dès le **dernier usage** de la référence, pas à la fin du bloc. C'est pour ça que l'exemple ci-dessus compile.
+Retiens surtout que les permissions reviennent dès le **dernier usage** de la référence, pas à la fin du bloc. C'est pour ça que l'exemple ci-dessus compile.
 
 ## Ce qu'on fait avec une référence
 
@@ -121,7 +121,7 @@ pub fn push_str(&mut self, string: &str)
 - `string: &str` : elle lit le texte à ajouter, sans le prendre.
 - Pas de `->` : elle ne renvoie rien, elle modifie en place.
 
-À l'inverse, `pub fn len(&self) -> usize` prend `&self` : simple lecture. La page de String liste des dizaines de méthodes. Le module `std::mem` contient aussi des outils qui travaillent sur des `&mut`, comme `swap`, qui échange deux valeurs.
+À l'inverse, `pub fn len(&self) -> usize` prend `&self`, c'est une simple lecture. La page de String liste des dizaines de méthodes. Le module `std::mem` contient aussi des outils qui travaillent sur des `&mut`, comme `swap`, qui échange deux valeurs.
 
 ## Teste-toi
 
@@ -145,7 +145,7 @@ pub fn push_str(&mut self, string: &str)
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 4.2 · References and Borrowing](https://rust-book.cs.brown.edu/ch04-02-references-and-borrowing.html) : avec ses quiz et les schémas de permissions ligne par ligne.
 - [std · String](https://doc.rust-lang.org/std/string/struct.String.html) : toutes les méthodes de String.

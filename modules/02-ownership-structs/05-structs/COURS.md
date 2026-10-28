@@ -1,6 +1,6 @@
 # 05 - Structs · cours
 
-Jusqu'ici, tu as manipulé des valeurs isolées. Pour modéliser un utilisateur ou une tâche, il te faut un type qui regroupe plusieurs champs : la `struct`. C'est l'`interface` de TS, avec une différence de taille : en Rust, la struct est à la fois le type **et** la donnée. Compte un quart d'heure.
+Jusqu'ici, tu as manipulé des valeurs isolées. Pour décrire un utilisateur ou une tâche, il te faut un type qui regroupe plusieurs champs, et en Rust, c'est la `struct`. Elle ressemble beaucoup à une `interface` TS, à une grosse différence près : en Rust, la struct est à la fois le type **et** la donnée. Prévois un quart d'heure.
 
 ## Ce que tu vas apprendre
 
@@ -40,7 +40,7 @@ let ada = User {
 };
 ```
 
-Pas d'objet littéral anonyme en Rust : tu écris toujours `User { ... }`, et tous les champs doivent être remplis. On lit un champ avec un point, `ada.email`, comme en TS. Les noms suivent la convention Rust, en `snake_case`.
+Rust n'a pas d'objet littéral anonyme. Tu écris toujours `User { ... }`, et tous les champs doivent être remplis. On lit un champ avec un point, `ada.email`, comme en TS. Les noms suivent la convention Rust, en `snake_case`.
 
 ![05 - Structs](cours.svg)
 
@@ -57,7 +57,7 @@ user.active = false;
 error[E0594]: cannot assign to `user.active`, as `user` is not declared as mutable
 ```
 
-La correction est celle que tu connais : `let mut user`. Tu retrouves le modèle des permissions : W s'applique à la variable entière, donc à tous ses champs.
+La correction, tu la connais déjà, c'est `let mut user`. Et tu retrouves le modèle des permissions, puisque W s'applique à la variable entière, donc à tous ses champs.
 
 ## Le champ possède sa donnée : String plutôt que &str
 
@@ -103,7 +103,7 @@ Deux différences avec TS. D'abord, `..ada` se met **à la fin**, et les champs 
 
 ## Ce que .. déplace
 
-Dans l'exemple, `grace` reprend `name`, `active` et `login_count` de `ada`. `active` et `login_count` sont `Copy`, donc copiés. Mais `name` est une `String` : elle est déplacée de `ada` vers `grace`. Résultat, `ada` est **partiellement déplacée** :
+Dans l'exemple, `grace` reprend `name`, `active` et `login_count` de `ada`. `active` et `login_count` sont `Copy`, donc copiés. Mais `name` est une `String`, elle est donc déplacée de `ada` vers `grace`. Du coup, `ada` est **partiellement déplacée** :
 
 ```rust
 println!("{}", ada.email);    // ok : email n'a pas été repris
@@ -123,7 +123,7 @@ error[E0382]: borrow of partially moved value: `ada`
   = note: partial move occurs because `ada.name` has type `String`, which does not implement the `Copy` trait
 ```
 
-C'est la règle des moves de la leçon 01, appliquée champ par champ. Si une fonction prend une struct par valeur pour en fabriquer une autre avec `..`, c'est exactement ce qu'on veut : l'ancienne n'a plus d'utilité.
+C'est la règle des moves de la leçon 01, appliquée champ par champ. Si une fonction prend une struct par valeur pour en fabriquer une autre avec `..`, c'est exactement ce qu'on veut, puisque l'ancienne ne sert plus.
 
 ## derive : afficher et comparer
 
@@ -137,7 +137,7 @@ struct User { /* ... */ }
 - `Debug` permet `println!("{:?}", user)`, qui affiche `User { email: "grace@taskr.dev", name: "Ada", active: true, login_count: 0 }`. Avec `{:#?}`, tu obtiens une version sur plusieurs lignes.
 - `PartialEq` permet `==` entre deux `User`, champ par champ.
 
-Les deux ensemble rendent possible `assert_eq!` sur des structs dans les tests : il compare avec `==`, et affiche les deux valeurs avec `Debug` si elles diffèrent.
+Les deux ensemble rendent possible `assert_eq!` sur des structs dans les tests. Il compare avec `==`, et affiche les deux valeurs avec `Debug` si elles diffèrent.
 
 En TS, `===` sur deux objets compare les références. En Rust, `==` avec `PartialEq` compare le contenu.
 
@@ -164,7 +164,7 @@ En TS, `===` sur deux objets compare les références. En Rust, `==` avec `Parti
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 5.1 · Defining and Instantiating Structs](https://rust-book.cs.brown.edu/ch05-01-defining-structs.html) : avec ses quiz, dont un sur les permissions des champs.
 - [Rust Book 5.2 · An Example Program Using Structs](https://rust-book.cs.brown.edu/ch05-02-example-structs.html) : `#[derive(Debug)]` en action.

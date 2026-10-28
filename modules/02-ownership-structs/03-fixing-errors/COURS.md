@@ -1,6 +1,6 @@
 # 03 - Corriger les erreurs d'ownership · cours
 
-Tu connais maintenant les moves et les emprunts. Cette leçon passe à la pratique du quotidien : trois erreurs que tu croiseras toutes les semaines, et comment les corriger **bien**. Car chacune a une correction qui compile mais qui est mauvaise, et une qui règle le vrai problème. Compte vingt minutes.
+Maintenant que tu connais les moves et les emprunts, on passe à ce que tu vas vivre tous les jours. Cette leçon prend trois erreurs que tu croiseras sans arrêt, et montre comment les corriger **bien**. Pour chacune, il existe une correction qui compile mais qui cache le problème, et une autre qui le règle vraiment. Compte une vingtaine de minutes.
 
 ## Ce que tu vas apprendre
 
@@ -48,7 +48,7 @@ Le message `help` propose deux pistes :
 - `&'static String` : c'est la mauvaise. `'static` veut dire « vit pendant tout le programme », ce qui est faux pour une String créée dans la fonction. Ça ne compilera pas mieux.
 - Renvoyer `String` au lieu de `&String` : c'est la bonne. La fonction crée la valeur, elle la **donne** à l'appelant, qui en devient propriétaire.
 
-Règle simple : une fonction qui fabrique une valeur la renvoie par valeur.
+Retiens-le comme ça : une fonction qui fabrique une valeur la renvoie par valeur.
 
 ## E0502 : lire et écrire en même temps
 
@@ -72,11 +72,11 @@ error[E0502]: cannot borrow `*scores` as mutable because it is also borrowed as 
   |     ----- immutable borrow later used here
 ```
 
-La méthode : `push` a besoin de W sur `scores`. Mais à la ligne 2, `best` emprunte en lecture un élément de la liste, et cet emprunt est encore utilisé à la ligne 4. Pendant ce temps, `scores` n'a que R.
+Raisonne avec les permissions. `push` a besoin de W sur `scores`. Mais à la ligne 2, `best` emprunte en lecture un élément de la liste, et cet emprunt est encore utilisé à la ligne 4. Pendant ce temps, `scores` n'a que R.
 
 Ce n'est pas du zèle. Un `Vec` range ses éléments dans un bloc de mémoire. Quand tu fais `push` et que le bloc est plein, le `Vec` en alloue un plus grand ailleurs et y déménage tout. `best` pointerait alors vers l'ancien emplacement, libéré. En C++, c'est un crash classique. En JS, le GC te protège, mais tu peux quand même lire un état périmé.
 
-La bonne correction : fais en sorte que l'emprunt soit terminé avant la modification. Demande-toi ce dont tu as vraiment besoin après le `push`. Si c'est une petite valeur `Copy`, comme un nombre, tu peux la calculer avant et garder ce nombre plutôt qu'une référence.
+Pour bien corriger, fais en sorte que l'emprunt soit terminé avant la modification. Demande-toi ce dont tu as vraiment besoin après le `push`. Si c'est une petite valeur `Copy`, comme un nombre, tu peux la calculer avant et garder ce nombre plutôt qu'une référence.
 
 ## E0507 : sortir une valeur d'une collection empruntée
 
@@ -95,7 +95,7 @@ error[E0507]: cannot move out of index of `Vec<String>`
   |                ^^^^^^^^ move occurs because value has type `String`, which does not implement the `Copy` trait
 ```
 
-En JS, `const next = queue[0]` copie une référence, sans conséquence. En Rust, `let next = queue[0]` essaie de **déplacer** la String hors de la liste. Deux problèmes : la fonction n'a qu'un emprunt de `queue` (pas de permission O), et une liste avec un trou au milieu n'aurait pas de sens.
+En JS, `const next = queue[0]` copie une référence, sans conséquence. En Rust, `let next = queue[0]` essaie de **déplacer** la String hors de la liste. Ça pose deux problèmes. La fonction n'a qu'un emprunt de `queue` (pas de permission O), et une liste avec un trou au milieu n'aurait pas de sens.
 
 Le compilateur propose deux corrections :
 
@@ -106,7 +106,7 @@ Avec un `Vec<u32>`, `queue[0]` aurait marché directement, parce qu'un `u32` est
 
 ## Le .clone() réflexe
 
-Dans les trois cas, `.clone()` aurait pu faire taire le compilateur. C'est tentant, et c'est la correction qu'un agent IA propose le plus souvent. Mais un clone copie la donnée, et masque la vraie question : qui possède quoi, et pour combien de temps ?
+Dans les trois cas, `.clone()` aurait pu faire taire le compilateur. C'est tentant, et c'est la correction qu'un agent IA propose le plus souvent. Mais un clone copie la donnée, et cache la vraie question, celle de savoir qui possède quoi, et pour combien de temps.
 
 Avant d'écrire `.clone()`, demande-toi si tu as vraiment besoin de **deux valeurs indépendantes**. Si la réponse est « non, je veux juste lire », il te faut un emprunt.
 
@@ -131,7 +131,7 @@ Avant d'écrire `.clone()`, demande-toi si tu as vraiment besoin de **deux valeu
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 4.3 · Fixing Ownership Errors](https://rust-book.cs.brown.edu/ch04-03-fixing-ownership-errors.html) : le chapitre que la version Brown a ajouté, avec beaucoup d'autres cas.
 - [Erreur E0106 · missing lifetime specifier](https://doc.rust-lang.org/error_codes/E0106.html)

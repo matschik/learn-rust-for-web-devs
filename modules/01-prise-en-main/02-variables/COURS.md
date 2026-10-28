@@ -1,6 +1,6 @@
 # 02 - Variables · cours
 
-En TS, tu choisis entre `const` et `let`. Rust fait le même choix, mais à l'envers : tout est constant par défaut, et c'est la mutation que tu dois demander. Cette leçon prend une dizaine de minutes, et l'exercice qui suit ne compile pas au départ : c'est voulu.
+En TS, tu choisis entre `const` et `let`. Rust fait le même choix, mais dans l'autre sens : tout est constant par défaut, et c'est quand tu veux modifier une variable que tu dois le dire. Une dizaine de minutes de lecture suffit. Petit avertissement, l'exercice qui suit ne compile pas au départ, et c'est fait exprès.
 
 ## Ce que tu vas apprendre
 
@@ -62,7 +62,7 @@ Lis-le de haut en bas :
 - Les `^^^^^` pointent vers l'endroit où ça casse, ici l'affectation.
 - Le bloc `help` propose une correction, avec des `+++` sous ce qu'il faut ajouter.
 
-Ici, la proposition est la bonne. Ce ne sera pas toujours le cas : le compilateur propose la correction la plus simple, pas forcément celle que tu voulais. Lis toujours la cause avant d'appliquer le `help`.
+Ici, la proposition est la bonne. Ce ne sera pas toujours le cas, car le compilateur propose la correction la plus simple, pas forcément celle que tu voulais. Lis toujours la cause avant d'appliquer le `help`.
 
 ## Le shadowing : un nouveau let avec le même nom
 
@@ -74,7 +74,7 @@ let input = input.trim();        // toujours du texte : "42"
 let input = input.len();         // maintenant un nombre : 2
 ```
 
-Ce n'est pas une mutation. Chaque `let` crée une **nouvelle** variable, qui peut même changer de type. C'est pratique quand une valeur passe par plusieurs étapes de nettoyage : tu gardes un seul nom au lieu d'inventer `rawInput`, `trimmedInput`, `inputLength`.
+Ce n'est pas une mutation. Chaque `let` crée une **nouvelle** variable, qui peut même changer de type. C'est pratique quand une valeur passe par plusieurs étapes de nettoyage. Tu gardes un seul nom au lieu d'inventer `rawInput`, `trimmedInput`, `inputLength`.
 
 En TS, `const` interdit la redéclaration dans le même scope. Le shadowing n'a pas d'équivalent direct.
 
@@ -119,7 +119,7 @@ Pour passer d'un texte à un nombre, il faut une opération qui produit ce nombr
 
 ## Pour aller plus loin
 
-Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+Tu as déjà tout ce qu'il faut pour l'exercice. Si tu as envie de creuser, voici quelques lectures, en anglais et complètement facultatives.
 
 - [Rust Book 3.1 · Variables and Mutability](https://rust-book.cs.brown.edu/ch03-01-variables-and-mutability.html) : avec son quiz, shadowing compris.
 - [Erreur E0384 · cannot assign twice to immutable variable](https://doc.rust-lang.org/error_codes/E0384.html)
