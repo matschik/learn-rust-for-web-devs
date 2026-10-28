@@ -15,6 +15,7 @@
     --ok: #15803d; --ok-soft: #dcfce7; --warn: #a16207; --warn-soft: #fef3c7;
     --err: #b91c1c; --err-soft: #fee2e2; --todo-soft: #f1efeb;
     --code: #f4f1ec; --shadow: 0 1px 2px rgba(31, 29, 26, .04), 0 4px 16px rgba(31, 29, 26, .05);
+    --hl-k: #b8430f; --hl-s: #3f7a2f; --hl-c: #8a8073; --hl-n: #9a5b00; --hl-t: #2a6f8f; --hl-m: #8b3fa8;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -23,6 +24,7 @@
       --ok: #4ade80; --ok-soft: #14301f; --warn: #facc15; --warn-soft: #352c0e;
       --err: #f87171; --err-soft: #3a1818; --todo-soft: #262421;
       --code: #24221f; --shadow: none;
+      --hl-k: #f59a62; --hl-s: #9ad3a8; --hl-c: #8b8173; --hl-n: #f2c46d; --hl-t: #7cc4e0; --hl-m: #d6a3f0;
     }
   }
   * { box-sizing: border-box; }
@@ -61,6 +63,9 @@
   .doc pre { background: var(--code); padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
   .doc code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 14px; }
   .doc pre code { background: none; padding: 0; }
+  .hl-k { color: var(--hl-k); font-weight: 600; } .hl-s { color: var(--hl-s); } .hl-c { color: var(--hl-c); font-style: italic; }
+  .hl-n { color: var(--hl-n); } .hl-t { color: var(--hl-t); } .hl-m { color: var(--hl-m); } .hl-a { color: var(--muted); }
+  .hl-err { color: var(--err); font-weight: 600; } .hl-help { color: var(--ok); font-weight: 600; } .hl-dim { color: var(--muted); }
   .doc table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; font-size: 14px; }
   .doc th, .doc td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; }
   .doc th { color: var(--muted); font-weight: 600; }
@@ -203,6 +208,47 @@ function inline(s) {
     .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
 }
 
+// Coloration minimale pour les blocs ```rust et ```ts, et pour les messages de rustc.
+const KEYWORDS = {
+  rust: "as break const continue crate else enum false fn for if impl in let loop match mod move mut pub ref return self Self static struct super trait true type unsafe use where while dyn async await",
+  ts: "as async await break class const continue else export extends false for from function if implements import in interface let new null of private public readonly return static this true type undefined var while",
+};
+const TYPES = /^(i8|i16|i32|i64|i128|isize|u8|u16|u32|u64|u128|usize|f32|f64|bool|char|str|string|number|boolean|void|[A-Z]\w*)$/;
+function highlight(code, lang) {
+  if (lang === "rust" || lang === "ts") {
+    const keywords = new Set(KEYWORDS[lang].split(" "));
+    // En Rust, 'a est une lifetime et 'x' un caractère ; en TS, '…' et `…` sont des chaînes.
+    const strings = lang === "rust" ? String.raw`"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\\n])'` : String.raw`"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\\n])*'|` + "`(?:\\\\.|[^`\\\\])*`";
+    const token = new RegExp(String.raw`(\/\/[^\n]*)|(${strings})|('[a-z_]\w*)|(#!?\[[^\]\n]*\])|(\b\d[\d_]*(?:\.\d+)?(?:[iuf]\d+|usize|isize)?\b)|(\b\w+!)|(\b[A-Za-z_]\w*\b)`, "g");
+    let html = "", last = 0;
+    for (const m of code.matchAll(token)) {
+      html += esc(code.slice(last, m.index));
+      last = m.index + m[0].length;
+      const [t, comment, str, lifetime, attr, num, mac, word] = m;
+      const cls = comment ? "c" : str ? "s" : lifetime ? "m" : attr ? "a" : num ? "n" : mac ? "m"
+        : keywords.has(word) ? "k" : TYPES.test(word) ? "t" : "";
+      html += cls ? `<span class="hl-${cls}">${esc(t)}</span>` : esc(t);
+    }
+    return html + esc(code.slice(last));
+  }
+  // Sortie du compilateur : l'erreur en rouge, l'aide en vert, la marge et les flèches en retrait.
+  if (/^(error|warning|thread)/m.test(code)) {
+    return code.split("\n").map((l) => {
+      let m;
+      if ((m = l.match(/^(error(?:\[E\d+\])?|warning)(:.*)$/))) return `<span class="hl-err">${esc(m[1])}</span>${esc(m[2])}`;
+      if ((m = l.match(/^(thread .*panicked.*)$/))) return `<span class="hl-err">${esc(m[1])}</span>`;
+      if ((m = l.match(/^(\s*(?:= )?)(help|note)(:.*)$/))) return `${esc(m[1])}<span class="hl-help">${esc(m[2])}</span>${esc(m[3])}`;
+      if ((m = l.match(/^(\s*-->.*|\s*\d*\s*\||\s*\.\.\.)(.*)$/))) {
+        // Les ^^^ et +++ ne sont des repères que sous une ligne de code, dans une marge sans numéro.
+        const rest = /\d/.test(m[1]) ? esc(m[2]) : esc(m[2]).replace(/(\^+)/g, '<span class="hl-err">$1</span>').replace(/(\++)/g, '<span class="hl-help">$1</span>');
+        return `<span class="hl-dim">${esc(m[1])}</span>${rest}`;
+      }
+      return esc(l);
+    }).join("\n");
+  }
+  return esc(code);
+}
+
 // Rendu markdown minimal : titres, paragraphes, listes, tableaux, blocs de code, images SVG.
 function markdown(md, base, file = "") {
   const lines = md.replace(/\r/g, "").split("\n");
@@ -215,7 +261,7 @@ function markdown(md, base, file = "") {
     } else if (line.startsWith("```")) {
       const code = [];
       for (i++; i < lines.length && !lines[i].startsWith("```"); i++) code.push(lines[i]);
-      out.push(`<pre><code>${esc(code.join("\n"))}</code></pre>`); i++;
+      out.push(`<pre><code>${highlight(code.join("\n"), line.slice(3).trim())}</code></pre>`); i++;
     } else if (/^#{1,6} /.test(line)) {
       const level = line.match(/^#+/)[0].length;
       out.push(`<h${level}>${inline(line.slice(level + 1))}</h${level}>`); i++;
