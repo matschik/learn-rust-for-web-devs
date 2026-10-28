@@ -33,7 +33,7 @@ Pas besoin de cours sur ce qu'est une fonction ou une closure : le parcours va d
 
 Le parcours suit la [version Brown du Rust Book](https://rust-book.cs.brown.edu/), avec ses quiz et son modèle de permissions (Read, Write, Own) pour comprendre le borrow checker.
 
-Chaque exercice commence par une fiche de cours (`COURS.md`) : les sections du livre à lire, l'idée avec son équivalent TS, un diagramme et ce qu'il faut retenir. La fiche pratique (`README.md`) vient ensuite. L'exercice est un crate avec des tests rouges, et certains ne compilent même pas au départ, exprès : le compilateur fait partie du cours. Tu as fini quand `cargo test` passe.
+Chaque exercice commence par une fiche de cours (`COURS.md`) : les sections du livre à lire, l'idée avec son équivalent TS, un diagramme et ce qu'il faut retenir. La fiche pratique (`README.md`) vient ensuite, avec ses étapes à cocher. L'exercice est un crate avec des tests rouges, et certains ne compilent même pas au départ, exprès : le compilateur fait partie du cours. Tu as fini quand `cargo test` passe.
 
 Le tuteur suit les règles de [CLAUDE.md](CLAUDE.md) :
 
@@ -93,7 +93,7 @@ Tu peux aussi suivre le parcours sans Claude Code. Lis les `COURS.md`, fais les 
 node dashboard/server.mjs      # http://localhost:4400 (PORT=… pour changer)
 ```
 
-Le dashboard ouvre directement sur l'exercice en cours, avec son cours puis sa pratique. Il relance les tests de chaque exercice que tu modifies et lit `PROGRESS.md`. La vue d'ensemble regroupe :
+Le dashboard ouvre directement là où tu en es : le début d'un module, l'exercice en cours avec son cours puis sa pratique, ou la fin du module. Chaque fiche donne ses étapes sous forme de cases à cocher. Tes cases sont enregistrées dans `PROGRESS.checks.json`, et le tuteur s'en sert pour reprendre au bon endroit. Le dashboard relance aussi les tests de chaque exercice que tu modifies et lit `PROGRESS.md`. La vue d'ensemble regroupe :
 
 - la roadmap ;
 - les questions à réviser ;
@@ -119,7 +119,7 @@ Les modules arrivent au fil de l'eau, au rythme de l'auteur.
 
 ## Garder ton travail pour toi
 
-Tes solutions sont des modifications locales des fichiers `modules/*/*/src/`. `PROGRESS.md` et `CLAUDE.local.md` sont ignorés par git.
+Tes solutions sont des modifications locales des fichiers `modules/*/*/src/`. `PROGRESS.md`, `PROGRESS.checks.json` et `CLAUDE.local.md` sont ignorés par git.
 
 Si tu veux sauvegarder ton travail, pousse-le sur ton fork. N'ouvre pas de PR avec tes solutions : les exercices doivent rester rouges au départ pour les suivants.
 

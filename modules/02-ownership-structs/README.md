@@ -14,9 +14,13 @@ La version Brown du Rust Book explique le borrow checker avec des **permissions*
 | `06-methods` | 5.3 | `impl`, `&self`, `&mut self`, `self` | `class` avec méthodes |
 | `07-capstone` | 4, 5 | tout ensemble | une petite classe métier |
 
+## Avant de commencer
+
+- [ ] Lis l'introduction du [chapitre 4](https://rust-book.cs.brown.edu/ch04-00-understanding-ownership.html).
+
 ## Fin de module
 
-1. Lis le [récapitulatif de l'ownership (4.5)](https://rust-book.cs.brown.edu/ch04-05-ownership-recap.html), qui compare Rust au GC de JS/Python.
-2. Fais l'[Ownership Inventory #1](https://rust-book.cs.brown.edu/ch06-04-inventory.html) du Rust Book : un quiz de synthèse sur l'ownership. (Il est placé après le chapitre 6 dans le livre ; ses questions portent sur le chapitre 4.)
-3. `/quiz` dans Claude Code.
-4. Étape fil rouge : ouvre Claude Code en style de sortie Learning (`/output-style`) et dis « on démarre l'étape 1 de Taskr ». Le brief est dans `projects/taskr/README.md`.
+- [ ] Lis le [récapitulatif de l'ownership (4.5)](https://rust-book.cs.brown.edu/ch04-05-ownership-recap.html), qui compare Rust au GC de JS et Python.
+- [ ] Fais l'[Ownership Inventory #1](https://rust-book.cs.brown.edu/ch06-04-inventory.html), un quiz de synthèse sur l'ownership. Il est placé après le chapitre 6 dans le livre, mais ses questions portent sur le chapitre 4.
+- [ ] Lance `/quiz` dans Claude Code.
+- [ ] Démarre l'étape 1 de Taskr : passe Claude Code en style de sortie Learning (`/output-style`) et dis « on démarre l'étape 1 de Taskr ». Le brief est dans `projects/taskr/README.md`.

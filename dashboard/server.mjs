@@ -1,7 +1,7 @@
 // Dashboard de progression : `PORT=4400 node dashboard/server.mjs`, puis http://localhost:4400
 // Aucune dépendance npm. Lance `cargo test` sur chaque exercice modifié et lit PROGRESS.md.
 import { createServer } from "node:http";
-import { readFile, readdir, stat } from "node:fs/promises";
+import { readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -113,6 +113,20 @@ async function buildState() {
   };
 }
 
+// Les cases cochées dans les fiches, propres à l'apprenant (ignoré par git). Le tuteur les lit aussi.
+const CHECKS = join(ROOT, "PROGRESS.checks.json");
+const readChecks = () => readFile(CHECKS, "utf8").then(JSON.parse).catch(() => ({}));
+let checksWrite = Promise.resolve();
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+    req.on("data", (chunk) => { body += chunk; if (body.length > 10_000) req.destroy(); });
+    req.on("end", () => resolve(body));
+    req.on("error", reject);
+  });
+}
+
 // Un seul calcul à la fois : les requêtes qui arrivent pendant un calcul attendent le même résultat.
 let pending = null;
 function state() {
@@ -132,6 +146,20 @@ createServer(async (req, res) => {
       send(res, 200, await readFile(join(ROOT, "dashboard", "index.html")), "text/html; charset=utf-8");
     } else if (url.pathname === "/api/state") {
       send(res, 200, JSON.stringify(await state()));
+    } else if (url.pathname === "/api/checks" && req.method === "GET") {
+      send(res, 200, JSON.stringify(await readChecks()));
+    } else if (url.pathname === "/api/checks" && req.method === "POST") {
+      const { key, text, done } = JSON.parse(await readBody(req));
+      if (typeof key !== "string" || !/^modules\/[\w./-]+\.md#[a-z0-9-]+$/.test(key) || key.length > 300) return send(res, 400, "{}");
+      // Les écritures passent l'une après l'autre pour ne pas perdre une case cochée vite.
+      checksWrite = checksWrite.catch(() => {}).then(async () => {
+        const checks = await readChecks();
+        if (done) checks[key] = { text: String(text ?? "").slice(0, 300), at: new Date().toISOString() };
+        else delete checks[key];
+        await writeFile(CHECKS, `${JSON.stringify(checks, null, 2)}\n`);
+        return checks;
+      });
+      send(res, 200, JSON.stringify(await checksWrite));
     } else if (url.pathname === "/api/file") {
       // Seuls les fiches markdown et les diagrammes SVG du repo sont servis.
       const path = url.searchParams.get("path") ?? "";

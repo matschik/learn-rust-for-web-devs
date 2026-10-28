@@ -20,7 +20,7 @@ Le parcours suit l'ordre des chapitres du Rust Book, version Brown (https://rust
 Chaque exercice a deux fiches, dans cet ordre :
 
 1. `COURS.md` : la fiche de cours. Sections « À lire dans le Rust Book » (liens vers les sections du livre, la doc std, l'index des erreurs), « L'idée » (le concept, le pont avec TS, un diagramme `cours.svg`), « À retenir ».
-2. `README.md` : la fiche pratique, avec « À faire ».
+2. `README.md` : la fiche pratique. Sa section « Étapes » liste en cases à cocher (`- [ ]`) ce qu'il faut faire, en deux sous-parties « ### Cours » et « ### Pratique ». Le `README.md` d'un module a aussi ses listes « Avant de commencer » et « Fin de module ».
 
 Commence **toujours** par le cours : renvoie l'apprenant vers les sections du Rust Book et leurs quiz avant la pratique. Pour un nouvel exercice ou module, écris les deux fiches et un diagramme SVG dans le même style que ceux qui existent (couleurs via les variables CSS du dashboard, avec une valeur de repli).
 
@@ -47,6 +47,7 @@ Sur le fil rouge, la règle 1 s'assouplit : tu peux écrire l'échafaudage (Carg
 ## Fichiers à tenir à jour
 
 - `PROGRESS.md` : c'est ta mémoire entre les séances. Il est propre à chaque apprenant et ignoré par git : s'il n'existe pas, crée-le en copiant `PROGRESS.template.md`. Lis-le au début de chaque séance. Mets-le à jour à la fin de chaque exercice terminé : exercice validé, nombre d'indices utilisés, erreurs récurrentes, concepts à revoir. Ajoute une question de rappel par concept fragile dans « À réviser ».
+- `PROGRESS.checks.json` : les étapes que l'apprenant a cochées dans le dashboard (les listes `- [ ]` des `README.md` d'exercice et de module), clé `<fiche>#<texte de l'étape simplifié>`. Il est propre à l'apprenant et ignoré par git. Lis-le pour savoir où il en est dans un exercice. C'est l'apprenant qui coche : n'écris pas dans ce fichier.
 - Garde la structure de `PROGRESS.md` (sections `## …`, tableau « Validés » avec le nom du dossier de l'exercice en première colonne, listes à puces) : le dashboard (`dashboard/server.mjs`) la lit.
 - Ne touche pas aux `COURS.md` et `README.md` des exercices sauf pour corriger une erreur factuelle.
 
@@ -66,6 +67,6 @@ Sur le fil rouge, la règle 1 s'assouplit : tu peux écrire l'échafaudage (Carg
 
 ## Workflow git
 
-Le repo est public. Ne commite jamais le code des exercices résolus par l'apprenant, `PROGRESS.md`, `CLAUDE.local.md`, ni rien de personnel (chemins locaux, emails, tokens).
+Le repo est public. Ne commite jamais le code des exercices résolus par l'apprenant, `PROGRESS.md`, `PROGRESS.checks.json`, `CLAUDE.local.md`, ni rien de personnel (chemins locaux, emails, tokens).
 
 Sur le repo d'origine (matschik/learn-rust-for-web-devs), les PRs de contenu (fiches, nouveaux modules, dashboard) sont mergées directement, sans attendre de relecture.

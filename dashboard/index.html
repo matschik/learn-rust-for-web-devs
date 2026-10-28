@@ -82,7 +82,9 @@
 
   .keep { background: var(--accent-soft); border-radius: 14px; padding: 6px 20px; margin-top: 36px; }
   .keep h2 { color: var(--accent); margin-top: 16px; }
-  .next { margin-top: 32px; display: flex; justify-content: flex-end; }
+  .next { margin-top: 32px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .next .spacer { flex: 1; }
+  a.btn { text-decoration: none; display: inline-block; }
   .btn { border: 0; background: var(--accent); color: #fff7ed; font: 600 15px system-ui, sans-serif; padding: 12px 20px; border-radius: 10px; cursor: pointer; }
   .btn.ghost { background: none; color: var(--muted); padding: 12px 0; }
 
@@ -99,6 +101,16 @@
   .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 4px 10px; cursor: pointer; font: 12px system-ui, sans-serif; display: inline-flex; align-items: center; gap: 6px; }
   .task { border-left: 3px solid var(--accent); padding-left: 18px; margin-top: 28px; }
   .task h2 { margin-top: 0; }
+  .task h3, .steps h3 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 20px 0 6px; letter-spacing: .02em; }
+  ul.checks { list-style: none; padding: 0; margin: 8px 0 16px; }
+  ul.checks li { margin: 0; }
+  ul.checks label { display: flex; gap: 12px; align-items: flex-start; padding: 7px 10px; margin: 0 -10px; border-radius: 8px; cursor: pointer; }
+  ul.checks label:hover { background: var(--todo-soft); }
+  ul.checks input { flex: none; width: 18px; height: 18px; margin: 4px 0 0; accent-color: var(--accent); cursor: pointer; }
+  ul.checks li.on span { color: var(--muted); }
+  .steps-count { font: 500 13px ui-monospace, Menlo, monospace; color: var(--muted); margin-left: auto; }
+  .tabs button .c { font: 500 12px ui-monospace, Menlo, monospace; color: var(--muted); margin-left: 8px; }
+  .eyebrow a.mod { text-decoration: none; }
   details { margin-top: 32px; }
   details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
   .output { background: var(--code); padding: 12px; border-radius: 8px; max-height: 320px; overflow: auto; white-space: pre; font-size: 13px; line-height: 1.45; margin-top: 8px; }
@@ -161,13 +173,19 @@ const ICONS = {
   out: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
 };
 const icon = (name) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
-const HEADING_ICONS = { "À faire": "task", "À lire dans le Rust Book": "book", "L'idée": "bulb", "À retenir": "pin" };
+const HEADING_ICONS = { "À faire": "task", "Étapes": "task", "Avant de commencer": "task", "Fin de module": "task", "À lire dans le Rust Book": "book", "L'idée": "bulb", "À retenir": "pin" };
 const heading = (h) => `<h2>${HEADING_ICONS[h] ? icon(HEADING_ICONS[h]) : ""}${inline(h)}</h2>`;
 let state = null;
 let rendered = "";
 let tab = null; // "cours" | "pratique" pour l'exercice affiché
 let tabFor = null;
 const files = new Map();
+// Les étapes cochées, par clé (voir stepKey dans content.mjs). En local, le serveur les écrit dans PROGRESS.checks.json ;
+// sur le site, elles restent dans le navigateur.
+let checks = {};
+let checksVersion = 0;
+const stepKeys = new Map();
+const CHECKS_STORAGE = "learn-rust-checks";
 
 function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 function inline(s) {
@@ -178,7 +196,7 @@ function inline(s) {
 }
 
 // Rendu markdown minimal : titres, paragraphes, listes, tableaux, blocs de code, images SVG.
-function markdown(md, base) {
+function markdown(md, base, file = "") {
   const lines = md.replace(/\r/g, "").split("\n");
   const out = [];
   for (let i = 0; i < lines.length; ) {
@@ -204,7 +222,11 @@ function markdown(md, base) {
       const items = [];
       for (; i < lines.length && /^\s*([-*]|\d+\.) /.test(lines[i]); i++) items.push(lines[i].replace(/^\s*([-*]|\d+\.) /, ""));
       const tag = ordered ? "ol" : "ul";
-      out.push(`<${tag}>${items.map((it) => `<li>${inline(it)}</li>`).join("")}</${tag}>`);
+      if (!ordered && items.every((it) => /^\[[ x]\] /.test(it))) {
+        out.push(`<ul class="checks">${items.map((it) => checkbox(file, it.slice(4))).join("")}</ul>`);
+      } else {
+        out.push(`<${tag}>${items.map((it) => `<li>${inline(it)}</li>`).join("")}</${tag}>`);
+      }
     } else if (line.trim() === "") {
       i++;
     } else {
@@ -214,6 +236,13 @@ function markdown(md, base) {
     }
   }
   return out.join("\n");
+}
+
+function checkbox(file, text) {
+  const key = stepKeys.get(`${file}\n${text}`);
+  if (!key) return `<li>${inline(text)}</li>`;
+  const on = Boolean(checks[key]);
+  return `<li class="${on ? "on" : ""}"><label><input type="checkbox" data-key="${esc(key)}" data-text="${esc(text)}"${on ? " checked" : ""}><span>${inline(text)}</span></label></li>`;
 }
 
 // Découpe une fiche en { titre, sections } : chaque "## Titre" devient une entrée.
@@ -245,7 +274,52 @@ function visualStatus(ex) {
 }
 // « 01 - Move » devient « Move » : le numéro est déjà affiché à côté.
 const shortTitle = (t) => t.replace(/^\d+\s*-\s*/, "");
-const isDone = (ex) => ex.status === "validated";
+const stepsDone = (steps) => steps.filter((st) => checks[st.key]).length;
+const allChecked = (steps) => steps.length > 0 && stepsDone(steps) === steps.length;
+// Un exercice est fini quand le tuteur l'a validé, ou quand toutes ses étapes sont cochées.
+const isDone = (ex) => ex.status === "validated" || allChecked(ex.steps);
+const startSteps = (m) => m.steps.filter((st) => st.group === "Avant de commencer");
+const endSteps = (m) => m.steps.filter((st) => st.group === "Fin de module");
+function moduleStatus(m) {
+  const done = stepsDone(m.steps);
+  return `s-${done === m.steps.length ? "validated" : done ? "in-progress" : "todo"}`;
+}
+const started = (m) => m && m.exercises.some((ex) => isDone(ex) || ex.status !== "todo" || stepsDone(ex.steps));
+// Où reprendre : le début d'un module pas encore entamé, puis chaque exercice, puis la fin du module
+// (sauf si le module suivant est déjà entamé). Renvoie { module } ou { ex }, vide quand tout est fait.
+function nextTarget() {
+  const all = exercises();
+  for (const [i, m] of state.modules.entries()) {
+    if (!started(m) && startSteps(m).length && !allChecked(startSteps(m))) return { module: m };
+    const ex = all.find((e) => e.module.id === m.id && !isDone(e));
+    if (ex) return { ex };
+    if (endSteps(m).length && !allChecked(endSteps(m)) && !started(state.modules[i + 1])) return { module: m };
+  }
+  return {};
+}
+// Après une case cochée, la vue reste sur place même si l'étape suivante est ailleurs : le bouton « Continuer » y mène.
+let hold = null;
+function currentTarget() {
+  const next = nextTarget();
+  if (!hold) return next;
+  const held = hold.module ? { module: state.modules.find((m) => m.id === hold.module) } : { ex: exercises().find((e) => e.pkg === hold.ex) };
+  return held.module || held.ex ? held : next;
+}
+const targetId = (t) => (t.module ? `m:${t.module.id}` : t.ex ? `e:${t.ex.pkg}` : "");
+function continueButton(current) {
+  const next = nextTarget();
+  if (!hold || targetId(next) === current) return "";
+  const label = next.module ? `Module ${String(next.module.number).padStart(2, "0")}` : next.ex ? shortTitle(next.ex.title) : "La suite";
+  return `<button class="btn" data-continue>Continuer : ${esc(label)} →</button>`;
+}
+function stepsHeading(title, steps) {
+  return `<h2>${icon("task")}${esc(title)}${steps.length ? `<span class="steps-count">${stepsDone(steps)}/${steps.length}</span>` : ""}</h2>`;
+}
+// Les sous-parties « ### » d'une section, par titre.
+function subsections(md = "") {
+  return new Map(md.split(/^(?=### )/m).filter((part) => part.startsWith("### "))
+    .map((part) => [part.split("\n")[0].slice(4).trim(), part.split("\n").slice(1).join("\n").trim()]));
+}
 const exercises = () => state.modules.flatMap((m) => m.exercises.map((ex) => ({ ...ex, module: m })));
 
 // La première erreur du compilateur, sans le bruit de cargo autour.
@@ -296,7 +370,12 @@ function topline(right) {
 
 async function renderFocus(pinned) {
   const all = exercises();
-  const ex = (pinned && all.find((e) => e.pkg === pinned)) ?? all.find((e) => !isDone(e));
+  let ex = pinned && all.find((e) => e.pkg === pinned);
+  if (!ex) {
+    const target = currentTarget();
+    if (target.module) return renderModule(target.module, false);
+    ex = target.ex;
+  }
   const app = document.getElementById("app");
   if (!ex) {
     app.innerHTML = topline(`<a class="link" href="#overview">Vue d'ensemble</a>`) +
@@ -306,7 +385,7 @@ async function renderFocus(pinned) {
   // Un exercice pas encore commencé s'ouvre sur le cours ; ensuite, sur la pratique.
   if (tabFor !== ex.pkg) { tabFor = ex.pkg; tab = ex.status === "todo" ? "cours" : "pratique"; }
   const [cours, pratique] = await Promise.all([file(ex.cours), file(ex.readme)]);
-  const key = JSON.stringify([ex.pkg, tab, ex.status, ex.tests.passed, ex.tests.total, ex.tests.output.length, pinned, all.filter(isDone).length]);
+  const key = JSON.stringify([ex.pkg, tab, ex.status, ex.tests.passed, ex.tests.total, ex.tests.output.length, pinned, checksVersion, Boolean(hold)]);
   if (key === rendered) return;
   rendered = key;
   const base = ex.readme.replace(/README\.md$/, "");
@@ -315,6 +394,11 @@ async function renderFocus(pinned) {
   const c = sections(cours);
   const p = sections(pratique);
   const cmd = `cargo test -p ${ex.pkg}`;
+  const groups = subsections(p.map.get("Étapes"));
+  const coursSteps = ex.steps.filter((st) => st.group === "Cours");
+  const pratiqueSteps = ex.steps.filter((st) => st.group === "Pratique");
+  const tabCount = (steps) => (steps.length ? `<span class="c">${stepsDone(steps)}/${steps.length}</span>` : "");
+  const next = pinned ? "" : continueButton(`e:${ex.pkg}`);
 
   let body;
   if (tab === "cours" && cours) {
@@ -326,6 +410,7 @@ async function renderFocus(pinned) {
       ${reads ? `${heading("À lire dans le Rust Book")}${readCards(reads)}` : ""}
       ${heading("L'idée")}${rest}
       ${keep ? `<div class="keep">${heading("À retenir")}${markdown(keep, base)}</div>` : ""}
+      ${groups.has("Cours") ? `<div class="task">${stepsHeading("Avant la pratique", coursSteps)}${markdown(groups.get("Cours"), base, ex.readme)}</div>` : ""}
       <div class="next"><button class="btn" data-tab="pratique">Passer à la pratique →</button></div>`;
   } else {
     body = `
@@ -333,18 +418,20 @@ async function renderFocus(pinned) {
       <div class="cmd"><code>${esc(cmd)}</code><button id="copy">${icon("copy")}Copier</button></div>
       <div class="muted">Fichier : <code>${esc(base)}src/lib.rs</code></div>
       ${p.intro ? markdown(p.intro, base).replace(/<p>Relis la fiche[^<]*<code>COURS\.md<\/code>[^<]*<\/p>/, "") : ""}
-      <div class="task">${[...p.map].map(([h, md]) => `${heading(h)}${markdown(md, base)}`).join("")}</div>
-      <div class="next"><button class="btn ghost" data-tab="cours">← Revoir le cours</button></div>
+      <div class="task">${[...p.map].map(([h, md]) => (h === "Étapes"
+        ? `${stepsHeading("Étapes", pratiqueSteps)}${markdown(groups.get("Pratique") ?? md, base, ex.readme)}`
+        : `${heading(h)}${markdown(md, base, ex.readme)}`)).join("")}</div>
+      <div class="next"><button class="btn ghost" data-tab="cours">← Revoir le cours</button><span class="spacer"></span>${next}</div>
       ${STATIC ? "" : `<details><summary>Dernière sortie de cargo test</summary><div class="output">${esc(ex.tests.output.trim() || "(vide)")}</div></details>`}`;
   }
 
   app.innerHTML = topline(right) + `
     <div class="focus">
-      <div class="eyebrow"><span class="mod">${String(ex.module.number).padStart(2, "0")}</span>${esc(ex.module.title)}, exercice ${position} sur ${ex.module.exercises.length}</div>
+      <div class="eyebrow"><a class="mod" href="#module/${esc(ex.module.id)}" title="Le module">${String(ex.module.number).padStart(2, "0")}</a>${esc(ex.module.title)}, exercice ${position} sur ${ex.module.exercises.length}</div>
       <h1>${inline(shortTitle(c.title || p.title || ex.title))}</h1>
       <div class="tabs" role="tablist">
-        <button class="${tab === "cours" ? "on" : ""}" data-tab="cours"><span class="n">1</span>Cours</button>
-        <button class="${tab === "pratique" ? "on" : ""}" data-tab="pratique"><span class="n">2</span>Pratique</button>
+        <button class="${tab === "cours" ? "on" : ""}" data-tab="cours"><span class="n">1</span>Cours${tabCount(coursSteps)}</button>
+        <button class="${tab === "pratique" ? "on" : ""}" data-tab="pratique"><span class="n">2</span>Pratique${tabCount(pratiqueSteps)}</button>
       </div>
       <div class="doc">${body}</div>
     </div>`;
@@ -354,6 +441,33 @@ async function renderFocus(pinned) {
   document.getElementById("copy")?.addEventListener("click", (e) => {
     navigator.clipboard?.writeText(cmd).then(() => { e.currentTarget.innerHTML = `${icon("task")}Copié`; });
   });
+  hydrateFigures();
+}
+
+// La page d'un module : son programme, les étapes avant de commencer et celles de fin de module.
+async function renderModule(m, pinned) {
+  const md = await file(m.readme);
+  const key = JSON.stringify(["module", m.id, pinned, checksVersion, Boolean(hold), md.length]);
+  if (key === rendered) return;
+  rendered = key;
+  const base = m.readme.replace(/README\.md$/, "");
+  const r = sections(md);
+  const step = state.roadmap.find((st) => st.number === m.number);
+  const first = exercises().find((e) => e.module.id === m.id && !isDone(e));
+  const right = pinned ? `<a class="link" href="#">← Exercice en cours</a>` : `<a class="link" href="#overview">Vue d'ensemble</a>`;
+  const body = [...r.map].map(([h, part]) => {
+    const steps = m.steps.filter((st) => st.group === h);
+    return steps.length ? `<div class="task">${stepsHeading(h, steps)}${markdown(part, base, m.readme)}</div>` : `${heading(h)}${markdown(part, base, m.readme)}`;
+  }).join("");
+  const go = first ? `<a class="btn" href="#ex/${esc(first.pkg)}">${first.status === "todo" && !stepsDone(first.steps) ? "Commencer" : "Reprendre"} : ${esc(shortTitle(first.title))} →</a>` : "";
+  document.getElementById("app").innerHTML = topline(right) + `
+    <div class="focus">
+      <div class="eyebrow"><span class="mod">${String(m.number).padStart(2, "0")}</span>Module, ${esc(step?.chapters ?? "")} du Rust Book</div>
+      <h1>${esc(m.title)}</h1>
+      <div class="doc">${markdown(r.intro, base, m.readme)}${body}
+        <div class="next"><span class="spacer"></span>${pinned ? go : continueButton(`m:${m.id}`) || go}</div>
+      </div>
+    </div>`;
   hydrateFigures();
 }
 
@@ -373,9 +487,13 @@ function renderOverview() {
   }).join("");
   const modules = state.modules.map((m) => `
     <div class="card"><h2>${icon("layers")}${String(m.number).padStart(2, "0")} ${esc(m.title)}<span class="n">${m.exercises.filter(isDone).length}/${m.exercises.length}</span></h2>
+      <ul class="ex"><li class="${moduleStatus(m)}"><a href="#module/${esc(m.id)}"><span class="dot"></span><span class="ex-title">Avant de commencer et fin de module</span><span class="pill">${stepsDone(m.steps)}/${m.steps.length} étapes</span></a></li></ul>
       <ul class="ex">${m.exercises.map((ex) => {
-        const s = visualStatus(ex);
-        const pill = s === "in-progress" ? `${ex.tests.passed}/${ex.tests.total} tests` : LABELS[s];
+        const s = ex.status !== "validated" && allChecked(ex.steps) ? "green" : visualStatus(ex);
+        const done = stepsDone(ex.steps);
+        const pill = s === "in-progress" ? `${ex.tests.passed}/${ex.tests.total} tests`
+          : s === "todo" && done ? `${done}/${ex.steps.length} étapes`
+          : ex.status !== "validated" && allChecked(ex.steps) ? "Étapes faites" : LABELS[s];
         return `<li class="s-${s}"><a href="#ex/${esc(ex.pkg)}"><span class="dot"></span><span class="ex-title"><span class="num">${esc(ex.id.slice(0, 2))}</span>${esc(shortTitle(ex.title))}</span><span class="pill">${pill}</span></a></li>`;
       }).join("")}</ul></div>`).join("");
   const resources = `<div class="reads">${RESOURCES.map(([kind, label, sub, url]) =>
@@ -397,14 +515,59 @@ function render() {
   if (!state) return;
   const hash = location.hash;
   if (hash === "#overview") renderOverview();
+  else if (hash.startsWith("#module/")) {
+    const m = state.modules.find((mod) => mod.id === decodeURIComponent(hash.slice(8)));
+    if (m) renderModule(m, true); else renderFocus(null);
+  }
   else renderFocus(hash.startsWith("#ex/") ? decodeURIComponent(hash.slice(4)) : null);
 }
 
-window.addEventListener("hashchange", () => { rendered = ""; tabFor = null; window.scrollTo(0, 0); render(); });
+window.addEventListener("hashchange", () => { rendered = ""; tabFor = null; hold = null; window.scrollTo(0, 0); render(); });
+
+document.getElementById("app").addEventListener("change", (e) => {
+  const box = e.target.closest("input[data-key]");
+  if (box) setCheck(box.dataset.key, box.dataset.text, box.checked);
+});
+document.getElementById("app").addEventListener("click", (e) => {
+  if (!e.target.closest("[data-continue]")) return;
+  hold = null; rendered = ""; tabFor = null; window.scrollTo(0, 0); render();
+});
+
+async function setCheck(key, text, done) {
+  if (done) checks[key] = { text, at: new Date().toISOString() };
+  else delete checks[key];
+  checksVersion++;
+  // La vue reste sur ce qu'on est en train de faire, même si cette case termine l'étape.
+  if (!location.hash.startsWith("#ex/") && !location.hash.startsWith("#module/")) {
+    const t = currentTarget();
+    hold = t.module ? { module: t.module.id } : t.ex ? { ex: t.ex.pkg } : null;
+  }
+  rendered = ""; render();
+  if (STATIC) {
+    try { localStorage.setItem(CHECKS_STORAGE, JSON.stringify(checks)); } catch {}
+    return;
+  }
+  const saved = await fetch("/api/checks", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key, text, done }) })
+    .then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (saved) checks = saved;
+}
+
+async function loadChecks() {
+  if (STATIC) {
+    try { return JSON.parse(localStorage.getItem(CHECKS_STORAGE) ?? "{}"); } catch { return {}; }
+  }
+  return fetch("/api/checks").then((r) => r.json()).catch(() => checks);
+}
 
 async function refresh() {
   try {
-    state = await fetch(STATIC ? "state.json" : "/api/state").then((r) => r.json());
+    const [next, saved] = await Promise.all([fetch(STATIC ? "state.json" : "/api/state").then((r) => r.json()), loadChecks()]);
+    state = next;
+    if (JSON.stringify(saved) !== JSON.stringify(checks)) { checks = saved; checksVersion++; }
+    for (const m of state.modules) {
+      for (const st of m.steps) stepKeys.set(`${m.readme}\n${st.text}`, st.key);
+      for (const ex of m.exercises) for (const st of ex.steps) stepKeys.set(`${ex.readme}\n${st.text}`, st.key);
+    }
     render();
   } catch {
     document.getElementById("app").innerHTML = `<div class="loading">Serveur injoignable.</div>`;

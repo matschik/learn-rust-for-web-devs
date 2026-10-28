@@ -9,11 +9,17 @@ Rust Book, [chapitres 1 à 3](https://rust-book.cs.brown.edu/ch01-00-getting-sta
 | `03-types` | 3.2 | entiers signés/non signés, `f64`, conversions `as`, tableaux | `number` pour tout |
 | `04-control-flow` | 3.5 | `if` est une expression, `for`, `loop`, `while` | ternaire, `for...of` |
 
-Pour chaque exercice : lis d'abord la section « À lire avant » (et fais les quiz du Rust Book), puis édite `src/lib.rs` et lance `cargo test -p <package>`.
+Chaque exercice a sa propre liste d'étapes : d'abord le cours, puis la pratique. Coche-les au fur et à mesure dans le dashboard.
 
-Astuce : installe [bacon](https://dioxus.github.io/bacon/) (`cargo install --locked bacon`) et lance `bacon test -- -p <package>` dans un terminal à côté : il relance les tests à chaque sauvegarde, comme `vitest --watch`.
+## Avant de commencer
+
+- [ ] Installe Rust avec [rustup](https://rustup.rs/), puis vérifie avec `cargo --version` à la racine du repo.
+- [ ] Lis le [chapitre 1 du Rust Book](https://rust-book.cs.brown.edu/ch01-00-getting-started.html) jusqu'à « Hello, Cargo! ».
+- [ ] Lance `claude` à la racine du repo, puis `/next`.
+- [ ] Optionnel : installe [bacon](https://dioxus.github.io/bacon/) (`cargo install --locked bacon`) et lance `bacon test -- -p <package>` dans un terminal à côté. Il relance les tests à chaque sauvegarde, comme `vitest --watch`.
 
 ## Fin de module
 
-1. Lis le [chapitre 2, le jeu de devinettes](https://rust-book.cs.brown.edu/ch02-00-guessing-game-tutorial.html), et code-le en suivant le livre dans `scratch/guessing-game` (`cargo new scratch/guessing-game`). C'est ton premier programme Rust complet, avec une dépendance (`rand`), de l'entrée utilisateur et du `match`.
-2. `/quiz` dans Claude Code.
+- [ ] Lis le [chapitre 2, le jeu de devinettes](https://rust-book.cs.brown.edu/ch02-00-guessing-game-tutorial.html).
+- [ ] Code-le en suivant le livre dans `scratch/guessing-game` (`cargo new scratch/guessing-game`) : ton premier programme Rust complet, avec une dépendance (`rand`), de l'entrée utilisateur et du `match`.
+- [ ] Lance `/quiz` dans Claude Code.

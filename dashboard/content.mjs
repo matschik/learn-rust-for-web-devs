@@ -24,6 +24,25 @@ async function readTitle(file, fallback) {
   return md.match(/^# (.+)$/m)?.[1]?.replace(/ · (cours|pratique)$/, "") ?? fallback;
 }
 
+// La clé d'une case à cocher : le chemin de la fiche et le texte de l'étape, sans liens, accents ni ponctuation.
+// C'est sous cette clé que PROGRESS.checks.json retient les étapes faites.
+export const stepKey = (file, text) =>
+  `${file}#${text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 80).replace(/^-|-$/g, "")}`;
+
+// Les étapes « - [ ] » d'une fiche, avec le titre (## ou ###) sous lequel elles sont rangées.
+export async function readSteps(root, file) {
+  const md = await readFile(join(root, file), "utf8").catch(() => "");
+  const steps = [];
+  let group = "";
+  for (const line of md.split("\n")) {
+    const title = line.match(/^#{2,3} (.+)$/);
+    const step = line.match(/^- \[[ x]\] (.+)$/);
+    if (title) group = title[1].trim();
+    else if (step) steps.push({ key: stepKey(file, step[1]), text: step[1], group });
+  }
+  return steps;
+}
+
 // Les modules et leurs exercices, dans l'ordre des dossiers. `dir` est le chemin absolu de l'exercice.
 export async function listModules(root) {
   const modules = [];
@@ -41,10 +60,12 @@ export async function listModules(root) {
         title: await readTitle(join(dir, "README.md"), exDir),
         readme: relative(root, join(dir, "README.md")),
         cours: relative(root, join(dir, "COURS.md")),
+        steps: await readSteps(root, relative(root, join(dir, "README.md"))),
       });
     }
     const number = Number(moduleDir.slice(0, 2));
-    modules.push({ id: moduleDir, number, title: ROADMAP[number - 1]?.title ?? moduleDir, readme: `modules/${moduleDir}/README.md`, exercises });
+    const readme = `modules/${moduleDir}/README.md`;
+    modules.push({ id: moduleDir, number, title: ROADMAP[number - 1]?.title ?? moduleDir, readme, steps: await readSteps(root, readme), exercises });
   }
   return modules;
 }

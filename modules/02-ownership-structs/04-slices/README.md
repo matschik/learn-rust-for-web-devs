@@ -1,7 +1,22 @@
 # 04 - Slices · pratique
 
-Relis la fiche de cours (`COURS.md`) si besoin, puis lance-toi.
+Coche chaque étape au fur et à mesure dans le dashboard. Le tuteur s'en sert pour savoir où tu en es.
 
-## À faire
+## Étapes
 
-`cargo test -p m02_e04_slices`. Aucune fonction ne doit allouer : pas de `String`, pas de `.to_string()`, pas de `format!`.
+### Cours
+
+- [ ] Lis Rust Book 4.4 et fais ses quiz.
+- [ ] Parcours la doc de `str` : `find`, `split_once`, `trim`, `split_whitespace`.
+- [ ] Lis « L'idée » et le diagramme de la fiche de cours.
+
+### Pratique
+
+- [ ] Ouvre `src/lib.rs` et lis les tests.
+- [ ] Écris `ticket_id`, puis `ticket_title`.
+- [ ] Écris `first_word`.
+- [ ] Écris `total` sur une slice `&[u32]`.
+- [ ] Vérifie qu'aucune fonction n'alloue : pas de `String`, de `.to_string()` ni de `format!`.
+- [ ] Lance `cargo test -p m02_e04_slices` jusqu'à ce que tout passe.
+- [ ] Retire la ligne `#![allow(unused_variables)]` en haut du fichier et vérifie qu'il ne reste aucun warning.
+- [ ] Lance `/review` dans Claude Code et explique ton code en deux phrases.

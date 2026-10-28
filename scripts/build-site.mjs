@@ -13,6 +13,8 @@ await mkdir(join(OUT, "cours"), { recursive: true });
 
 const modules = await listModules(ROOT);
 for (const m of modules) {
+  await mkdir(join(OUT, dirname(m.readme)), { recursive: true });
+  await cp(join(ROOT, m.readme), join(OUT, m.readme));
   m.exercises = m.exercises.map(({ dir, ...ex }) => ({
     ...ex,
     status: "todo",
