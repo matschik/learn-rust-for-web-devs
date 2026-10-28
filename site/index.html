@@ -8,298 +8,327 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2410c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='36' font-weight='700' fill='%23fff7ed'%3Ers%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist:wght@400;500&family=Geist+Mono&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f7f3ec; --panel: #fffdf9; --text: #221d18; --muted: #6f665b; --line: #e6ddd0;
-    --accent: #b8430f; --accent-soft: #f9e3d3; --ok: #2f7a3f; --ok-soft: #dff0e1;
-    --err: #b42318; --err-soft: #fbe2df; --todo-soft: #efe8dd; --code: #f1ebe1;
-    --term-bg: #1d1915; --term-text: #eadfce; --term-dim: #9a8f80;
-    --shadow: 0 1px 0 rgba(34, 29, 24, .04), 0 10px 30px -12px rgba(34, 29, 24, .18);
-    --serif: "Fraunces", Georgia, "Times New Roman", serif;
-    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #14110e; --panel: #1c1814; --text: #efe6d8; --muted: #a39887; --line: #2f2922;
-      --accent: #f2783a; --accent-soft: #3b2416; --ok: #6fd08a; --ok-soft: #17301e;
-      --err: #f4877b; --err-soft: #3b1a16; --todo-soft: #26211b; --code: #25201a;
-      --term-bg: #0d0b09; --term-text: #eadfce; --term-dim: #8b8173;
-      --shadow: none;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; color: var(--text); font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
-    background:
-      radial-gradient(1200px 500px at 85% -10%, var(--accent-soft), transparent 60%),
-      var(--bg);
-  }
-  a { color: var(--accent); text-underline-offset: 3px; }
-  code, pre { font-family: var(--mono); }
-  code { background: var(--code); padding: 1px 6px; border-radius: 5px; font-size: .84em; }
-  pre { background: var(--term-bg); color: var(--term-text); padding: 16px 18px; border-radius: 12px; overflow-x: auto; font-size: 14px; line-height: 1.6; }
-  pre code { background: none; padding: 0; color: inherit; }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 22px 16px 80px; }
-  .i { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.14em; }
+/* Hallmark · shape: Workbench · genre: atmospheric · theme: Lumen (deal 1/3, seed free-french-course-teaching-e686·57df0a55·2026-10-28·r0) · redesign: full
+ * hero: Stage · nav: floating pill · footer: colophon block · imagery: the product (a real session, a dashboard capture) · signature: a real rustc error answered by a question
+ * axes: dark/roman-serif/warm · posture: restrained · contrast: pass · fold: pass · job: try the course, the action in the nav, the hero and the close · lumen: night · v2.0.0 */
+/* Hallmark · pre-emit critique: P5 H4 E4 S5 R4 V4 · weakest: H, the repo index is long; set as hairline rows so it reads as a table of contents, not six cards */
+/* Hallmark · waive 38iii · the verb refuse, once, in the hero head · Lumen names the rose verb as its signature: le tuteur refuse de coder à ta place */
+/* Hallmark · dropped the Lucide icon sprite (i-arrow, i-book, i-bulb and the rest) · gate 3 names icon tiles over heads and 63 arrows glued to links */
+/* Hallmark · answered F15 · the hero keeps its own wider gap between the head and the session, every section below shares one column gap */
+/* Hallmark · waive 47c · blueprint grid inside the session well only · Lumen texture under the rustc output, never under the paragraphs of the page */
+@import url("./tokens.css");
+@import url("./base.css");
 
-  .top { display: flex; align-items: center; gap: 18px; font-size: 14px; }
-  .brand { display: flex; align-items: center; gap: 9px; font-weight: 650; color: var(--text); text-decoration: none; font-family: var(--serif); font-size: 17px; }
-  .logo { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); color: #fff7ed; display: grid; place-items: center; font: 700 12px var(--mono); transform: rotate(-4deg); }
-  .top .spacer { flex: 1; }
-  .top a.link { color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
-  .top a.link:hover { color: var(--text); }
+body { font-variant-numeric: tabular-nums; }
+h1, h2, h3, .nav, .btn { text-transform: lowercase; }
+h1, h2, h3 { font-weight: 400; }
+h2 { font-size: var(--text-display-s); line-height: 0.98; }
+code, pre, .readout { font-family: var(--font-outlier); }
+code { font-size: 0.875em; color: var(--color-ink-2); }
+a { text-decoration-color: var(--color-rule-2); }
+a:hover { text-decoration-color: var(--color-accent); }
 
-  .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; padding: 72px 0 32px; }
-  .tag { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); padding: 4px 12px 4px 8px; border-radius: 99px; }
-  .tag b { color: var(--accent); font-weight: 600; }
-  h1 { font-family: var(--serif); font-weight: 650; font-size: clamp(38px, 5.6vw, 60px); line-height: 1.02; letter-spacing: -0.025em; margin: 18px 0 18px; text-wrap: balance; }
-  h1 em { font-style: italic; color: var(--accent); font-weight: 500; padding-right: .12em; }
-  .lede { font-size: 19px; color: var(--muted); margin: 0; text-wrap: pretty; max-width: 34em; }
-  .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-  .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff7ed; font-weight: 600; font-size: 15px; padding: 12px 18px; border-radius: 10px; text-decoration: none; }
-  .btn:hover { filter: brightness(1.07); }
-  .btn.ghost { background: var(--panel); color: var(--text); border: 1px solid var(--line); }
+/* La navigation : une pilule qui flotte */
+.nav-wrap { position: sticky; top: var(--space-md); z-index: var(--z-sticky-nav); padding-top: var(--space-md); }
+.nav { display: flex; align-items: center; gap: var(--space-lg); width: fit-content; max-width: 100%; margin-inline: auto; padding: var(--space-xs) var(--space-xs) var(--space-xs) var(--space-lg); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-pill); background: color-mix(in oklab, var(--color-paper) 82%, transparent); backdrop-filter: blur(12px); }
+.wordmark { display: flex; align-items: center; gap: var(--space-xs); font: 400 var(--text-xl)/1 var(--font-display); color: var(--color-ink); text-decoration: none; white-space: nowrap; }
+.nav a.link { color: var(--color-muted); text-decoration: none; font-size: var(--text-sm); white-space: nowrap; }
+.nav a.link:hover { color: var(--color-ink); }
+.nav a.link:active { color: var(--color-accent); }
 
-  /* Le terminal du hero : un vrai échange de séance */
-  .term { background: var(--term-bg); color: var(--term-text); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; font: 13.5px/1.7 var(--mono); transform: rotate(.6deg); }
-  .term-bar { display: flex; gap: 6px; padding: 12px 14px; border-bottom: 1px solid rgba(255, 255, 255, .06); align-items: center; }
-  .term-bar span { width: 11px; height: 11px; border-radius: 50%; background: #4a4038; }
-  .term-bar small { margin-left: 10px; color: var(--term-dim); font-size: 12px; }
-  .term-body { padding: 16px 18px 20px; overflow-x: auto; }
-  .term-body p { margin: 0 0 10px; white-space: pre-wrap; }
-  .t-dim { color: var(--term-dim); }
-  .t-err { color: #ff8a7a; font-weight: 600; }
-  .t-who { display: inline-block; min-width: 4.6em; color: var(--term-dim); }
-  .t-tutor { color: #f6b27a; }
-  .t-me { color: #9ad3a8; }
+/* Les boutons */
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-lg); border-radius: var(--radius-pill); font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color var(--dur-short) var(--ease-out), opacity var(--dur-micro) var(--ease-out); }
+.btn--primary { background: var(--color-accent); color: var(--color-accent-ink); }
+.btn--primary:hover { opacity: 0.9; }
+.btn--primary:active { opacity: 0.8; }
+.btn--secondary { box-shadow: inset 0 0 0 var(--rule-hair) var(--color-rule-2); color: var(--color-ink); }
+.btn--secondary:hover { background: var(--color-paper-2); }
+.btn--secondary:active { background: var(--color-paper-3); }
+.nav .btn { min-height: 40px; padding: 0 var(--space-md); font-size: var(--text-sm); }
 
-  section { margin-top: 88px; }
-  h2 { font-family: var(--serif); font-weight: 650; font-size: clamp(27px, 3.4vw, 36px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 14px; display: flex; align-items: center; gap: 12px; text-wrap: balance; }
-  h2 .chip { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 20px; flex: none; }
-  .intro { max-width: 40em; color: var(--muted); margin: 0 0 24px; text-wrap: pretty; }
+/* Le hero : le titre à gauche, une vraie séance à droite */
+.hero { min-height: calc(100svh - 72px); display: grid; align-items: center; padding-block: var(--space-2xl); }
+.hero .container { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: center; }
+.hero h1 { font-size: clamp(2.75rem, 4vw + 1rem, 4.75rem); line-height: 0.98; max-width: 13ch; }
+.verb { display: inline-block; color: var(--color-accent-2); }
+.verb::after { content: ""; display: block; height: var(--rule-hair); background: currentColor; transform-origin: left; animation: draw var(--dur-long) var(--ease-out) both; animation-delay: 300ms; }
+@keyframes draw { from { transform: scaleX(0); } }
+.hero .lead { margin-top: var(--space-lg); color: var(--color-ink-2); max-width: 38ch; }
+.hero .actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xl); }
+.hero .lang { margin-top: var(--space-lg); font-size: var(--text-sm); color: var(--color-muted); }
 
-  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .duo div { border-radius: 16px; padding: 18px 20px; border: 1px solid var(--line); background: var(--panel); }
-  .duo strong { display: flex; align-items: center; gap: 8px; font-size: 15px; margin-bottom: 6px; }
-  .duo .no strong { color: var(--err); }
-  .duo .yes strong { color: var(--ok); }
-  .duo .yes { border-color: color-mix(in srgb, var(--ok) 35%, var(--line)); }
-  .duo p { margin: 0; font-size: 16px; }
+.session { margin: 0; }
+.session .well { overflow: hidden; }
+.session .out { padding: var(--space-lg); background-image: linear-gradient(var(--rule-blueprint) 1px, transparent 1px), linear-gradient(90deg, var(--rule-blueprint) 1px, transparent 1px); background-size: 48px 48px; }
+.session pre { margin: 0; font-size: var(--text-xs); line-height: 1.6; color: var(--color-ink-2); white-space: pre; overflow-x: auto; }
+.session .prompt { color: var(--color-muted); }
+.session .error { color: var(--color-accent-2); }
+.session .hint { color: var(--color-muted); }
+.session .talk { margin: 0; padding: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-sm) var(--space-lg); font-size: var(--text-md); }
+.session dt { color: var(--color-muted); font: 400 var(--text-xs)/1.9 var(--font-outlier); }
+.session dd { margin: 0; color: var(--color-ink-2); }
+.session dd.tutor { color: var(--color-ink); }
+.session figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
+.well { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); }
 
-  .pieces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .piece { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-width: 0; display: flex; flex-direction: column; gap: 8px; transition: transform .15s, border-color .15s; }
-  .piece:hover { transform: translateY(-2px); border-color: var(--accent); }
-  .piece .ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-size: 19px; }
-  .piece h3 { font-family: var(--serif); font-weight: 650; font-size: 20px; line-height: 1.2; margin: 6px 0 0; }
-  .piece p { margin: 0; font-size: 15.5px; color: var(--muted); }
-  .piece a.path { margin-top: auto; padding-top: 6px; font: 12.5px var(--mono); color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-  .piece a.path:hover { text-decoration: underline; }
+/* Les sections */
+.section { padding-block: var(--section-gap); }
+.section--s { padding-block: var(--section-gap-s); }
+.head { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); align-items: end; margin-bottom: var(--space-2xl); }
+.head p { color: var(--color-ink-2); max-width: 52ch; }
 
-  .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; border-left: 2px dashed var(--line); margin-left: 19px; }
-  .steps li { position: relative; padding: 4px 0 22px 34px; }
-  .steps li:last-child { padding-bottom: 0; }
-  .steps li .dot { position: absolute; left: -20px; top: 0; width: 38px; height: 38px; border-radius: 50%; background: var(--panel); border: 2px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 17px; }
-  .steps li b { display: block; font-size: 17px; }
-  .steps li span { color: var(--muted); font-size: 16px; }
+/* Tuteur ou ghostwriter : deux lignes à comparer */
+.versus { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); }
+.versus .says { display: grid; gap: var(--space-md); align-content: start; color: var(--color-ink-2); }
+.versus .says p { max-width: 46ch; }
+.versus ol { list-style: none; margin: 0; padding: 0; border-top: var(--rule-hair) solid var(--color-rule); }
+.versus li { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--gap-columns); padding-block: var(--space-xl); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.versus h3 { font-size: var(--text-section); line-height: 1; }
+.versus li p { font-size: var(--text-lead); line-height: 1.45; color: var(--color-ink-2); }
+.versus li.teach h3 { color: var(--color-ink); }
+.versus li.code h3 { color: var(--color-muted); }
 
-  .roadmap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .step { font-size: 14.5px; padding: 14px; border-radius: 14px; background: var(--todo-soft); color: var(--muted); min-width: 0; position: relative; }
-  .step b { display: block; font: 600 13px var(--mono); margin-bottom: 2px; }
-  .step small { display: block; font-size: 12.5px; opacity: .85; margin-top: 2px; }
-  .step.available { background: var(--panel); border: 1px solid var(--accent); color: var(--text); }
-  .step.available b { color: var(--accent); }
-  .legend { font-size: 14px; color: var(--muted); margin-top: 12px; display: flex; align-items: center; gap: 8px; }
+/* Le dashboard, capturé tel quel */
+.shot { margin: 0; }
+.shot img { width: 100%; height: auto; border-radius: var(--radius-card); border: var(--rule-hair) solid var(--color-rule); }
+.shot figcaption { margin-top: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); max-width: 70ch; }
 
-  .start { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: start; }
-  .needs { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  .needs li { display: flex; align-items: center; gap: 10px; }
-  .needs .i { color: var(--accent); }
+/* Ce que contient le repo : un index */
+.index { border-top: var(--rule-hair) solid var(--color-rule); }
+.index > div { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) minmax(0, 2fr); gap: var(--gap-columns); align-items: baseline; padding-block: var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.index h3 { font-size: var(--text-title); }
+.index p { color: var(--color-ink-2); max-width: 60ch; }
+.index a { font: 400 var(--text-xs) var(--font-outlier); color: var(--color-ink-2); justify-self: end; text-align: right; overflow-wrap: anywhere; }
+.index a:hover { color: var(--color-accent); }
 
-  .adapt { border: 1px dashed var(--accent); border-radius: 18px; padding: 24px 26px; background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
-  .adapt h2 { font-size: 26px; }
-  .adapt p { margin: 10px 0 0; }
+/* Une séance : quatre temps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-columns); counter-reset: step; }
+.steps li { counter-increment: step; border-top: var(--rule-hair) solid var(--color-rule-2); padding-top: var(--space-lg); display: grid; gap: var(--space-sm); align-content: start; }
+.steps li::before { content: counter(step); font: 400 var(--text-display-s)/1 var(--font-display); color: var(--color-muted); }
+.steps h3 { font-size: var(--text-title); }
+.steps p { color: var(--color-ink-2); }
 
-  footer { margin-top: 88px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 18px; }
+/* Le parcours : un chemin de huit modules */
+.path { list-style: none; margin: 0; padding: var(--space-xl); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-lg) var(--space-xl); }
+.path li { position: relative; padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule-2); border-radius: var(--radius-card); background: var(--color-paper); min-height: 112px; display: grid; align-content: space-between; gap: var(--space-xs); }
+.path li::after { content: ""; position: absolute; top: 50%; left: 100%; width: var(--space-xl); height: var(--rule-hair); background: var(--color-rule-2); }
+.path li:nth-child(4n)::after, .path li:last-child::after { display: none; }
+.path li.on { border-color: var(--color-accent); }
+.path li.on::after { background: var(--color-accent); }
+.path b { font-weight: 400; color: var(--color-ink); }
+.path small { font: 400 var(--text-xs) var(--font-outlier); color: var(--color-muted); }
+.path li.on small { color: var(--color-accent); }
+.path-note { margin-top: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); }
 
-  @media (max-width: 860px) {
-    .hero, .start { grid-template-columns: 1fr; gap: 32px; }
-    .hero { padding-top: 44px; }
-    .term { transform: none; }
-    .pieces { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 600px) {
-    .lede { font-size: 17.5px; }
-    .duo, .pieces { grid-template-columns: 1fr; }
-    .roadmap { grid-template-columns: repeat(2, 1fr); }
-    section { margin-top: 64px; }
-    .top .label { display: none; }
-  }
+/* Démarrer : la commande, puis la recette pour ton propre tuteur */
+.band { color: var(--color-ink); background: var(--color-paper-2); border-block: var(--rule-hair) solid var(--color-rule); }
+.start { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: var(--gap-columns); column-gap: calc(var(--gap-columns) * 3); }
+.start h2 { margin-bottom: var(--space-xl); }
+.start pre { margin: 0; padding: var(--space-lg); background: var(--color-paper); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); font-size: var(--text-sm); line-height: 1.8; overflow-x: auto; }
+.start pre .prompt { color: var(--color-muted); }
+.needs { margin: var(--space-lg) 0 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-xs) var(--space-lg); }
+.needs dt { font-weight: 500; }
+.needs dd { margin: 0; color: var(--color-ink-2); }
+.adapt { display: grid; gap: var(--space-md); align-content: start; color: var(--color-ink-2); }
+.adapt p { max-width: 54ch; }
+.adapt .actions { margin-top: var(--space-md); display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+
+/* Le pied de page */
+.foot { padding-block: var(--space-3xl) var(--space-2xl); }
+.foot .container { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--gap-columns); }
+.foot .wordmark { font-size: var(--text-section); }
+.foot p { font-size: var(--text-sm); color: var(--color-muted); max-width: 64ch; }
+.foot .colophon { display: grid; gap: var(--space-sm); }
+.foot a { color: var(--color-ink-2); }
+
+@media (max-width: 60rem) {
+  .hero { min-height: 0; }
+  .hero .container, .head, .versus, .start, .foot .container { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .versus li { grid-template-columns: minmax(0, 1fr); gap: var(--space-sm); }
+  .index > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); }
+  .index a { justify-self: start; text-align: left; }
+  .steps, .path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .path li:nth-child(4n)::after { display: block; }
+  .path li:nth-child(2n)::after { display: none; }
+}
+@media (max-width: 40rem) {
+  .nav { gap: var(--space-md); padding-left: var(--space-md); }
+  .nav a.link { display: none; }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .path { grid-template-columns: minmax(0, 1fr); padding: var(--space-md); }
+  .path li::after, .path li:nth-child(2n)::after, .path li:nth-child(4n)::after { top: 100%; left: var(--space-xl); width: var(--rule-hair); height: var(--space-lg); display: block; }
+  .path li:last-child::after { display: none; }
+  .session .talk { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
+  .session dd { margin-bottom: var(--space-sm); }
+}
 </style>
 </head>
 <body>
-<!-- Icônes : Lucide (ISC), https://lucide.dev -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
-  <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
-  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
-  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></symbol>
-  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v6.5L4.6 18.8A1.5 1.5 0 0 0 5.9 21h12.2a1.5 1.5 0 0 0 1.3-2.2L14 9.5V3"/><path d="M7.5 15h9"/></symbol>
-  <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></symbol>
-  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
-  <symbol id="i-cap" viewBox="0 0 24 24"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></symbol>
-  <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
-  <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.1 5.55a2 2 0 0 0 1.8 0l3.66-1.83A1 1 0 0 1 21 4.62v12.76a1 1 0 0 1-.55.9l-4.56 2.27a2 2 0 0 1-1.78 0l-4.22-2.1a2 2 0 0 0-1.78 0l-3.66 1.83A1 1 0 0 1 3 19.38V6.62a1 1 0 0 1 .55-.9l4.56-2.27a2 2 0 0 1 1.78 0z"/><path d="M15 5.76v15"/><path d="M9 3.24v15"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
-  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
-  <symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M15.39 4.39a1 1 0 0 0 1.68-.47 2.5 2.5 0 1 1 3.01 3.01 1 1 0 0 0-.47 1.68l1.68 1.68a2.41 2.41 0 0 1 0 3.42l-1.68 1.68a1 1 0 0 1-1.68-.47 2.5 2.5 0 1 0-3.01 3.01 1 1 0 0 1 .47 1.68l-1.68 1.68a2.41 2.41 0 0 1-3.42 0l-1.68-1.68a1 1 0 0 0-1.68.47 2.5 2.5 0 1 1-3.01-3.01 1 1 0 0 0 .47-1.68l-1.68-1.68a2.41 2.41 0 0 1 0-3.42L4.39 8.61a1 1 0 0 1 1.68.47 2.5 2.5 0 1 0 3.01-3.01 1 1 0 0 1-.47-1.68l1.68-1.68a2.41 2.41 0 0 1 3.42 0z"/></symbol>
-  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></symbol>
-  <symbol id="i-message" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
-  <symbol id="i-review" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
-  <symbol id="i-out" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
-  <symbol id="i-layout" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></symbol>
-</svg>
 
-<div class="wrap">
-  <div class="top">
-    <a class="brand" href="./"><span class="logo">rs</span>Learn Rust for web devs</a>
-    <span class="spacer"></span>
-    <a class="link" href="cours/"><svg class="i"><use href="#i-book"/></svg><span class="label">Les fiches</span></a>
-    <a class="link" href="https://github.com/matschik/learn-rust-for-web-devs"><svg class="i"><use href="#i-code"/></svg><span class="label">Le code</span></a>
-  </div>
+<div class="nav-wrap">
+  <nav class="nav" aria-label="Navigation principale">
+    <a class="wordmark" href="./" aria-label="Learn Rust for web devs, accueil"><span class="name">learn rust for web devs</span></a>
+    <a class="link" href="#le-repo">le repo</a>
+    <a class="link" href="https://github.com/matschik/learn-rust-for-web-devs">le code</a>
+    <a class="btn btn--primary" href="cours/">les fiches</a>
+  </nav>
+</div>
 
+<main>
   <header class="hero">
-    <div>
-      <span class="tag"><b>FR</b> En français, avec l'anglais technique</span>
-      <h1>Apprends Rust avec un agent qui <em>refuse</em> de coder à ta place</h1>
-      <p class="lede">Tu viens de TypeScript et tu veux écrire des backends en Rust. Claude Code joue le tuteur. Il te pose des questions, t'aide à lire le compilateur et relit ton code. Chaque ligne, c'est toi qui l'écris.</p>
-      <div class="ctas">
-        <a class="btn" href="cours/">Ouvrir la première fiche <svg class="i"><use href="#i-arrow"/></svg></a>
-        <a class="btn ghost" href="https://github.com/matschik/learn-rust-for-web-devs"><svg class="i"><use href="#i-code"/></svg>Voir le repo</a>
+    <div class="container">
+      <div>
+        <h1>Apprends Rust avec un agent qui <span class="verb">refuse</span> de coder à ta place</h1>
+        <p class="lead">Tu viens de TypeScript et tu veux écrire des backends en Rust. Claude Code joue le tuteur.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="cours/">Ouvrir la première fiche</a>
+          <a class="btn btn--secondary" href="https://github.com/matschik/learn-rust-for-web-devs">Voir le repo</a>
+        </div>
+        <p class="lang">En français, avec l’anglais technique.</p>
       </div>
-    </div>
-    <div class="term" role="img" aria-label="Extrait d'une séance : cargo test échoue avec l'erreur E0382, et le tuteur répond par une question.">
-      <div class="term-bar"><span></span><span></span><span></span><small>modules/02-ownership-structs/01-move</small></div>
-      <div class="term-body">
-        <p><span class="t-dim">$</span> cargo test -p m02_e01_move</p>
-        <p><span class="t-err">error[E0382]</span>: borrow of moved value: `title`</p>
-        <p><span class="t-who">toi</span><span class="t-me">je mets un .clone() ?</span></p>
-        <p><span class="t-who">tuteur</span><span class="t-tutor">Avant ça : après l'appel à describe(title), qui possède encore la String ?</span></p>
-        <p><span class="t-who">toi</span><span class="t-me">describe. Donc title a perdu ses permissions.</span></p>
-        <p><span class="t-who">tuteur</span><span class="t-tutor">Voilà. De quoi as-tu besoin ensuite : la String entière, ou juste sa longueur ?</span></p>
-      </div>
+      <figure class="session">
+        <div class="well">
+          <div class="out">
+<pre><span class="prompt">$ cargo test -p m02_e01_move</span>
+<span class="error">error[E0382]: borrow of moved value: `title`</span>
+ --&gt; modules/02-ownership-structs/01-move/src/lib.rs:8:15
+  |
+6 | pub fn describe_and_measure(title: String) -&gt; (String, usize) {
+  |                             ----- move occurs because `title` has type `String`
+7 |     let description = describe(title);
+  |                                ----- value moved here
+8 |     let len = title.len();
+  |               ^^^^^ value borrowed here after move
+<span class="hint">help: consider cloning the value if the performance cost is acceptable</span></pre>
+          </div>
+          <dl class="talk">
+            <dt>toi</dt><dd>Je mets un .clone() ?</dd>
+            <dt>tuteur</dt><dd class="tutor">Avant ça : après l’appel à describe(title), qui possède encore la String ?</dd>
+            <dt>toi</dt><dd>describe. Donc title a perdu ses permissions.</dd>
+            <dt>tuteur</dt><dd class="tutor">Voilà. De quoi as-tu besoin ensuite : la String entière, ou juste sa longueur ?</dd>
+          </dl>
+        </div>
+        <figcaption>Extrait d’une séance sur l’exercice <code>01-move</code> du module 02.</figcaption>
+      </figure>
     </div>
   </header>
 
-  <section>
-    <h2><span class="chip"><svg class="i"><use href="#i-bulb"/></svg></span>Un tuteur, pas un ghostwriter</h2>
-    <p class="intro">Un agent qui écrit ton code te fait livrer plus vite, mais tu n'apprends presque rien. Ici, le repo est configuré pour que Claude fasse ce que fait un bon prof : il te fait prédire, lire les erreurs et expliquer ce que tu as écrit.</p>
-    <div class="duo">
-      <div class="no"><strong><svg class="i"><use href="#i-x"/></svg>L'agent qui code</strong><p>« Fais passer ce test. » Le test passe et tu ne sais toujours pas ce qu'est un move.</p></div>
-      <div class="yes"><strong><svg class="i"><use href="#i-check"/></svg>L'agent qui enseigne</strong><p>« Que devient <code>title</code> après l'appel ? » Tu réponds, tu corriges, et tu sais pourquoi ça compile.</p></div>
+  <section class="section" aria-labelledby="tuteur">
+    <div class="container versus">
+      <div class="says">
+        <h2 id="tuteur">Un tuteur, pas un ghostwriter</h2>
+        <p>Il te pose des questions, t’aide à lire le compilateur et relit ton code. Chaque ligne, c’est toi qui l’écris.</p>
+        <p>Un agent qui écrit ton code te fait livrer plus vite, mais tu n’apprends presque rien. Ici, le repo est configuré pour que Claude fasse ce que fait un bon prof : il te fait prédire, lire les erreurs et expliquer ce que tu as écrit.</p>
+      </div>
+      <ol>
+        <li class="code"><h3>L’agent qui code</h3><p>« Fais passer ce test. » Le test passe et tu ne sais toujours pas ce qu’est un move.</p></li>
+        <li class="teach"><h3>L’agent qui enseigne</h3><p>« Que devient <code>title</code> après l’appel ? » Tu réponds, tu corriges, et tu sais pourquoi ça compile.</p></li>
+      </ol>
     </div>
   </section>
 
-  <section>
-    <h2><span class="chip"><svg class="i"><use href="#i-puzzle"/></svg></span>Ce que contient le repo</h2>
-    <p class="intro">Tout est versionné. Tu peux lire chaque pièce, la copier et l'adapter à un autre sujet.</p>
-    <div class="pieces">
-      <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-file"/></svg></span>
-        <h3>Un contrat pédagogique</h3>
-        <p>Huit règles que le tuteur ne transgresse pas : jamais de solution, des indices en trois paliers, un pont avec TS pour chaque concept, prédire avant de compiler.</p>
-        <a class="path" href="https://github.com/matschik/learn-rust-for-web-devs/blob/main/CLAUDE.md">CLAUDE.md <svg class="i"><use href="#i-out"/></svg></a>
+  <section class="section section--s" aria-labelledby="dashboard">
+    <div class="container">
+      <div class="head">
+        <h2 id="dashboard">Le cours, puis la pratique</h2>
+        <p>Le dashboard local ouvre l’exercice en cours : les sections du Rust Book, l’idée avec son diagramme, puis les étapes à cocher et l’état de <code>cargo test</code>.</p>
       </div>
-      <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-shield"/></svg></span>
-        <h3>Des hooks qui verrouillent</h3>
-        <p>Une règle écrite se contourne, un hook non. L'un empêche l'agent d'éditer tes exercices, l'autre lance clippy après chaque modification.</p>
-        <a class="path" href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/scripts">scripts/ <svg class="i"><use href="#i-out"/></svg></a>
+      <figure class="shot">
+        <img src="dashboard.png" width="1600" height="1000" alt="Le dashboard sur l’exercice Move, onglet Pratique : la commande cargo test, puis les étapes à cocher, trois sur sept déjà faites." loading="lazy">
+        <figcaption>Le dashboard sur l’exercice <code>01-move</code>. En local, il relance les tests à chaque sauvegarde ; sur ce site, il sert de lecteur de fiches.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="le-repo" aria-labelledby="repo">
+    <div class="container">
+      <div class="head">
+        <h2 id="repo">Ce que contient le repo</h2>
+        <p>Tout est versionné. Tu peux lire chaque pièce, la copier et l’adapter à un autre sujet.</p>
       </div>
-      <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-terminal"/></svg></span>
-        <h3>Des commandes de séance</h3>
-        <p><code>/next</code>, <code>/hint</code>, <code>/explain-error</code>, <code>/review</code>, <code>/quiz</code>. Par exemple, <code>/review</code> commence par te demander d'expliquer ton code.</p>
-        <a class="path" href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/.claude/commands">.claude/commands/ <svg class="i"><use href="#i-out"/></svg></a>
-      </div>
-      <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-flask"/></svg></span>
-        <h3>Des tests rouges</h3>
-        <p>Un crate par exercice, une fiche de cours puis une fiche pratique. Certains exercices ne compilent pas au départ, exprès.</p>
-        <a class="path" href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/modules">modules/ <svg class="i"><use href="#i-out"/></svg></a>
-      </div>
-      <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-history"/></svg></span>
-        <h3>Une mémoire</h3>
-        <p>Le tuteur note tes indices et tes erreurs récurrentes, puis te repose les notions fragiles au début des séances suivantes.</p>
-        <a class="path" href="https://github.com/matschik/learn-rust-for-web-devs/blob/main/PROGRESS.template.md">PROGRESS.md <svg class="i"><use href="#i-out"/></svg></a>
-      </div>
-      <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-wrench"/></svg></span>
-        <h3>Un projet fil rouge</h3>
-        <p>Taskr, une API de tâches qui grandit à chaque module jusqu'à Axum et Postgres. L'agent pose l'échafaudage et te laisse des <code>TODO(human)</code>.</p>
-        <a class="path" href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/projects/taskr">projects/taskr/ <svg class="i"><use href="#i-out"/></svg></a>
+      <div class="index">
+        <div><h3>Un contrat pédagogique</h3><p>Huit règles que le tuteur ne transgresse pas : jamais de solution, des indices en trois paliers, un pont avec TS pour chaque concept, prédire avant de compiler.</p><a href="https://github.com/matschik/learn-rust-for-web-devs/blob/main/CLAUDE.md">CLAUDE.md</a></div>
+        <div><h3>Des hooks qui verrouillent</h3><p>Une règle écrite se contourne, un hook non. L’un empêche l’agent d’éditer tes exercices, l’autre lance clippy après chaque modification.</p><a href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/scripts">scripts/</a></div>
+        <div><h3>Des commandes de séance</h3><p><code>/next</code>, <code>/hint</code>, <code>/explain-error</code>, <code>/review</code>, <code>/quiz</code>. Par exemple, <code>/review</code> commence par te demander d’expliquer ton code.</p><a href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/.claude/commands">.claude/commands/</a></div>
+        <div><h3>Des tests rouges</h3><p>Un crate par exercice, une fiche de cours puis une fiche pratique. Certains exercices ne compilent pas au départ, exprès.</p><a href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/modules">modules/</a></div>
+        <div><h3>Une mémoire</h3><p>Le tuteur note tes indices et tes erreurs récurrentes, puis te repose les notions fragiles au début des séances suivantes.</p><a href="https://github.com/matschik/learn-rust-for-web-devs/blob/main/PROGRESS.template.md">PROGRESS.md</a></div>
+        <div><h3>Un projet fil rouge</h3><p>Taskr, une API de tâches qui grandit à chaque module jusqu’à Axum et Postgres. L’agent pose l’échafaudage et te laisse des <code>TODO(human)</code>.</p><a href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/projects/taskr">projects/taskr/</a></div>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2><span class="chip"><svg class="i"><use href="#i-clock"/></svg></span>Une séance de trente minutes</h2>
-    <p class="intro">Le format est pensé pour les soirs de semaine : un exercice, une notion, et tu t'arrêtes.</p>
-    <ol class="steps">
-      <li><span class="dot"><svg class="i"><use href="#i-book"/></svg></span><b>Le cours d'abord</b><span><code>/next</code> te pose deux ou trois questions de rappel, puis ouvre la fiche : les sections du Rust Book et leurs quiz, l'équivalent TS, un diagramme.</span></li>
-      <li><span class="dot"><svg class="i"><use href="#i-bulb"/></svg></span><b>Tu prédis</b><span>Tu dis ce que le compilateur va répondre, puis tu lances <code>cargo test</code>.</span></li>
-      <li><span class="dot"><svg class="i"><use href="#i-message"/></svg></span><b>Tu bloques, tu demandes</b><span><code>/hint</code> donne une question, puis le concept, puis un exemple sur un autre cas. Jamais ta solution.</span></li>
-      <li><span class="dot"><svg class="i"><use href="#i-review"/></svg></span><b>Tu expliques</b><span>Tests verts : <code>/review</code>. Tu expliques ton code en deux phrases, puis l'agent le relit comme un dev Rust senior.</span></li>
-    </ol>
-  </section>
-
-  <section>
-    <h2><span class="chip"><svg class="i"><use href="#i-map"/></svg></span>Le parcours</h2>
-    <p class="intro">Le parcours suit la <a href="https://rust-book.cs.brown.edu/">version Brown du Rust Book</a>, avec ses quiz et son modèle de permissions. Les deux derniers modules sortent du livre pour construire une vraie API.</p>
-    <div class="roadmap" id="roadmap"></div>
-    <div class="legend"><svg class="i"><use href="#i-check"/></svg>Encadrés : les modules déjà disponibles. La suite arrive au fil de l'eau.</div>
-  </section>
-
-  <section class="start">
-    <div>
-      <h2><span class="chip"><svg class="i"><use href="#i-play"/></svg></span>Démarrer</h2>
-      <ul class="needs">
-        <li><svg class="i"><use href="#i-check"/></svg><span><a href="https://rustup.rs/">rustup</a> pour la toolchain</span></li>
-        <li><svg class="i"><use href="#i-check"/></svg><span><a href="https://code.claude.com/docs">Claude Code</a> pour le tuteur</span></li>
-        <li><svg class="i"><use href="#i-check"/></svg><span>Node 22 pour le dashboard local</span></li>
-        <li><svg class="i"><use href="#i-check"/></svg><span><code>jq</code> pour les hooks</span></li>
-      </ul>
-    </div>
-<pre><code><span class="t-dim">$</span> git clone https://github.com/matschik/learn-rust-for-web-devs.git
-<span class="t-dim">$</span> cd learn-rust-for-web-devs
-<span class="t-dim">$</span> claude
-<span class="t-dim">&gt;</span> /next</code></pre>
-  </section>
-
-  <section>
-    <div class="adapt">
-      <h2><span class="chip"><svg class="i"><use href="#i-cap"/></svg></span>Fais-en ton propre tuteur</h2>
-      <p>Le repo sert surtout d'inspiration. Forke-le et présente-toi dans un <code>CLAUDE.local.md</code> : prénom, stack, préférences. Il est ignoré par git.</p>
-      <p>Tu viens de Python ou de Go ? Réécris la section « L'apprenant » de <code>CLAUDE.md</code> et le pont avec TS devient un pont avec ton langage. La même recette marche pour n'importe quel sujet : un contrat, des hooks qui le font respecter, des tests rouges et une mémoire.</p>
+  <section class="section section--s" aria-labelledby="seance">
+    <div class="container">
+      <div class="head">
+        <h2 id="seance">Une séance de trente minutes</h2>
+        <p>Le format est pensé pour les soirs de semaine : un exercice, une notion, et tu t’arrêtes.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Le cours d’abord</h3><p><code>/next</code> te pose deux ou trois questions de rappel, puis ouvre la fiche : les sections du Rust Book et leurs quiz, l’équivalent TS, un diagramme.</p></li>
+        <li><h3>Tu prédis</h3><p>Tu dis ce que le compilateur va répondre, puis tu lances <code>cargo test</code>.</p></li>
+        <li><h3>Tu bloques, tu demandes</h3><p><code>/hint</code> donne une question, puis le concept, puis un exemple sur un autre cas. Jamais ta solution.</p></li>
+        <li><h3>Tu expliques</h3><p>Tests verts : <code>/review</code>. Tu expliques ton code en deux phrases, puis l’agent le relit comme un dev Rust senior.</p></li>
+      </ol>
     </div>
   </section>
 
-  <footer>
-    <span>Fait avec <a href="https://claude.com/claude-code">Claude Code</a> et le <a href="https://rust-book.cs.brown.edu/">Rust Book de Brown</a>.</span>
-    <span>Code sous licence MIT, fiches sous CC BY 4.0.</span>
-    <a href="https://github.com/matschik/learn-rust-for-web-devs">github.com/matschik/learn-rust-for-web-devs</a>
-  </footer>
-</div>
+  <section class="section" aria-labelledby="parcours">
+    <div class="container">
+      <div class="head">
+        <h2 id="parcours">Le parcours</h2>
+        <p>Le parcours suit la <a href="https://rust-book.cs.brown.edu/">version Brown du Rust Book</a>, avec ses quiz et son modèle de permissions. Les deux derniers modules sortent du livre pour construire une vraie API.</p>
+      </div>
+      <div class="well">
+        <ol class="path" id="roadmap" aria-label="Les huit modules du parcours"></ol>
+      </div>
+      <p class="path-note">Encadrés en ambre : les modules déjà disponibles. La suite arrive au fil de l’eau.</p>
+    </div>
+  </section>
+
+  <section class="band section--s" aria-labelledby="demarrer">
+    <div class="container start">
+      <div>
+        <h2 id="demarrer">Démarrer</h2>
+<pre><code><span class="prompt">$</span> git clone https://github.com/matschik/learn-rust-for-web-devs.git
+<span class="prompt">$</span> cd learn-rust-for-web-devs
+<span class="prompt">$</span> claude
+<span class="prompt">&gt;</span> /next</code></pre>
+        <dl class="needs">
+          <dt><a href="https://rustup.rs/">rustup</a></dt><dd>pour la toolchain</dd>
+          <dt><a href="https://code.claude.com/docs">Claude Code</a></dt><dd>pour le tuteur</dd>
+          <dt>Node 22</dt><dd>pour le dashboard local</dd>
+          <dt><code>jq</code></dt><dd>pour les hooks</dd>
+        </dl>
+      </div>
+      <div class="adapt">
+        <h2>Fais-en ton propre tuteur</h2>
+        <p>Le repo sert surtout d’inspiration. Forke-le et présente-toi dans un <code>CLAUDE.local.md</code> : prénom, stack, préférences. Il est ignoré par git.</p>
+        <p>Tu viens de Python ou de Go ? Réécris la section « L’apprenant » de <code>CLAUDE.md</code> et le pont avec TS devient un pont avec ton langage. La même recette marche pour n’importe quel sujet : un contrat, des hooks qui le font respecter, des tests rouges et une mémoire.</p>
+        <div class="actions">
+          <a class="btn btn--secondary" href="https://github.com/matschik/learn-rust-for-web-devs">Voir le repo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <a class="wordmark" href="./" aria-label="Learn Rust for web devs, accueil"><span class="name">learn rust for web devs</span></a>
+    <div class="colophon">
+      <p>Fait avec <a href="https://claude.com/claude-code">Claude Code</a> et le <a href="https://rust-book.cs.brown.edu/">Rust Book de Brown</a>. Code sous licence MIT, fiches sous CC BY 4.0. <a href="https://github.com/matschik/learn-rust-for-web-devs">github.com/matschik/learn-rust-for-web-devs</a></p>
+    </div>
+  </div>
+</footer>
+
 <script>
 // La roadmap vient du même état que les fiches, pour rester à jour avec les modules du repo.
 fetch("cours/state.json").then((r) => r.json()).then((state) => {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   document.getElementById("roadmap").innerHTML = state.roadmap.map((step) =>
-    `<div class="step ${step.available ? "available" : ""}"><b>${String(step.number).padStart(2, "0")}</b>${esc(step.title)}<small>${esc(step.chapters)}</small></div>`).join("");
+    `<li class="${step.available ? "on" : ""}"><b>${esc(step.title)}</b><small>module ${step.number}, ${esc(step.chapters)}</small></li>`).join("");
 }).catch(() => {});
 </script>
 </body>

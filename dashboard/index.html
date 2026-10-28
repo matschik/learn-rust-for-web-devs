@@ -4,147 +4,187 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Learn Rust for web devs</title>
+<meta name="description" content="Le dashboard du parcours : le cours, les étapes à cocher et l'état des tests de chaque exercice.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2410c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='36' font-weight='700' fill='%23fff7ed'%3Ers%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,650&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist:wght@400;500;600&family=Geist+Mono&display=swap" rel="stylesheet">
 <style>
+  /* Hallmark · shape: app screen · genre: atmospheric · theme: Lumen (deal 1/3, seed free-french-course-teaching-e686·57df0a55·2026-10-28·r0) · redesign: restyle
+   * signature: the step checklist beside the cargo test status · axes: dark/roman-serif/warm · posture: restrained · contrast: pass · v2.0.0 */
+  /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V3 · weakest: V, the layout is kept on purpose; the theme only lends palette, faces and surfaces */
+  /* Hallmark · waive 49b · lien du README de module · le dashboard affiche les fiches du parcours telles quelles, titres de chapitre compris */
   :root {
-    --bg: #faf8f5; --panel: #ffffff; --text: #1f1d1a; --muted: #6b665e; --line: #e7e2da;
-    --accent: #c2410c; --accent-soft: #fdebdd;
-    --ok: #15803d; --ok-soft: #dcfce7; --warn: #a16207; --warn-soft: #fef3c7;
-    --err: #b91c1c; --err-soft: #fee2e2; --todo-soft: #f1efeb;
-    --code: #f4f1ec; --shadow: 0 1px 2px rgba(31, 29, 26, .04), 0 4px 16px rgba(31, 29, 26, .05);
+    color-scheme: dark;
+    --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px;
+    --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.125rem; --text-xl: 1.375rem; --text-2xl: 2.75rem;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+    --color-paper: oklch(12.5% 0.027 290); --color-paper-2: oklch(16% 0.03 290); --color-paper-3: oklch(20% 0.032 290);
+    --color-ink: oklch(96% 0.01 300); --color-ink-2: oklch(85% 0.017 298); --color-muted: oklch(69% 0.026 295);
+    --color-rule: oklch(27% 0.034 290); --color-rule-2: oklch(36% 0.04 292);
+    --color-accent: oklch(80% 0.15 62); --color-accent-ink: oklch(14% 0.028 290); --color-accent-soft: oklch(24% 0.05 62);
+    --color-focus: oklch(80% 0.15 62);
+    --color-ok: oklch(80% 0.13 155); --color-ok-soft: oklch(22% 0.04 155);
+    --color-warn: oklch(85% 0.13 90); --color-warn-soft: oklch(23% 0.04 90);
+    --color-err: oklch(74% 0.14 22); --color-err-soft: oklch(22% 0.05 22);
+    --font-display: "Instrument Serif", ui-serif, Georgia, serif; --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+    --radius-card: 10px; --radius-control: 8px; --radius-pill: 999px; --rule-hair: 1px;
+    /* Les diagrammes cours.svg lisent ces noms-là : ils suivent ainsi le thème clair ou sombre. */
+    --panel: var(--color-paper-2); --text: var(--color-ink); --muted: var(--color-muted); --line: var(--color-rule-2); --code: var(--color-paper-3);
+    --accent: var(--color-accent); --accent-soft: var(--color-accent-soft); --ok: var(--color-ok); --ok-soft: var(--color-ok-soft);
+    --warn: var(--color-warn); --warn-soft: var(--color-warn-soft); --err: var(--color-err); --err-soft: var(--color-err-soft);
   }
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: light) {
     :root {
-      --bg: #151412; --panel: #1d1b19; --text: #ece8e2; --muted: #9c968c; --line: #2f2c28;
-      --accent: #f97316; --accent-soft: #3a2314;
-      --ok: #4ade80; --ok-soft: #14301f; --warn: #facc15; --warn-soft: #352c0e;
-      --err: #f87171; --err-soft: #3a1818; --todo-soft: #262421;
-      --code: #24221f; --shadow: none;
+      color-scheme: light;
+      --color-paper: oklch(97% 0.008 290); --color-paper-2: oklch(94.5% 0.011 290); --color-paper-3: oklch(91.5% 0.013 290);
+      --color-ink: oklch(18% 0.02 290); --color-ink-2: oklch(30% 0.022 292); --color-muted: oklch(47% 0.026 292);
+      --color-rule: oklch(88% 0.014 290); --color-rule-2: oklch(79% 0.02 292);
+      --color-accent: oklch(52% 0.15 52); --color-accent-ink: oklch(98% 0.01 62); --color-accent-soft: oklch(93% 0.04 62);
+      --color-focus: oklch(52% 0.15 52);
+      --color-ok: oklch(45% 0.12 155); --color-ok-soft: oklch(94% 0.04 155);
+      --color-warn: oklch(48% 0.11 80); --color-warn-soft: oklch(94% 0.05 90);
+      --color-err: oklch(50% 0.17 25); --color-err-soft: oklch(94% 0.03 22);
     }
   }
-  * { box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { overflow-x: clip; }
+  html { scrollbar-color: var(--color-muted) var(--color-paper); }
+  body { caret-color: var(--color-accent); }
+  button:disabled { opacity: 0.55; cursor: not-allowed; }
+  .table { overflow-x: auto; }
+  body { margin: 0; background: var(--color-paper); color: var(--color-ink); font: 400 var(--text-md)/1.6 var(--font-body); -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  ::selection { background: color-mix(in oklab, var(--color-accent) 25%, transparent); }
+  a { color: var(--color-accent); text-decoration-thickness: 1px; text-underline-offset: 0.16em; }
+  code, pre { font-family: var(--font-mono); }
   .i { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.14em; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
-  a { color: var(--accent); text-underline-offset: 2px; }
-  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .muted { color: var(--muted); font-size: 13px; }
-  .wrap { max-width: 780px; margin: 0 auto; padding: 20px 16px 80px; }
-  .loading { padding: 80px 0; text-align: center; color: var(--muted); }
+  .muted { color: var(--color-muted); font-size: var(--text-xs); }
+  .wrap { max-width: 800px; margin: 0 auto; padding: var(--space-lg) var(--space-md) var(--space-3xl); }
+  .loading { padding: var(--space-3xl) 0; text-align: center; color: var(--color-muted); }
 
-  /* En-tête : une ligne discrète */
-  .top { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
-  .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text); text-decoration: none; }
-  .logo { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff7ed; display: grid; place-items: center; font: 700 12px ui-monospace, Menlo, monospace; }
+  /* La barre du haut et la progression */
+  .top { display: flex; align-items: center; gap: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); min-height: 40px; }
+  .brand { display: flex; align-items: center; gap: var(--space-xs); color: var(--color-ink); text-decoration: none; font: 400 var(--text-xl)/1 var(--font-display); text-transform: lowercase; letter-spacing: -0.01em; }
   .top .spacer { flex: 1; }
-  .top a.link { color: var(--muted); text-decoration: none; }
-  .top a.link:hover { color: var(--text); }
-  .bar { height: 3px; border-radius: 99px; background: var(--todo-soft); overflow: hidden; margin: 12px 0 36px; }
-  .bar > div { height: 100%; background: var(--accent); transition: width .4s; }
+  .top a.link { color: var(--color-muted); text-decoration: none; padding: var(--space-xs) 0; }
+  .top a.link:hover { color: var(--color-ink); }
+  .top a.link:active { color: var(--color-accent); }
+  .bar { height: 2px; background: var(--color-rule); overflow: hidden; margin: var(--space-sm) 0 var(--space-xl); }
+  .bar > div { height: 100%; background: var(--color-accent); transform-origin: left; transition: transform var(--dur-long) var(--ease-out); }
 
-  /* Vue focus */
-  .eyebrow { font-size: 13px; color: var(--muted); letter-spacing: .02em; }
-  .focus h1 { font-family: "Fraunces", Georgia, serif; font-weight: 650; font-size: 38px; line-height: 1.1; margin: 8px 0 22px; letter-spacing: -0.02em; }
-  .eyebrow .mod { font: 600 12px ui-monospace, Menlo, monospace; color: var(--accent); background: var(--accent-soft); padding: 2px 7px; border-radius: 6px; margin-right: 6px; }
-  .tabs { display: inline-flex; background: var(--todo-soft); border-radius: 10px; padding: 3px; margin-bottom: 28px; }
-  .tabs button { border: 0; background: none; color: var(--muted); font: 600 14px system-ui, sans-serif; padding: 7px 16px; border-radius: 8px; cursor: pointer; }
-  .tabs button.on { background: var(--panel); color: var(--text); box-shadow: var(--shadow); }
-  .tabs button .n { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--line); color: var(--muted); font-size: 11px; margin-right: 6px; }
-  .tabs button.on .n { background: var(--accent); color: #fff7ed; }
-
-  .doc { overflow-wrap: anywhere; }
-  .doc h2 { font-size: 19px; font-weight: 650; color: var(--text); margin: 40px 0 12px; display: flex; align-items: center; gap: 10px; }
-  .doc h2 .i { color: var(--accent); }
-  .doc p, .doc li { font-size: 16.5px; }
-  .doc pre { background: var(--code); padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
-  .doc code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 14px; }
+  /* L'exercice en cours */
+  .crumbs { font-size: var(--text-sm); color: var(--color-muted); display: flex; align-items: baseline; gap: var(--space-xs); flex-wrap: wrap; }
+  .crumbs a { color: var(--color-muted); }
+  .crumbs a:hover { color: var(--color-ink); }
+  .focus h1 { font: 400 var(--text-2xl)/1 var(--font-display); text-transform: lowercase; letter-spacing: -0.015em; margin: var(--space-xs) 0 var(--space-lg); text-wrap: balance; overflow-wrap: break-word; min-width: 0; }
+  .tabs { display: inline-flex; gap: var(--space-2xs); padding: var(--space-2xs); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-pill); margin-bottom: var(--space-xl); }
+  .tabs button { border: 0; background: none; color: var(--color-muted); font: 500 var(--text-sm) var(--font-body); min-height: 36px; padding: 0 var(--space-md); border-radius: var(--radius-pill); cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-xs); transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out); }
+  .tabs button:hover { color: var(--color-ink); background: var(--color-paper-2); }
+  .tabs button:active { background: var(--color-paper-3); }
+  .tabs button.on { background: var(--color-paper-3); color: var(--color-ink); }
+  .tabs button .n { font-variant-numeric: tabular-nums; color: var(--color-muted); }
+  .tabs button.on .n { color: var(--color-accent); }
+  .tabs button .c { font: 400 var(--text-xs) var(--font-mono); color: var(--color-muted); }
+  .doc h2 { font-size: var(--text-xl); font-weight: 600; line-height: 1.3; margin: var(--space-xl) 0 var(--space-sm); display: flex; align-items: center; gap: var(--space-sm); text-wrap: balance; }
+  .doc p, .doc li { max-width: 68ch; text-wrap: pretty; }
+  .doc pre { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); padding: var(--space-md); border-radius: var(--radius-card); overflow-x: auto; font-size: var(--text-sm); line-height: 1.55; }
+  .doc code { background: var(--color-paper-3); padding: 0 var(--space-2xs); border-radius: var(--space-2xs); font-size: 0.875em; }
   .doc pre code { background: none; padding: 0; }
-  .doc table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; font-size: 14px; }
-  .doc th, .doc td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; }
-  .doc th { color: var(--muted); font-weight: 600; }
-  .figure { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; box-shadow: var(--shadow); }
-  .figure { overflow-x: auto; }
-  .figure svg { display: block; width: 100%; min-width: 560px; height: auto; }
-  .doc > h2:first-child { margin-top: 0; }
+  .doc table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); margin: var(--space-lg) 0; }
+  .doc th, .doc td { border-bottom: var(--rule-hair) solid var(--color-rule); padding: var(--space-xs) var(--space-sm); text-align: left; vertical-align: top; }
+  .doc th { color: var(--color-muted); font-weight: 500; white-space: nowrap; }
+  .figure { background: var(--color-paper-2); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-md); margin: var(--space-lg) 0; }
+  .figure svg { width: 100%; height: auto; display: block; }
 
-  .reads { display: grid; gap: 8px; }
-  .read { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); text-decoration: none; transition: border-color .15s; }
-  .read:hover { border-color: var(--accent); }
-  .read .kind { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-size: 17px; background: var(--accent-soft); color: var(--accent); }
-  .read .kind.std { background: var(--ok-soft); color: var(--ok); }
-  .read .kind.err { background: var(--err-soft); color: var(--err); }
-  .read .kind.ref { background: var(--todo-soft); color: var(--muted); }
-  .read .label { flex: 1; min-width: 0; font-size: 15px; }
-  .read .label small { display: block; color: var(--muted); font-size: 13px; }
-  .read .arrow { color: var(--muted); }
+  /* Les lectures du Rust Book */
+  .reads { display: grid; gap: var(--space-xs); }
+  .read { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm) var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); color: var(--color-ink); text-decoration: none; transition: border-color var(--dur-short) var(--ease-out); }
+  .read:hover { border-color: var(--color-rule-2); }
+  .read:active { background: var(--color-paper-2); }
+  .read .kind { flex: none; width: 32px; height: 32px; border-radius: var(--radius-control); display: grid; place-items: center; background: var(--color-accent-soft); color: var(--color-accent); }
+  .read .kind.std { background: var(--color-ok-soft); color: var(--color-ok); }
+  .read .kind.err { background: var(--color-err-soft); color: var(--color-err); }
+  .read .kind.ref { background: var(--color-paper-3); color: var(--color-muted); }
+  .read .label { flex: 1; min-width: 0; }
+  .read .label small { display: block; color: var(--color-muted); font-size: var(--text-xs); }
+  .read .arrow { color: var(--color-muted); }
 
-  .keep { background: var(--accent-soft); border-radius: 14px; padding: 6px 20px; margin-top: 36px; }
-  .keep h2 { color: var(--accent); margin-top: 16px; }
-  .next { margin-top: 32px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .keep { background: var(--color-paper-2); border-radius: var(--radius-card); padding: var(--space-2xs) var(--space-lg) var(--space-lg); margin-top: var(--space-xl); }
+  .keep h2 { margin-top: var(--space-lg); }
+  .next { margin-top: var(--space-xl); display: flex; justify-content: flex-end; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
   .next .spacer { flex: 1; }
-  a.btn { text-decoration: none; display: inline-block; }
-  .btn { border: 0; background: var(--accent); color: #fff7ed; font: 600 15px system-ui, sans-serif; padding: 12px 20px; border-radius: 10px; cursor: pointer; }
-  .btn.ghost { background: none; color: var(--muted); padding: 12px 0; }
+  .btn { border: 0; background: var(--color-accent); color: var(--color-accent-ink); font: 500 var(--text-md) var(--font-body); min-height: 44px; padding: 0 var(--space-lg); border-radius: var(--radius-pill); cursor: pointer; display: inline-flex; align-items: center; transition: opacity var(--dur-micro) var(--ease-out); }
+  .btn:hover { opacity: 0.9; }
+  .btn:active { opacity: 0.8; }
+  .btn.ghost { background: none; color: var(--color-muted); padding: 0; }
+  .btn.ghost:hover { color: var(--color-ink); opacity: 1; }
+  a.btn { text-decoration: none; }
 
-  .status { border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; }
-  .status strong { display: block; font-size: 18px; }
-  .status p { margin: 4px 0 0; }
-  .status pre { margin: 12px 0 0; padding: 12px; border-radius: 8px; background: var(--panel); overflow-x: auto; font-size: 13px; line-height: 1.45; white-space: pre; }
-  .st-todo { background: var(--todo-soft); }
-  .st-in-progress { background: var(--warn-soft); } .st-in-progress strong { color: var(--warn); }
-  .st-broken { background: var(--err-soft); } .st-broken strong { color: var(--err); }
-  .st-green, .st-validated { background: var(--ok-soft); } .st-green strong, .st-validated strong { color: var(--ok); }
-  .cmd { display: flex; align-items: center; gap: 8px; background: var(--code); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 6px; }
-  .cmd code { flex: 1; overflow-x: auto; white-space: nowrap; }
-  .cmd button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 4px 10px; cursor: pointer; font: 12px system-ui, sans-serif; display: inline-flex; align-items: center; gap: 6px; }
-  .task { border-left: 3px solid var(--accent); padding-left: 18px; margin-top: 28px; }
+  /* L'état des tests */
+  .status { border-radius: var(--radius-card); padding: var(--space-md) var(--space-lg); margin-bottom: var(--space-md); }
+  .status strong { display: block; font-weight: 600; }
+  .status p { margin: var(--space-2xs) 0 0; }
+  .status pre { margin: var(--space-sm) 0 0; padding: var(--space-sm); border-radius: var(--radius-control); background: var(--color-paper); color: var(--color-ink); overflow-x: auto; font-size: var(--text-xs); line-height: 1.5; white-space: pre; }
+  .st-todo { background: var(--color-paper-2); color: var(--color-ink); }
+  .st-in-progress { background: var(--color-warn-soft); color: var(--color-ink); } .st-in-progress strong { color: var(--color-warn); }
+  .st-broken { background: var(--color-err-soft); color: var(--color-ink); } .st-broken strong { color: var(--color-err); }
+  .st-green, .st-validated { background: var(--color-ok-soft); color: var(--color-ink); } .st-green strong, .st-validated strong { color: var(--color-ok); }
+  .cmd { display: flex; align-items: center; gap: var(--space-xs); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-xs) var(--space-xs) var(--space-xs) var(--space-md); font-size: var(--text-sm); margin-bottom: var(--space-xs); }
+  .cmd code { background: none; flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; }
+  .cmd button { border: var(--rule-hair) solid var(--color-rule-2); background: none; color: var(--color-ink); border-radius: var(--radius-pill); min-height: 32px; padding: 0 var(--space-sm); cursor: pointer; font: 500 var(--text-xs) var(--font-body); display: inline-flex; align-items: center; gap: var(--space-xs); transition: background-color var(--dur-micro) var(--ease-out); }
+  .cmd button:hover { background: var(--color-paper-2); }
+  .cmd button:active { background: var(--color-paper-3); }
+
+  /* Les étapes à cocher */
+  .task { border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-lg); margin-top: var(--space-xl); }
   .task h2 { margin-top: 0; }
-  .task h3, .steps h3 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 20px 0 6px; letter-spacing: .02em; }
-  ul.checks { list-style: none; padding: 0; margin: 8px 0 16px; }
-  ul.checks li { margin: 0; }
-  ul.checks label { display: flex; gap: 12px; align-items: flex-start; padding: 7px 10px; margin: 0 -10px; border-radius: 8px; cursor: pointer; }
-  ul.checks label:hover { background: var(--todo-soft); }
-  ul.checks input { flex: none; width: 18px; height: 18px; margin: 4px 0 0; accent-color: var(--accent); cursor: pointer; }
-  ul.checks li.on span { color: var(--muted); }
-  .steps-count { font: 500 13px ui-monospace, Menlo, monospace; color: var(--muted); margin-left: auto; }
-  .tabs button .c { font: 500 12px ui-monospace, Menlo, monospace; color: var(--muted); margin-left: 8px; }
-  .eyebrow a.mod { text-decoration: none; }
-  details { margin-top: 32px; }
-  details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
-  .output { background: var(--code); padding: 12px; border-radius: 8px; max-height: 320px; overflow: auto; white-space: pre; font-size: 13px; line-height: 1.45; margin-top: 8px; }
+  .task h3 { font-size: var(--text-sm); color: var(--color-muted); font-weight: 500; margin: var(--space-lg) 0 var(--space-xs); }
+  ul.checks { list-style: none; padding: 0; margin: var(--space-xs) 0 0; }
+  ul.checks li { margin: 0; max-width: none; }
+  ul.checks label { display: flex; gap: var(--space-sm); align-items: flex-start; padding: var(--space-xs) var(--space-sm); margin: 0 calc(var(--space-sm) * -1); border-radius: var(--radius-control); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-out); }
+  ul.checks label:hover { background: var(--color-paper-2); }
+  ul.checks input { flex: none; width: 18px; height: 18px; margin: var(--space-2xs) 0 0; accent-color: var(--color-accent); cursor: pointer; }
+  ul.checks li.on span { color: var(--color-muted); }
+  .steps-count { font: 400 var(--text-xs) var(--font-mono); color: var(--color-muted); margin-left: auto; }
+  details { margin-top: var(--space-xl); }
+  details summary { cursor: pointer; color: var(--color-muted); font-size: var(--text-sm); }
+  .output { background: var(--color-paper-2); padding: var(--space-sm); border-radius: var(--radius-control); max-height: 320px; overflow: auto; white-space: pre; font: var(--text-xs)/1.5 var(--font-mono); margin-top: var(--space-xs); }
 
-  /* Vue d'ensemble */
-  .overview h1 { font-family: "Fraunces", Georgia, serif; font-weight: 650; font-size: 32px; margin: 0 0 20px; letter-spacing: -0.015em; }
-  .roadmap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 24px; }
-  .step { font-size: 13px; padding: 10px 12px; border-radius: 10px; background: var(--todo-soft); color: var(--muted); min-width: 0; }
-  .step b { font-size: 12px; margin-right: 6px; }
-  .step small { display: block; font-size: 12px; opacity: .8; }
-  .step.available { background: var(--accent-soft); color: var(--text); }
-  .step.done { background: var(--ok-soft); color: var(--text); }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
-  .card > h2 { margin: 0 0 10px; font-size: 17px; font-weight: 650; display: flex; align-items: center; gap: 10px; }
-  .card > h2 .i { color: var(--accent); }
-  .card > h2 .n { margin-left: auto; font: 500 13px ui-monospace, Menlo, monospace; color: var(--muted); }
+  /* La vue d'ensemble */
+  .overview h1 { font: 400 var(--text-2xl)/1 var(--font-display); text-transform: lowercase; letter-spacing: -0.015em; margin: 0 0 var(--space-lg); }
+  .roadmap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-xs); margin-bottom: var(--space-lg); }
+  .step { font-size: var(--text-sm); padding: var(--space-sm); border-radius: var(--radius-control); border: var(--rule-hair) solid var(--color-rule); color: var(--color-muted); min-width: 0; }
+  .step b { font-weight: 500; font-variant-numeric: tabular-nums; margin-right: var(--space-2xs); }
+  .step small { display: block; font-size: var(--text-xs); }
+  .step.available { color: var(--color-ink); border-color: var(--color-rule-2); }
+  .step.done { color: var(--color-ink); background: var(--color-ok-soft); border-color: transparent; }
+  .card { border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-md); margin-bottom: var(--space-md); color: var(--color-ink); }
+  .card-head { display: flex; align-items: baseline; gap: var(--space-sm); margin: 0 0 var(--space-sm); }
+  .card h2 { margin: 0; font-size: var(--text-lg); font-weight: 600; display: flex; align-items: center; gap: var(--space-sm); }
+  .card > h2 { margin-bottom: var(--space-sm); }
+  .card-head .n { margin-left: auto; font: 400 var(--text-xs) var(--font-mono); color: var(--color-muted); }
   ul.ex { list-style: none; margin: 0; padding: 0; }
-  ul.ex a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: inherit; text-decoration: none; }
-  ul.ex a:hover { background: var(--todo-soft); }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
-  .ex-title .num { font: 500 12px ui-monospace, Menlo, monospace; color: var(--muted); margin-right: 8px; }
+  ul.ex a { display: flex; align-items: center; gap: var(--space-sm); min-height: 44px; padding: 0 var(--space-sm); border-radius: var(--radius-control); color: inherit; text-decoration: none; transition: background-color var(--dur-micro) var(--ease-out); }
+  ul.ex a:hover { background: var(--color-paper-2); }
+  ul.ex a:active { background: var(--color-paper-3); }
+  .ex-title .num { font-variant-numeric: tabular-nums; color: var(--color-muted); margin-right: var(--space-xs); }
   .ex-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .pill { font-size: 12px; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
-  .s-validated .dot, .s-green .dot { background: var(--ok); } .s-validated .pill, .s-green .pill { background: var(--ok-soft); color: var(--ok); }
-  .s-in-progress .dot { background: var(--warn); } .s-in-progress .pill { background: var(--warn-soft); color: var(--warn); }
-  .s-broken .dot { background: var(--err); } .s-broken .pill { background: var(--err-soft); color: var(--err); }
-  .s-todo .dot { border: 2px solid var(--muted); } .s-todo .pill { background: var(--todo-soft); color: var(--muted); }
-  .side-list { margin: 0; padding-left: 18px; }
-  @media (min-width: 700px) { .roadmap { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 600px) { .focus h1 { font-size: 27px; } .bar { margin-bottom: 26px; } .top .count, .brand .name { display: none; } .figure { padding: 10px; } }
+  .pill { font-size: var(--text-xs); padding: var(--space-3xs) var(--space-xs); border-radius: var(--radius-pill); white-space: nowrap; }
+  .s-validated .pill, .s-green .pill { background: var(--color-ok-soft); color: var(--color-ok); }
+  .s-in-progress .pill { background: var(--color-warn-soft); color: var(--color-warn); }
+  .s-broken .pill { background: var(--color-err-soft); color: var(--color-err); }
+  .s-todo .pill { background: var(--color-paper-3); color: var(--color-muted); }
+  .side-list { margin: 0; padding-left: var(--space-lg); }
+  @media (min-width: 700px) { .roadmap { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .focus h1, .overview h1 { font-size: 2.25rem; } .top .count { display: none; } .figure { padding: var(--space-xs); } .task { padding: var(--space-md); } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
 </style>
 </head>
 <body>
 <div class="wrap" id="app"><div class="loading">Chargement…</div></div>
+<noscript><div class="wrap">Le dashboard a besoin de JavaScript pour afficher les fiches du parcours.</div></noscript>
 <script>
 const LABELS = { validated: "Validé", green: "Tests verts", "in-progress": "En cours", broken: "Ne compile pas", todo: "À faire" };
 const RESOURCES = [
@@ -216,7 +256,7 @@ function markdown(md, base, file = "") {
       for (; i < lines.length && lines[i].startsWith("|"); i++) rows.push(lines[i]);
       const cells = (r) => r.slice(1, r.endsWith("|") ? -1 : undefined).split("|").map((c) => c.trim());
       const body = rows.slice(2).map((r) => `<tr>${cells(r).map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("");
-      out.push(`<table><thead><tr>${cells(rows[0]).map((c) => `<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table>`);
+      out.push(`<div class="table"><table><thead><tr>${cells(rows[0]).map((c) => `<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table></div>`);
     } else if (/^\s*([-*]|\d+\.) /.test(line)) {
       const ordered = /^\s*\d+\. /.test(line);
       const items = [];
@@ -351,7 +391,7 @@ async function file(path) {
   return files.get(path);
 }
 
-// Les diagrammes sont insérés dans la page (et pas en <img>) pour suivre le thème clair / sombre.
+// Les diagrammes sont insérés dans la page (et pas en image) pour suivre le thème clair / sombre.
 async function hydrateFigures() {
   for (const el of document.querySelectorAll(".figure[data-svg]")) {
     el.innerHTML = await file(el.dataset.svg);
@@ -364,8 +404,8 @@ function topline(right) {
   const done = all.filter(isDone).length;
   const count = STATIC ? `${all.length} exercices` : `${done}/${all.length} exercices validés`;
   const home = STATIC ? `<a class="link" href="../">Le projet</a>` : "";
-  return `<div class="top"><a class="brand" href="#"><span class="logo">rs</span><span class="name">Learn Rust for web devs</span></a><span class="count">${count}</span><span class="spacer"></span>${home}${right}</div>
-    <div class="bar"><div style="width:${all.length ? (done / all.length) * 100 : 0}%"></div></div>`;
+  return `<div class="top"><a class="brand" href="#" aria-label="Learn Rust for web devs, l'exercice en cours"><span class="name">learn rust for web devs</span></a><span class="count">${count}</span><span class="spacer"></span>${home}${right}</div>
+    <div class="bar"><div style="transform: scaleX(${all.length ? done / all.length : 0})"></div></div>`;
 }
 
 async function renderFocus(pinned) {
@@ -427,7 +467,7 @@ async function renderFocus(pinned) {
 
   app.innerHTML = topline(right) + `
     <div class="focus">
-      <div class="eyebrow"><a class="mod" href="#module/${esc(ex.module.id)}" title="Le module">${String(ex.module.number).padStart(2, "0")}</a>${esc(ex.module.title)}, exercice ${position} sur ${ex.module.exercises.length}</div>
+      <nav class="crumbs" aria-label="Où tu es"><a href="#module/${esc(ex.module.id)}">Module ${ex.module.number}, ${esc(ex.module.title.toLowerCase())}</a><span>exercice ${position} sur ${ex.module.exercises.length}</span></nav>
       <h1>${inline(shortTitle(c.title || p.title || ex.title))}</h1>
       <div class="tabs" role="tablist">
         <button class="${tab === "cours" ? "on" : ""}" data-tab="cours"><span class="n">1</span>Cours${tabCount(coursSteps)}</button>
@@ -462,7 +502,7 @@ async function renderModule(m, pinned) {
   const go = first ? `<a class="btn" href="#ex/${esc(first.pkg)}">${first.status === "todo" && !stepsDone(first.steps) ? "Commencer" : "Reprendre"} : ${esc(shortTitle(first.title))} →</a>` : "";
   document.getElementById("app").innerHTML = topline(right) + `
     <div class="focus">
-      <div class="eyebrow"><span class="mod">${String(m.number).padStart(2, "0")}</span>Module, ${esc(step?.chapters ?? "")} du Rust Book</div>
+      <nav class="crumbs" aria-label="Où tu es"><a href="#overview">Module ${m.number}</a><span>Rust Book, ${esc(step?.chapters ?? "")}</span></nav>
       <h1>${esc(m.title)}</h1>
       <div class="doc">${markdown(r.intro, base, m.readme)}${body}
         <div class="next"><span class="spacer"></span>${pinned ? go : continueButton(`m:${m.id}`) || go}</div>
@@ -486,15 +526,15 @@ function renderOverview() {
     return `<div class="step ${finished ? "done" : step.available ? "available" : ""}"><b>${String(step.number).padStart(2, "0")}${finished ? " ✓" : ""}</b>${esc(step.title)}<small>${esc(step.chapters)}</small></div>`;
   }).join("");
   const modules = state.modules.map((m) => `
-    <div class="card"><h2>${icon("layers")}${String(m.number).padStart(2, "0")} ${esc(m.title)}<span class="n">${m.exercises.filter(isDone).length}/${m.exercises.length}</span></h2>
-      <ul class="ex"><li class="${moduleStatus(m)}"><a href="#module/${esc(m.id)}"><span class="dot"></span><span class="ex-title">Avant de commencer et fin de module</span><span class="pill">${stepsDone(m.steps)}/${m.steps.length} étapes</span></a></li></ul>
+    <div class="card"><div class="card-head"><h2>${icon("layers")}${String(m.number).padStart(2, "0")} ${esc(m.title)}</h2><span class="n">${m.exercises.filter(isDone).length}/${m.exercises.length}</span></div>
+      <ul class="ex"><li class="${moduleStatus(m)}"><a href="#module/${esc(m.id)}"><span class="ex-title">Avant de commencer et fin de module</span><span class="pill">${stepsDone(m.steps)}/${m.steps.length} étapes</span></a></li></ul>
       <ul class="ex">${m.exercises.map((ex) => {
         const s = ex.status !== "validated" && allChecked(ex.steps) ? "green" : visualStatus(ex);
         const done = stepsDone(ex.steps);
         const pill = s === "in-progress" ? `${ex.tests.passed}/${ex.tests.total} tests`
           : s === "todo" && done ? `${done}/${ex.steps.length} étapes`
           : ex.status !== "validated" && allChecked(ex.steps) ? "Étapes faites" : LABELS[s];
-        return `<li class="s-${s}"><a href="#ex/${esc(ex.pkg)}"><span class="dot"></span><span class="ex-title"><span class="num">${esc(ex.id.slice(0, 2))}</span>${esc(shortTitle(ex.title))}</span><span class="pill">${pill}</span></a></li>`;
+        return `<li class="s-${s}"><a href="#ex/${esc(ex.pkg)}"><span class="ex-title"><span class="num">${esc(ex.id.slice(0, 2))}</span>${esc(shortTitle(ex.title))}</span><span class="pill">${pill}</span></a></li>`;
       }).join("")}</ul></div>`).join("");
   const resources = `<div class="reads">${RESOURCES.map(([kind, label, sub, url]) =>
     `<a class="read" href="${url}" target="_blank" rel="noopener"><span class="kind ${kind === "book" ? "" : kind}">${icon(kind)}</span><span class="label">${esc(label)}<small>${esc(sub)}</small></span><span class="arrow">${icon("out")}</span></a>`).join("")}</div>`;
