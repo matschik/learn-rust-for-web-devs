@@ -4,12 +4,12 @@ On commence en douceur. Dans ce module, tu vas prendre tes repères : lancer un 
 
 Tout ce qu'il te faut est dans les leçons. Si tu as envie d'aller plus loin, elles suivent les [chapitres 1 à 3 du Rust Book](https://rust-book.cs.brown.edu/ch01-00-getting-started.html), mais tu n'as pas besoin de le lire.
 
-| Exercice | Rust Book | Concept | En TS, ce serait |
-| --- | --- | --- | --- |
-| `01-cargo` | 1.2, 1.3, 3.3 | cargo, fonctions, `String` | `npm init`, `export function` |
-| `02-variables` | 3.1 | `let` immuable par défaut, `mut`, shadowing | `const` partout, `let` quand ça bouge |
-| `03-types` | 3.2 | entiers signés/non signés, `f64`, conversions `as`, tableaux | `number` pour tout |
-| `04-control-flow` | 3.5 | `if` est une expression, `for`, `loop`, `while` | ternaire, `for...of` |
+## Sommaire
+
+1. [Cargo](01-cargo/) : lancer un projet, écrire tes premières fonctions et construire du texte. *En TS : `npm init`, `export function`, les template strings.*
+2. [Variables](02-variables/) : `let` immuable par défaut, `mut` quand ça bouge, et le shadowing. *En TS : `const` partout, `let` quand ça change.*
+3. [Types numériques](03-types/) : entiers, flottants, conversions avec `as` et tableaux de taille fixe. *En TS : un seul `number` pour tout.*
+4. [Contrôle de flux](04-control-flow/) : `if` qui renvoie une valeur, `for`, `loop` et `while`. *En TS : le ternaire et `for...of`.*
 
 Pour chaque exercice, tu lis d'abord la leçon, puis tu passes à la pratique. Tu coches les étapes au fil de l'eau, ça t'aide à savoir où tu en es la prochaine fois.
 
@@ -19,7 +19,11 @@ Pour chaque exercice, tu lis d'abord la leçon, puis tu passes à la pratique. T
 - [ ] Lance `claude` à la racine du repo, puis `/next`.
 - [ ] Optionnel : installe [bacon](https://dioxus.github.io/bacon/) (`cargo install --locked bacon`) et lance `bacon test -- -p <package>` dans un terminal à côté. Il relance les tests à chaque sauvegarde, comme `vitest --watch`.
 
-## Fin de module
+## À la fin du module
 
-- [ ] Lance `/quiz` dans Claude Code.
-- [ ] Facultatif, en anglais : code le [jeu de devinettes du chapitre 2](https://rust-book.cs.brown.edu/ch02-00-guessing-game-tutorial.html) dans `scratch/guessing-game` (`cargo new scratch/guessing-game`). C'est un premier programme complet, avec une dépendance (`rand`), de l'entrée utilisateur et du `match`.
+Tu sauras :
+
+- créer et tester un projet avec cargo ;
+- déclarer des variables, et choisir quand les rendre `mut` ;
+- choisir le bon type numérique et convertir sans mauvaise surprise ;
+- écrire des fonctions et des boucles, en te servant de `if` comme d'une expression.

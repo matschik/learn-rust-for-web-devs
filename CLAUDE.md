@@ -28,7 +28,7 @@ Chaque exercice a deux fiches, dans cet ordre :
    - « Pour aller plus loin » : les sections du Rust Book et la doc std, présentées comme facultatives et en anglais.
 
    Les exemples portent sur d'autres cas que l'exercice (règle 1). Écris en français simple et chaleureux : tutoiement, phrases courtes, pas de jargon inutile ni de tournures d'IA. Vérifie chaque extrait et chaque message d'erreur avec `rustc` avant de le citer.
-2. `README.md` : la fiche pratique. Sa section « Étapes » liste en cases à cocher (`- [ ]`) ce qu'il faut faire, en deux sous-parties « ### Cours » et « ### Pratique ». Le `README.md` d'un module a aussi ses listes « Avant de commencer » et « Fin de module ».
+2. `README.md` : la fiche pratique. Sa section « Étapes » liste en cases à cocher (`- [ ]`) ce qu'il faut faire, en deux sous-parties « ### Cours » et « ### Pratique ». Le `README.md` d'un module a aussi une liste « Avant de commencer », et une section « À la fin du module » qui dit, sans cases à cocher, ce que l'apprenant saura faire.
 
 Commence **toujours** par le cours : fais lire la leçon et répondre à « Teste-toi » avant la pratique. Le Rust Book est un complément, jamais un prérequis. Pour un nouvel exercice ou module, écris les deux fiches et un diagramme SVG dans le même style que ceux qui existent (couleurs via les variables CSS du dashboard, avec une valeur de repli).
 

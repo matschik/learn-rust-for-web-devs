@@ -142,6 +142,14 @@
   .card > h2 .n { margin-left: auto; font: 500 13px ui-monospace, Menlo, monospace; color: var(--muted); }
   ul.ex { list-style: none; margin: 0; padding: 0; }
   ul.ex a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; color: inherit; text-decoration: none; }
+  ol.toc { list-style: none; padding: 0; margin: 12px 0 20px; display: grid; gap: 10px; }
+  ol.toc a, ol.toc li > div { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: inherit; text-decoration: none; }
+  ol.toc a:hover { border-color: var(--accent); }
+  .toc-num { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; background: var(--todo-soft); color: var(--accent); }
+  .toc-body { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .toc-body b { font-size: 16px; }
+  .toc-body small { color: var(--muted); font-size: 13px; }
+  ol.toc .pill { margin-top: 4px; }
   ul.ex a:hover { background: var(--todo-soft); }
   .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
   .ex-title .num { font: 500 12px ui-monospace, Menlo, monospace; color: var(--muted); margin-right: 8px; }
@@ -186,7 +194,7 @@ const ICONS = {
   out: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
 };
 const icon = (name) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
-const HEADING_ICONS = { "À faire": "task", "Étapes": "task", "Avant de commencer": "task", "Fin de module": "task", "À retenir": "pin", "Ce que tu vas apprendre": "task", "Teste-toi": "bulb", "Pour aller plus loin": "book" };
+const HEADING_ICONS = { "À faire": "task", "Étapes": "task", "Avant de commencer": "task", "À la fin du module": "pin", "À retenir": "pin", "Ce que tu vas apprendre": "task", "Teste-toi": "bulb", "Pour aller plus loin": "book" };
 const heading = (h) => `<h2>${HEADING_ICONS[h] ? icon(HEADING_ICONS[h]) : ""}${inline(h)}</h2>`;
 let state = null;
 let rendered = "";
@@ -505,6 +513,19 @@ async function renderFocus(pinned) {
 }
 
 // La page d'un module : son programme, les étapes avant de commencer et celles de fin de module.
+// Le sommaire d'un module : « 1. [Titre](dossier/) : ce qu'on apprend. *En TS : …* », une carte par exercice.
+function toc(md, m) {
+  const items = md.split("\n").map((l) => l.match(/^\d+\.\s+\[(.+?)\]\((.+?)\/?\)\s*:\s*(.*?)\s*(?:\*(En TS[^*]*)\*)?$/)).filter(Boolean);
+  const rest = md.split("\n").filter((l) => !/^\d+\.\s+\[/.test(l)).join("\n").trim();
+  if (!items.length) return "";
+  return `<ol class="toc">${items.map(([, title, dir, what, ts]) => {
+    const ex = m.exercises.find((e) => e.id === dir.replace(/\/$/, ""));
+    const s = !ex ? "todo" : ex.status !== "validated" && allChecked(ex.steps) ? "green" : visualStatus(ex);
+    const inner = `<span class="toc-num">${esc(dir.slice(0, 2))}</span><span class="toc-body"><b>${inline(title)}</b><span>${inline(what.charAt(0).toUpperCase() + what.slice(1))}</span>${ts ? `<small>${inline(ts)}</small>` : ""}</span><span class="pill">${LABELS[s]}</span>`;
+    return `<li class="s-${s}">${ex ? `<a href="#ex/${esc(ex.pkg)}">${inner}</a>` : `<div>${inner}</div>`}</li>`;
+  }).join("")}</ol>${rest ? markdown(rest) : ""}`;
+}
+
 async function renderModule(m, pinned) {
   const md = await file(m.readme);
   const key = JSON.stringify(["module", m.id, pinned, checksVersion, Boolean(hold), md.length]);
@@ -517,6 +538,7 @@ async function renderModule(m, pinned) {
   const right = pinned ? `<a class="link" href="#">← Exercice en cours</a>` : `<a class="link" href="#overview">Vue d'ensemble</a>`;
   const body = [...r.map].map(([h, part]) => {
     const steps = m.steps.filter((st) => st.group === h);
+    if (h === "Sommaire") return `${heading(h)}${toc(part, m) || markdown(part, base, m.readme)}`;
     return steps.length ? `<div class="task">${stepsHeading(h, steps)}${markdown(part, base, m.readme)}</div>` : `${heading(h)}${markdown(part, base, m.readme)}`;
   }).join("");
   const go = first ? `<a class="btn" href="#ex/${esc(first.pkg)}">${first.status === "todo" && !stepsDone(first.steps) ? "Commencer" : "Reprendre"} : ${esc(shortTitle(first.title))} →</a>` : "";
@@ -547,7 +569,7 @@ function renderOverview() {
   }).join("");
   const modules = state.modules.map((m) => `
     <div class="card"><h2>${icon("layers")}${String(m.number).padStart(2, "0")} ${esc(m.title)}<span class="n">${m.exercises.filter(isDone).length}/${m.exercises.length}</span></h2>
-      <ul class="ex"><li class="${moduleStatus(m)}"><a href="#module/${esc(m.id)}"><span class="dot"></span><span class="ex-title">Avant de commencer et fin de module</span><span class="pill">${stepsDone(m.steps)}/${m.steps.length} étapes</span></a></li></ul>
+      <ul class="ex"><li class="${moduleStatus(m)}"><a href="#module/${esc(m.id)}"><span class="dot"></span><span class="ex-title">Avant de commencer</span><span class="pill">${stepsDone(m.steps)}/${m.steps.length} étapes</span></a></li></ul>
       <ul class="ex">${m.exercises.map((ex) => {
         const s = ex.status !== "validated" && allChecked(ex.steps) ? "green" : visualStatus(ex);
         const done = stepsDone(ex.steps);

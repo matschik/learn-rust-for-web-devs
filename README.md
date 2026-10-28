@@ -80,7 +80,7 @@ Pour que le tuteur te connaisse, crée un `CLAUDE.local.md` à la racine. Ce fic
 ## Une séance
 
 1. `/next` : quelques questions de rappel, puis la leçon de l'exercice suivant.
-2. Tu lis, tu fais les quiz du livre, puis tu passes à la pratique dans `src/lib.rs`.
+2. Tu lis la leçon, tu réponds à « Teste-toi », puis tu passes à la pratique dans `src/lib.rs`.
 3. Bloqué ? `/hint` donne le palier d'indice suivant. Le compilateur râle ? `/explain-error` t'aide à lire son message.
 4. Tests verts : `/review`. Tu expliques ton code en deux phrases, puis le tuteur relit comme un dev Rust senior.
 5. Fin de module : `/quiz`, cinq questions « est-ce que ça compile ? ».
