@@ -1,8 +1,10 @@
 # Module 02 : Ownership et structs
 
-L'ownership, puis les structs. C'est le module le plus important du parcours : tout le reste de Rust repose sur l'ownership. Les leçons suivent les [chapitres 4](https://rust-book.cs.brown.edu/ch04-00-understanding-ownership.html) et [5](https://rust-book.cs.brown.edu/ch05-00-structs.html) du Rust Book, qui reste facultatif.
+C'est le module le plus important du parcours. L'ownership, c'est la façon dont Rust gère la mémoire sans garbage collector, et presque tout le reste du langage en découle. C'est aussi là que la plupart des gens bloquent au début. Prends ton temps, c'est normal de relire une leçon deux fois.
 
-Les leçons expliquent le borrow checker avec des **permissions** (R lire, W écrire, O posséder), que chaque variable gagne et perd au fil du code. C'est le modèle de la version Brown du Rust Book, et le tuteur raisonne avec lui : apprends-le, pas des recettes.
+Pour t'aider, on va raisonner avec des **permissions** : à chaque ligne, une variable a le droit de lire (R), d'écrire (W) ou de posséder (O) sa donnée, et elle gagne ou perd ces droits au fil du code. Une fois que tu vois le code comme ça, les erreurs du compilateur deviennent beaucoup plus claires. Le tuteur raisonne de la même façon, plutôt qu'avec des recettes toutes faites.
+
+On finit avec les structs, l'équivalent de tes interfaces et de tes classes. Si tu veux creuser, les leçons suivent les [chapitres 4](https://rust-book.cs.brown.edu/ch04-00-understanding-ownership.html) et [5](https://rust-book.cs.brown.edu/ch05-00-structs.html) du Rust Book, en anglais et facultatifs.
 
 | Exercice | Rust Book | Concept | Ce qui change par rapport à TS |
 | --- | --- | --- | --- |

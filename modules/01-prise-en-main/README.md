@@ -1,6 +1,8 @@
 # Module 01 : Prise en main
 
-Les bases : cargo, variables, types de base, fonctions, contrôle de flux. Rien ici ne touche encore à l'ownership : c'est le module 02. Les leçons suivent les [chapitres 1 à 3 du Rust Book](https://rust-book.cs.brown.edu/ch01-00-getting-started.html), mais tout ce qu'il faut est dans chaque leçon : le livre reste facultatif.
+On commence en douceur. Dans ce module, tu vas prendre tes repères : lancer un projet avec cargo, déclarer des variables, manipuler des nombres, écrire des fonctions et des boucles. Rien de bien sorcier quand on vient de TypeScript, mais Rust a déjà quelques habitudes à lui, et c'est ce qu'on va voir. L'ownership, la grosse nouveauté, attendra le module 02.
+
+Tout ce qu'il te faut est dans les leçons. Si tu as envie d'aller plus loin, elles suivent les [chapitres 1 à 3 du Rust Book](https://rust-book.cs.brown.edu/ch01-00-getting-started.html), mais tu n'as pas besoin de le lire.
 
 | Exercice | Rust Book | Concept | En TS, ce serait |
 | --- | --- | --- | --- |
@@ -9,7 +11,7 @@ Les bases : cargo, variables, types de base, fonctions, contrôle de flux. Rien 
 | `03-types` | 3.2 | entiers signés/non signés, `f64`, conversions `as`, tableaux | `number` pour tout |
 | `04-control-flow` | 3.5 | `if` est une expression, `for`, `loop`, `while` | ternaire, `for...of` |
 
-Chaque exercice a sa propre liste d'étapes : d'abord le cours, puis la pratique. Coche-les au fur et à mesure dans le dashboard.
+Pour chaque exercice, tu lis d'abord la leçon, puis tu passes à la pratique. Tu coches les étapes au fil de l'eau, ça t'aide à savoir où tu en es la prochaine fois.
 
 ## Avant de commencer
 

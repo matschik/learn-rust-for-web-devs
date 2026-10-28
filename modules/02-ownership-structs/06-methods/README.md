@@ -1,6 +1,6 @@
 # 06 - Méthodes · pratique
 
-Coche chaque étape au fur et à mesure dans le dashboard. Le tuteur s'en sert pour savoir où tu en es.
+Coche les étapes au fil de l'eau dans le dashboard. Le tuteur s'en sert aussi pour savoir où tu en es.
 
 ## Étapes
 
