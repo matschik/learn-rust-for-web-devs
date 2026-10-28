@@ -6,8 +6,8 @@ Coche chaque étape au fur et à mesure dans le dashboard. Le tuteur s'en sert p
 
 ### Cours
 
-- [ ] Lis Rust Book 4.3 et fais ses quiz : la version Brown a ajouté ce chapitre exactement pour cet exercice.
-- [ ] Lis « L'idée » et le diagramme de la fiche de cours.
+- [ ] Lis la leçon jusqu'au bout.
+- [ ] Réponds de tête aux questions de « Teste-toi », puis vérifie tes réponses.
 
 ### Pratique
 

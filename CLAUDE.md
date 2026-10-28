@@ -13,16 +13,24 @@ Le profil par défaut, celui pour qui ce repo est écrit :
 
 Si `CLAUDE.local.md` existe (fichier ignoré par git), il précise ce profil : prénom, stack, préférences. Il prime sur cette section. Tutoie l'apprenant et appelle-le par son prénom s'il est donné.
 
-## Le Rust Book est la colonne vertébrale
+## Des leçons complètes, le Rust Book en appui
 
-Le parcours suit l'ordre des chapitres du Rust Book, version Brown (https://rust-book.cs.brown.edu/), avec ses quiz et son modèle de permissions. Le profil de l'apprenant (TS, backend) sert d'angle d'entrée, jamais de raccourci : le fond, c'est le Rust idiomatique du livre et de la std.
+Le parcours suit l'ordre des chapitres du Rust Book, version Brown (https://rust-book.cs.brown.edu/), et son modèle de permissions. Mais chaque leçon se suffit à elle-même, en français : l'apprenant doit pouvoir tout apprendre sur le site, sans lire le livre. Le livre (en anglais) et ses quiz restent une lecture facultative. Le profil de l'apprenant (TS, backend) sert d'angle d'entrée, jamais de raccourci : le fond, c'est le Rust idiomatique du livre et de la std.
 
 Chaque exercice a deux fiches, dans cet ordre :
 
-1. `COURS.md` : la fiche de cours. Sections « À lire dans le Rust Book » (liens vers les sections du livre, la doc std, l'index des erreurs), « L'idée » (le concept, le pont avec TS, un diagramme `cours.svg`), « À retenir ».
+1. `COURS.md` : la leçon, environ 15 à 20 minutes de lecture. Dans cet ordre :
+   - une intro de deux ou trois phrases, avant tout titre `##` ;
+   - « Ce que tu vas apprendre » : 3 à 5 objectifs ;
+   - des sections courtes, dont le titre dit l'idée (« La dernière ligne, sans point-virgule, est la valeur renvoyée »). Chacune montre l'équivalent TS puis le code Rust, dit ce qui change, et cite une vraie erreur du compilateur quand il y en a une. Le diagramme `cours.svg` va dans l'une d'elles ;
+   - « Teste-toi » : 3 ou 4 questions, puis un bloc `> **Réponses**` que le dashboard replie ;
+   - « À retenir » : 4 ou 5 puces ;
+   - « Pour aller plus loin » : les sections du Rust Book et la doc std, présentées comme facultatives et en anglais.
+
+   Les exemples portent sur d'autres cas que l'exercice (règle 1). Écris en français simple et chaleureux : tutoiement, phrases courtes, pas de jargon inutile ni de tournures d'IA. Vérifie chaque extrait et chaque message d'erreur avec `rustc` avant de le citer.
 2. `README.md` : la fiche pratique. Sa section « Étapes » liste en cases à cocher (`- [ ]`) ce qu'il faut faire, en deux sous-parties « ### Cours » et « ### Pratique ». Le `README.md` d'un module a aussi ses listes « Avant de commencer » et « Fin de module ».
 
-Commence **toujours** par le cours : renvoie l'apprenant vers les sections du Rust Book et leurs quiz avant la pratique. Pour un nouvel exercice ou module, écris les deux fiches et un diagramme SVG dans le même style que ceux qui existent (couleurs via les variables CSS du dashboard, avec une valeur de repli).
+Commence **toujours** par le cours : fais lire la leçon et répondre à « Teste-toi » avant la pratique. Le Rust Book est un complément, jamais un prérequis. Pour un nouvel exercice ou module, écris les deux fiches et un diagramme SVG dans le même style que ceux qui existent (couleurs via les variables CSS du dashboard, avec une valeur de repli).
 
 ## Règles du tuteur (non négociables)
 

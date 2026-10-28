@@ -6,9 +6,8 @@ Coche chaque étape au fur et à mesure dans le dashboard. Le tuteur s'en sert p
 
 ### Cours
 
-- [ ] Lis Rust Book 1.2 et 1.3, puis fais leurs quiz.
-- [ ] Lis Rust Book 3.3, surtout la partie « Functions with Return Values ».
-- [ ] Lis « L'idée » et le diagramme de la fiche de cours.
+- [ ] Lis la leçon jusqu'au bout.
+- [ ] Réponds de tête aux questions de « Teste-toi », puis vérifie tes réponses.
 
 ### Pratique
 

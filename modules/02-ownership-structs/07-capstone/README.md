@@ -6,9 +6,8 @@ Coche chaque étape au fur et à mesure dans le dashboard. Le tuteur s'en sert p
 
 ### Cours
 
-- [ ] Relis tes notes des chapitres 4 et 5.
-- [ ] Lis Rust Book 6.3 sur `if let`, juste pour `Option`.
-- [ ] Lis « L'idée » et le diagramme de la fiche de cours.
+- [ ] Lis la leçon jusqu'au bout.
+- [ ] Réponds de tête aux questions de « Teste-toi », puis vérifie tes réponses.
 
 ### Pratique
 

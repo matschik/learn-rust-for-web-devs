@@ -35,6 +35,7 @@ await writeFile(join(OUT, "cours", "state.json"), JSON.stringify(state));
 const dashboard = await readFile(join(ROOT, "dashboard", "index.html"), "utf8");
 await writeFile(join(OUT, "cours", "index.html"), dashboard.replace("<script>", "<script>window.LEARN_RUST_STATIC = true;</script>\n<script>"));
 await cp(join(ROOT, "site", "index.html"), join(OUT, "index.html"));
+await cp(join(ROOT, "site", "ferris.svg"), join(OUT, "ferris.svg"));
 await writeFile(join(OUT, ".nojekyll"), "");
 
 const count = modules.reduce((n, m) => n + m.exercises.length, 0);

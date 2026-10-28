@@ -6,9 +6,8 @@ Coche chaque étape au fur et à mesure dans le dashboard. Le tuteur s'en sert p
 
 ### Cours
 
-- [ ] Lis Rust Book 3.2, surtout « Integer Overflow », puis fais ses quiz.
-- [ ] Regarde `saturating_sub` et `checked_sub` dans la doc de `u32`.
-- [ ] Lis « L'idée » et le diagramme de la fiche de cours.
+- [ ] Lis la leçon jusqu'au bout.
+- [ ] Réponds de tête aux questions de « Teste-toi », puis vérifie tes réponses.
 
 ### Pratique
 

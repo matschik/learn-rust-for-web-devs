@@ -1,33 +1,170 @@
 # 05 - Structs · cours
 
-## À lire dans le Rust Book
+Jusqu'ici, tu as manipulé des valeurs isolées. Pour modéliser un utilisateur ou une tâche, il te faut un type qui regroupe plusieurs champs : la `struct`. C'est l'`interface` de TS, avec une différence de taille : en Rust, la struct est à la fois le type **et** la donnée. Compte un quart d'heure.
 
-- [Rust Book 5.1 · Defining and Instantiating Structs](https://rust-book.cs.brown.edu/ch05-01-defining-structs.html)
-- [Rust Book 5.2 · An Example Program Using Structs](https://rust-book.cs.brown.edu/ch05-02-example-structs.html) : `#[derive(Debug)]`
+## Ce que tu vas apprendre
 
-## L'idée
+- Déclarer une struct et créer une instance.
+- Écrire moins avec l'initialisation raccourcie et la mise à jour `..`.
+- Savoir ce que `..` déplace, et ce qu'il copie.
+- Choisir entre `String` et `&str` pour un champ.
+- Afficher et comparer une struct avec `#[derive(Debug, PartialEq)]`.
+
+## Une interface et un objet en même temps
+
+En TS, tu décris une forme avec une `interface`, puis n'importe quel objet qui a cette forme fait l'affaire. En Rust, tu déclares une struct, et chaque valeur est créée **à partir de ce type**, par son nom :
+
+```ts
+interface User {
+  email: string;
+  name: string;
+  active: boolean;
+  loginCount: number;
+}
+const ada: User = { email: "ada@taskr.dev", name: "Ada", active: true, loginCount: 0 };
+```
+
+```rust
+struct User {
+    email: String,
+    name: String,
+    active: bool,
+    login_count: u32,
+}
+
+let ada = User {
+    email: String::from("ada@taskr.dev"),
+    name: String::from("Ada"),
+    active: true,
+    login_count: 0,
+};
+```
+
+Pas d'objet littéral anonyme en Rust : tu écris toujours `User { ... }`, et tous les champs doivent être remplis. On lit un champ avec un point, `ada.email`, comme en TS. Les noms suivent la convention Rust, en `snake_case`.
 
 ![05 - Structs](cours.svg)
 
-Une `struct` Rust, c'est une `interface` TS **et** la donnée en même temps. Il n'y a pas d'objet littéral anonyme : on nomme toujours le type.
+## Tout ou rien pour mut
+
+Pour modifier un champ, toute l'instance doit être `mut`. Rust ne permet pas de marquer un seul champ comme modifiable :
+
+```rust
+let user = User { /* ... */ };
+user.active = false;
+```
+
+```
+error[E0594]: cannot assign to `user.active`, as `user` is not declared as mutable
+```
+
+La correction est celle que tu connais : `let mut user`. Tu retrouves le modèle des permissions : W s'applique à la variable entière, donc à tous ses champs.
+
+## Le champ possède sa donnée : String plutôt que &str
+
+Pourquoi `email: String` et pas `email: &str` ? Parce qu'une struct qui possède ses champs est autonome. Quand elle est libérée, ses `String` le sont avec elle. Avec un `&str`, la struct emprunterait du texte qui appartient à quelqu'un d'autre, et il faudrait prouver au compilateur que ce texte vit assez longtemps. Ça demande des lifetimes, un sujet pour plus tard.
+
+En pratique, tes fonctions reçoivent souvent du `&str` et le transforment en `String` pour le stocker :
+
+```rust
+let email: &str = "ada@taskr.dev";
+let owned = String::from(email);   // ou email.to_string()
+```
+
+## Écrire moins : l'initialisation raccourcie
+
+Quand une variable a le même nom qu'un champ, tu peux ne l'écrire qu'une fois, comme en TS :
 
 ```ts
-interface Task { id: number; title: string; done: boolean }
-const t: Task = { id: 1, title: "Écrire la doc", done: false };
-const t2 = { ...t, id: 2 };
-```
-```rust
-struct Task { id: u64, title: String, done: bool }
-let t = Task { id: 1, title: String::from("Écrire la doc"), done: false };
-let t2 = Task { id: 2, ..t };
+const user = { email, name, active: true, loginCount: 0 };
 ```
 
-Deux choses à remarquer :
-- Le champ `title` est une `String` et pas une `&str` : la struct **possède** son titre. Avec une `&str`, il faudrait une lifetime (chapitre 10). Pour passer d'une `&str` à une `String` : `String::from(...)` ou `.to_string()`.
-- `#[derive(Debug, PartialEq)]` génère l'affichage debug et la comparaison `==`. C'est ce qui permet `assert_eq!` sur une struct.
+```rust
+let user = User { email, name, active: true, login_count: 0 };
+```
+
+Ça ne marche que si `email` et `name` ont déjà le bon type, ici `String`.
+
+## La mise à jour avec .. : le spread de Rust
+
+Pour créer une instance à partir d'une autre en changeant quelques champs, TS a le spread. Rust a `..` :
+
+```ts
+const grace = { ...ada, email: "grace@taskr.dev" };
+```
+
+```rust
+let grace = User {
+    email: String::from("grace@taskr.dev"),
+    ..ada
+};
+```
+
+Deux différences avec TS. D'abord, `..ada` se met **à la fin**, et les champs écrits explicitement l'emportent. Ensuite, et c'est le plus important, `..` ne fait pas de copie : il **déplace** les champs repris.
+
+## Ce que .. déplace
+
+Dans l'exemple, `grace` reprend `name`, `active` et `login_count` de `ada`. `active` et `login_count` sont `Copy`, donc copiés. Mais `name` est une `String` : elle est déplacée de `ada` vers `grace`. Résultat, `ada` est **partiellement déplacée** :
+
+```rust
+println!("{}", ada.email);    // ok : email n'a pas été repris
+println!("{:?}", ada);        // erreur : ada.name est parti
+```
+
+```
+error[E0382]: borrow of partially moved value: `ada`
+ --> src/main.rs:9:22
+  |
+6 |     let grace = User { email: String::from("grace@taskr.dev"), ..ada };
+  |                 ------------------------------------------------------ value partially moved here
+...
+9 |     println!("{:?}", ada);
+  |                      ^^^ value borrowed here after partial move
+  |
+  = note: partial move occurs because `ada.name` has type `String`, which does not implement the `Copy` trait
+```
+
+C'est la règle des moves de la leçon 01, appliquée champ par champ. Si une fonction prend une struct par valeur pour en fabriquer une autre avec `..`, c'est exactement ce qu'on veut : l'ancienne n'a plus d'utilité.
+
+## derive : afficher et comparer
+
+Par défaut, une struct ne sait ni s'afficher ni se comparer. Tu demandes au compilateur de générer ce code avec un attribut :
+
+```rust
+#[derive(Debug, PartialEq)]
+struct User { /* ... */ }
+```
+
+- `Debug` permet `println!("{:?}", user)`, qui affiche `User { email: "grace@taskr.dev", name: "Ada", active: true, login_count: 0 }`. Avec `{:#?}`, tu obtiens une version sur plusieurs lignes.
+- `PartialEq` permet `==` entre deux `User`, champ par champ.
+
+Les deux ensemble rendent possible `assert_eq!` sur des structs dans les tests : il compare avec `==`, et affiche les deux valeurs avec `Debug` si elles diffèrent.
+
+En TS, `===` sur deux objets compare les références. En Rust, `==` avec `PartialEq` compare le contenu.
+
+## Teste-toi
+
+1. Peut-on créer un `User` sans donner `login_count` ?
+2. `let u = User { /* ... */ }; u.name.push('!');` compile-t-il ?
+3. Après `let b = User { name: String::from("B"), ..a };`, peut-on encore lire `a.email` ? Et `a.name` ?
+4. Sans `#[derive(PartialEq)]`, que se passe-t-il avec `assert_eq!(user1, user2)` ?
+
+> **Réponses**
+> 1. Non, tous les champs sont obligatoires, sauf si tu complètes avec `..autre_instance`.
+> 2. Non : `u` n'est pas `mut`, donc aucun de ses champs ne peut être modifié.
+> 3. Pas `a.email` : c'est une `String` reprise par `..a`, donc déplacée dans `b`. Mais `a.name` oui, car `b` a reçu son propre `name` et n'a pas touché celui de `a`.
+> 4. Ça ne compile pas : `assert_eq!` a besoin de `==`, que `PartialEq` fournit.
 
 ## À retenir
 
-- Une `struct` nomme toujours son type : pas d'objet littéral anonyme.
-- Une struct qui possède ses champs (`String`) les détruit avec elle.
-- `#[derive(Debug, PartialEq)]` génère l'affichage debug et `==`.
+- Une struct nomme toujours son type : pas d'objet littéral anonyme, tous les champs sont remplis.
+- `mut` s'applique à toute l'instance, pas à un champ.
+- Une struct qui possède ses champs (`String`) les libère avec elle. Les `&str` dans une struct attendront les lifetimes.
+- `..autre` reprend les champs restants, et **déplace** ceux qui ne sont pas `Copy`.
+- `#[derive(Debug, PartialEq)]` génère l'affichage `{:?}` et la comparaison `==`.
+
+## Pour aller plus loin
+
+Tout ce qu'il faut pour l'exercice est au-dessus. Ces lectures sont facultatives et en anglais, pour creuser si tu en as envie.
+
+- [Rust Book 5.1 · Defining and Instantiating Structs](https://rust-book.cs.brown.edu/ch05-01-defining-structs.html) : avec ses quiz, dont un sur les permissions des champs.
+- [Rust Book 5.2 · An Example Program Using Structs](https://rust-book.cs.brown.edu/ch05-02-example-structs.html) : `#[derive(Debug)]` en action.

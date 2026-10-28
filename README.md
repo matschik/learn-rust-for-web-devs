@@ -31,9 +31,9 @@ Pas besoin de cours sur ce qu'est une fonction ou une closure : le parcours va d
 
 ## Comment ça marche
 
-Le parcours suit la [version Brown du Rust Book](https://rust-book.cs.brown.edu/), avec ses quiz et son modèle de permissions (Read, Write, Own) pour comprendre le borrow checker.
+Le parcours suit l'ordre de la [version Brown du Rust Book](https://rust-book.cs.brown.edu/) et son modèle de permissions (Read, Write, Own) pour comprendre le borrow checker. Chaque leçon se suffit à elle-même, en français : le livre, en anglais, reste une lecture facultative.
 
-Chaque exercice commence par une fiche de cours (`COURS.md`) : les sections du livre à lire, l'idée avec son équivalent TS, un diagramme et ce qu'il faut retenir. La fiche pratique (`README.md`) vient ensuite, avec ses étapes à cocher. L'exercice est un crate avec des tests rouges, et certains ne compilent même pas au départ, exprès : le compilateur fait partie du cours. Tu as fini quand `cargo test` passe.
+Chaque exercice commence par une leçon (`COURS.md`) d'un quart d'heure : l'idée expliquée pas à pas avec son équivalent TS, de vraies erreurs du compilateur, un diagramme, quelques questions pour te tester et ce qu'il faut retenir. La fiche pratique (`README.md`) vient ensuite, avec ses étapes à cocher. L'exercice est un crate avec des tests rouges, et certains ne compilent même pas au départ, exprès : le compilateur fait partie du cours. Tu as fini quand `cargo test` passe.
 
 Le tuteur suit les règles de [CLAUDE.md](CLAUDE.md) :
 
@@ -79,7 +79,7 @@ Pour que le tuteur te connaisse, crée un `CLAUDE.local.md` à la racine. Ce fic
 
 ## Une séance
 
-1. `/next` : quelques questions de rappel, puis le cours de l'exercice suivant, avec les sections du Rust Book et leurs quiz.
+1. `/next` : quelques questions de rappel, puis la leçon de l'exercice suivant.
 2. Tu lis, tu fais les quiz du livre, puis tu passes à la pratique dans `src/lib.rs`.
 3. Bloqué ? `/hint` donne le palier d'indice suivant. Le compilateur râle ? `/explain-error` t'aide à lire son message.
 4. Tests verts : `/review`. Tu expliques ton code en deux phrases, puis le tuteur relit comme un dev Rust senior.

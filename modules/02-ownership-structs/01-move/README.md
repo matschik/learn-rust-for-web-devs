@@ -6,8 +6,8 @@ Coche chaque étape au fur et à mesure dans le dashboard. Le tuteur s'en sert p
 
 ### Cours
 
-- [ ] Lis Rust Book 4.1 et fais tous les quiz de la page.
-- [ ] Lis « L'idée » et le diagramme : repère quelles permissions `title` perd après l'appel.
+- [ ] Lis la leçon jusqu'au bout.
+- [ ] Réponds de tête aux questions de « Teste-toi », puis vérifie tes réponses.
 
 ### Pratique
 
