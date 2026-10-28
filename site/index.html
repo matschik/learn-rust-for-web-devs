@@ -75,7 +75,6 @@
   .msg.me code { background: rgba(255, 255, 255, .18); color: inherit; }
   .avatar { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
   .avatar img { width: 40px; height: auto; }
-  .avatar.you { font: 600 13px system-ui, sans-serif; color: var(--muted); width: 34px; height: 34px; }
   .chat .ok { justify-self: start; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ok); background: var(--ok-soft); border-radius: 99px; padding: 6px 12px 6px 10px; margin-left: 56px; }
   .t-dim { color: var(--term-dim); }
 
@@ -144,9 +143,9 @@
     </div>
     <div class="chat" role="img" aria-label="Une séance : le test échoue avec l'erreur E0382, tu proposes un clone, et Ferris le tuteur te répond par des questions jusqu'à ce que tu trouves.">
       <div class="err"><b>E0382</b><span>borrow of moved value: <code>title</code></span></div>
-      <div class="msg me"><span class="avatar you">toi</span><p>Je mets un <code>.clone()</code> ?</p></div>
+      <div class="msg me"><p>Je mets un <code>.clone()</code> ?</p></div>
       <div class="msg tutor"><span class="avatar"><img src="ferris.svg" alt=""></span><p>Avant ça : après l'appel à <code>describe(title)</code>, qui possède encore la String ?</p></div>
-      <div class="msg me"><span class="avatar you">toi</span><p>describe ! Donc <code>title</code> a perdu ses permissions.</p></div>
+      <div class="msg me"><p>describe ! Donc <code>title</code> a perdu ses permissions.</p></div>
       <div class="msg tutor"><span class="avatar"><img src="ferris.svg" alt=""></span><p>Exactement. Et ensuite, tu as besoin de toute la String, ou juste de sa longueur ?</p></div>
       <span class="ok"><svg class="i"><use href="#i-check"/></svg>Trouvé, et sans clone.</span>
     </div>
