@@ -1,4 +1,4 @@
-// Construit le site statique dans _site/ (Cloudflare Pages : commande `node scripts/build-site.mjs`, dossier `_site`) : la page de présentation,
+// Construit le site statique dans _site/ (déployé sur Cloudflare Pages par .github/workflows/cloudflare.yml) : la page de présentation,
 // et le dashboard en lecture seule avec les fiches de cours et de pratique, sans tests ni progression.
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";

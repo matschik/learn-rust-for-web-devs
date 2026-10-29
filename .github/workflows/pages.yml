@@ -1,5 +1,5 @@
-# Le site est hébergé sur Cloudflare Pages (learn-rust-for-web-devs.matschik.com), qui le construit
-# lui-même à chaque push sur main. GitHub Pages ne sert plus qu'une redirection,
+# Le site est hébergé sur Cloudflare Pages (learn-rust-for-web-devs.matschik.com), déployé
+# par cloudflare.yml à chaque push sur main. GitHub Pages ne sert plus qu'une redirection,
 # pour que les anciens liens matschik.github.io/learn-rust-for-web-devs/… continuent de marcher.
 name: Pages (redirection)
 
