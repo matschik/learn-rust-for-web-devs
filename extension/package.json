@@ -1,0 +1,133 @@
+{
+  "name": "learn-rust",
+  "displayName": "Learn Rust for web devs",
+  "description": "Apprendre Rust dans ton éditeur quand on vient de TypeScript : la leçon à côté du code, tes propres projets cargo, et le compilateur comme prof.",
+  "version": "0.1.0",
+  "publisher": "matschik",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matschik/learn-rust-for-web-devs"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Education",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "rust",
+    "learn",
+    "typescript",
+    "tutorial",
+    "cours"
+  ],
+  "extensionDependencies": [
+    "rust-lang.rust-analyzer"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "learnRust",
+          "title": "Learn Rust",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "learnRust": [
+        {
+          "id": "learnRust.lessons",
+          "name": "Leçons"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "learnRust.lessons",
+        "contents": "Ouvre un dossier pour y ranger tes projets Rust. Ta progression y sera enregistrée.\n[Ouvrir un dossier](command:vscode.openFolder)",
+        "when": "workbenchState == empty"
+      }
+    ],
+    "commands": [
+      {
+        "command": "learnRust.openLesson",
+        "title": "Ouvrir une leçon",
+        "category": "Learn Rust"
+      },
+      {
+        "command": "learnRust.continue",
+        "title": "Reprendre là où j'en étais",
+        "category": "Learn Rust",
+        "icon": "$(play)"
+      },
+      {
+        "command": "learnRust.verify",
+        "title": "Vérifier mon projet (cargo test)",
+        "category": "Learn Rust",
+        "icon": "$(beaker)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "learnRust.continue",
+          "when": "view == learnRust.lessons",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "learnRust.openLesson",
+          "when": "false"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "learnRust.verify",
+        "key": "ctrl+alt+enter",
+        "mac": "cmd+alt+enter",
+        "when": "editorLangId == rust || activeWebviewPanelId == learnRust.lesson"
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "learn-rust",
+        "required": [
+          "project"
+        ],
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Le projet cargo vérifié, relatif au workspace."
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "course": "node scripts/bundle-course.mjs",
+    "build": "pnpm course && node esbuild.mjs",
+    "watch": "pnpm build && node esbuild.mjs --watch",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "verify": "pnpm check && pnpm test && pnpm build",
+    "package": "pnpm build && vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "~1.95.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.25.0",
+    "typescript": "~5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "extension: watch",
+      "type": "shell",
+      "command": "pnpm install && pnpm watch",
+      "options": { "cwd": "${workspaceFolder}/extension" },
+      "isBackground": true,
+      "presentation": { "reveal": "silent" },
+      "problemMatcher": {
+        "owner": "esbuild",
+        "pattern": { "regexp": "^✘ \\[ERROR\\] (.*)$", "message": 1 },
+        "background": {
+          "activesBegin": true,
+          "beginsPattern": "\\[watch\\] build started",
+          "endsPattern": "\\[watch\\] build finished"
+        }
+      }
+    }
+  ]
+}

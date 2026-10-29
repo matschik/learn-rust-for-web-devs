@@ -128,7 +128,8 @@ Si tu veux sauvegarder ton travail, pousse-le sur ton fork. N'ouvre pas de PR av
 - `modules/` : un dossier par module, un crate par exercice (`COURS.md`, `README.md`, `cours.svg`, `src/`).
 - `projects/taskr/` : le fil rouge.
 - `dashboard/` : le dashboard (Node, sans dépendance).
-- `app/` : l'app desktop (Tauri), en cours : la leçon, l'éditeur et le terminal dans une fenêtre. Voir [app/README.md](app/README.md).
+- `extension/` : l'extension VS Code, en cours : la leçon dans un panneau à côté de ton code, dans tes propres projets cargo. Voir [extension/README.md](extension/README.md).
+- `app/` : l'app desktop (Tauri), en pause au profit de l'extension.
 - `.claude/commands/` : les commandes du tuteur (`/next`, `/hint`, `/review`, `/quiz`, `/explain-error`).
 - `scripts/` : les hooks de Claude Code. L'un bloque l'édition des exercices par Claude, l'autre lance clippy après chaque édition.
 - `scratch/` : bac à sable ignoré par git, utilisé par `/quiz` et pour le guessing game du chapitre 2.
