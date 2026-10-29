@@ -1,0 +1,36 @@
+/* Les couleurs du site et du dashboard : crème et orange Rust, avec un mode sombre. */
+:root {
+  --bg: #faf8f5; --panel: #ffffff; --panel-2: #f4f1ec; --text: #1f1d1a; --muted: #6b665e; --line: #e7e2da;
+  --accent: #c2410c; --accent-strong: #9a3412; --accent-soft: #fdebdd; --on-accent: #ffffff;
+  --ok: #15803d; --ok-soft: #dcfce7; --err: #b91c1c; --err-soft: #fee2e2;
+  --code: #f1ece4; --editor: #fffdf9;
+  --term-bg: #1f1d1a; --term-text: #ece8e2;
+  --hl-k: #b8430f; --hl-s: #3f7a2f; --hl-c: #8a8073; --hl-n: #9a5b00; --hl-t: #2a6f8f; --hl-m: #8b3fa8;
+  --sans: Inter, -apple-system, "Segoe UI", system-ui, sans-serif;
+  --serif: "Iowan Old Style", Georgia, serif;
+  --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #151412; --panel: #1d1b19; --panel-2: #24221f; --text: #ece8e2; --muted: #9c968c; --line: #2f2c28;
+    --accent: #f97316; --accent-strong: #fb923c; --accent-soft: #3a2314; --on-accent: #1a0f08;
+    --ok: #4ade80; --ok-soft: #14301f; --err: #f87171; --err-soft: #3a1818;
+    --code: #2a2724; --editor: #181715;
+    --term-bg: #100f0e; --term-text: #ece8e2;
+    --hl-k: #f59a62; --hl-s: #9ad3a8; --hl-c: #8b8173; --hl-n: #f2c46d; --hl-t: #7cc4e0; --hl-m: #d6a3f0;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; }
+button { font: inherit; color: inherit; }
+code { font-family: var(--mono); font-size: 0.9em; }
+.hl-k { color: var(--hl-k); } .hl-s { color: var(--hl-s); } .hl-c { color: var(--hl-c); font-style: italic; }
+.hl-n { color: var(--hl-n); } .hl-t { color: var(--hl-t); } .hl-m, .hl-a { color: var(--hl-m); }
+.hl-err { color: var(--err); font-weight: 600; } .hl-help { color: var(--ok); } .hl-ok { color: var(--ok); font-weight: 600; } .hl-dim { color: var(--muted); }
+.btn { height: 36px; padding: 0 16px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+.btn.primary:hover { background: var(--accent-strong); }
+.btn:disabled { opacity: 0.6; cursor: default; }
