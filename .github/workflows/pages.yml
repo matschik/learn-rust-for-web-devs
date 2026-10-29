@@ -1,8 +1,12 @@
-name: Pages
+# Le site est hébergé sur Cloudflare Pages (rust.matschik.com), qui le construit
+# lui-même à chaque push sur main. GitHub Pages ne sert plus qu'une redirection,
+# pour que les anciens liens matschik.github.io/learn-rust-for-web-devs/… continuent de marcher.
+name: Pages (redirection)
 
 on:
   push:
     branches: [main]
+    paths: [site/redirect.html, .github/workflows/pages.yml]
   workflow_dispatch:
 
 permissions:
@@ -22,13 +26,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: node scripts/build-site.mjs
+      - run: |
+          mkdir _redirect
+          cp site/redirect.html _redirect/index.html
+          cp site/redirect.html _redirect/404.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: _redirect
       - id: deployment
         uses: actions/deploy-pages@v4

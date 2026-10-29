@@ -2,7 +2,7 @@
 
 Apprendre Rust quand on est dev web full-stack TypeScript, pour écrire des backends. En français, avec les termes techniques en anglais (ownership, borrow checker, trait, crate).
 
-Le site présente l'approche et donne accès aux fiches de cours : https://matschik.github.io/learn-rust-for-web-devs/
+Le site présente l'approche et donne accès aux fiches de cours : https://rust.matschik.com
 
 Le repo sert aussi d'exemple pour apprendre avec un agent IA. [Claude Code](https://claude.com/claude-code) joue le rôle de tuteur : il t'explique, te pose des questions et te donne des indices, mais il n'écrit pas tes exercices à ta place.
 
