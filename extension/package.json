@@ -113,6 +113,7 @@
     ]
   },
   "scripts": {
+    "dev": "node scripts/dev.mjs",
     "course": "node scripts/bundle-course.mjs",
     "build": "pnpm course && node esbuild.mjs",
     "watch": "pnpm build && node esbuild.mjs --watch",

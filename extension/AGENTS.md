@@ -9,7 +9,8 @@ Toutes depuis `extension/`.
 | But | Commande |
 | --- | --- |
 | Tout vérifier avant de rendre la main | `pnpm verify` (tsc, vitest, build) |
-| Essayer l'extension | F5 dans VS Code ouvert sur le repo (config « Extension Learn Rust ») |
+| Essayer l'extension sur un workspace | `pnpm dev <dossier>` (ouvre une fenêtre VS Code avec l'extension, recompile en continu ; Cmd+R pour recharger) |
+| Déboguer avec des points d'arrêt | F5 dans VS Code ouvert sur le repo (config « Extension Learn Rust ») |
 | Tests | `pnpm test` |
 | Fabriquer le `.vsix` | `pnpm package` |
 
