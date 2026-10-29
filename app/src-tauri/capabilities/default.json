@@ -1,7 +1,14 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Le strict nécessaire pour la fenêtre principale : ouvrir un lien de la leçon dans le navigateur, choisir un dossier.",
-  "windows": ["main"],
-  "permissions": ["core:default", "opener:default", "dialog:allow-open"]
+  "description": "Le strict nécessaire pour la fenêtre principale : ouvrir un lien de la leçon dans le navigateur, choisir un dossier, confirmer une suppression.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "opener:default",
+    "dialog:allow-open",
+    "dialog:allow-ask"
+  ]
 }

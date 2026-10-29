@@ -11,7 +11,7 @@ use serde::Serialize;
 use crate::error::{AppError, AppResult};
 
 /// Dossiers qu'on ne montre pas dans l'arbre : générés, ou internes à git.
-const HIDDEN: &[&str] = &[".git", "target", "node_modules", ".DS_Store"];
+pub(crate) const HIDDEN: &[&str] = &[".git", "target", "node_modules", ".DS_Store"];
 
 #[derive(Debug, Clone, Serialize, specta::Type, PartialEq)]
 pub struct Entry {
@@ -64,18 +64,86 @@ pub fn list_dir(root: &Path, rel: &str) -> AppResult<Vec<Entry>> {
     Ok(entries)
 }
 
+/// Au-delà, on arrête de chercher : un workspace d'apprentissage n'en a jamais autant.
+const MAX_FILES: usize = 5000;
+
+/// Tous les fichiers du workspace, pour l'ouverture rapide (Cmd+P). Mêmes exclusions que l'arbre.
+pub fn list_files(root: &Path) -> AppResult<Vec<String>> {
+    let mut files = Vec::new();
+    let mut stack = vec![String::new()];
+    while let Some(dir) = stack.pop() {
+        for entry in list_dir(root, &dir)? {
+            if files.len() >= MAX_FILES {
+                break;
+            }
+            if entry.is_dir {
+                stack.push(entry.path);
+            } else {
+                files.push(entry.path);
+            }
+        }
+    }
+    files.sort();
+    Ok(files)
+}
+
 pub fn read_file(root: &Path, rel: &str) -> AppResult<String> {
     Ok(fs::read_to_string(resolve(root, rel)?)?)
+}
+
+/// Comme `resolve`, mais refuse la racine elle-même : on ne l'écrase, ne la renomme ni ne la supprime.
+fn resolve_inner(root: &Path, rel: &str) -> AppResult<PathBuf> {
+    let path = resolve(root, rel)?;
+    if path == root {
+        return Err(AppError::ForbiddenPath(rel.to_string()));
+    }
+    Ok(path)
+}
+
+fn ensure_free(path: &Path, rel: &str) -> AppResult<()> {
+    if path.exists() {
+        return Err(AppError::Io(format!("{rel} existe déjà")));
+    }
+    Ok(())
 }
 
 /// Écrit un fichier existant ou nouveau ; les dossiers parents doivent déjà exister,
 /// comme dans un vrai éditeur (c'est `cargo new` qui les crée).
 pub fn write_file(root: &Path, rel: &str, content: &str) -> AppResult<()> {
-    let path = resolve(root, rel)?;
-    if path == root {
-        return Err(AppError::ForbiddenPath(rel.to_string()));
+    Ok(fs::write(resolve_inner(root, rel)?, content)?)
+}
+
+/// Crée un fichier vide, et ses dossiers parents s'il en faut (`src/models/task.rs`).
+pub fn create_file(root: &Path, rel: &str) -> AppResult<()> {
+    let path = resolve_inner(root, rel)?;
+    ensure_free(&path, rel)?;
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)?;
     }
-    Ok(fs::write(path, content)?)
+    fs::File::create_new(path)?;
+    Ok(())
+}
+
+pub fn create_dir(root: &Path, rel: &str) -> AppResult<()> {
+    let path = resolve_inner(root, rel)?;
+    ensure_free(&path, rel)?;
+    Ok(fs::create_dir_all(path)?)
+}
+
+pub fn rename(root: &Path, from: &str, to: &str) -> AppResult<()> {
+    let src = resolve_inner(root, from)?;
+    let dst = resolve_inner(root, to)?;
+    ensure_free(&dst, to)?;
+    Ok(fs::rename(src, dst)?)
+}
+
+/// Envoie à la corbeille plutôt que d'effacer : une fausse manip se rattrape.
+pub fn delete(root: &Path, rel: &str) -> AppResult<()> {
+    let path = resolve_inner(root, rel)?;
+    if !path.exists() {
+        return Err(AppError::NotFound(rel.to_string()));
+    }
+    trash::delete(path).map_err(|e| AppError::Io(e.to_string()))
 }
 
 #[cfg(test)]
@@ -124,5 +192,42 @@ mod tests {
         );
         assert!(write_file(tmp.path(), "../evil.rs", "").is_err());
         assert!(write_file(tmp.path(), "", "").is_err());
+    }
+
+    #[test]
+    fn create_rename_and_refuse_overwrites() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        let root = tmp.path();
+        create_file(root, "hello/src/models/task.rs").expect("create");
+        assert!(root.join("hello/src/models/task.rs").is_file());
+        assert!(create_file(root, "hello/src/models/task.rs").is_err());
+
+        create_dir(root, "hello/tests").expect("mkdir");
+        assert!(create_dir(root, "hello/tests").is_err());
+
+        rename(root, "hello/src/models/task.rs", "hello/src/models/todo.rs").expect("rename");
+        assert!(root.join("hello/src/models/todo.rs").is_file());
+        create_file(root, "hello/a.rs").expect("create");
+        assert!(rename(root, "hello/a.rs", "hello/src/models/todo.rs").is_err());
+
+        assert!(rename(root, "", "ailleurs").is_err());
+        assert!(delete(root, ".").is_err());
+        assert!(matches!(
+            delete(root, "absent.rs"),
+            Err(AppError::NotFound(_))
+        ));
+    }
+
+    #[test]
+    fn list_files_walks_the_tree_without_target() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        let root = tmp.path();
+        create_file(root, "hello/src/main.rs").expect("create");
+        create_file(root, "hello/Cargo.toml").expect("create");
+        create_file(root, "hello/target/debug/hello").expect("create");
+        assert_eq!(
+            list_files(root).expect("list"),
+            vec!["hello/Cargo.toml", "hello/src/main.rs"]
+        );
     }
 }

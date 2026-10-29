@@ -59,12 +59,17 @@ const workspace = new Map<string, string>([
   ["AGENTS.md", "# Règles du tuteur\n\nTu coaches un apprenant Rust. Ne donne jamais la solution.\n"],
 ]);
 
+let listener: ((paths: string[]) => void) | undefined;
+const changed = (paths: string[]) => setTimeout(() => listener?.(paths), 30);
+const exists = (path: string) => [...workspace.keys()].some((f) => f === path || f.startsWith(`${path}/`));
+
 function listDir(path: string): Entry[] {
   const prefix = path ? `${path}/` : "";
   const seen = new Map<string, Entry>();
   for (const file of workspace.keys()) {
     if (!file.startsWith(prefix)) continue;
     const [name, ...rest] = file.slice(prefix.length).split("/");
+    if (name === ".keep") continue;
     seen.set(name, { name, path: prefix + name, is_dir: rest.length > 0 });
   }
   return [...seen.values()].sort((a, b) => Number(b.is_dir) - Number(a.is_dir) || a.name.localeCompare(b.name));
@@ -116,7 +121,39 @@ export function mockApi(): Api {
       if (text === undefined) throw new ApiError({ kind: "NotFound", message: path });
       return text;
     },
-    writeFile: async (_ws, path, content) => void workspace.set(path, content),
+    writeFile: async (_ws, path, content) => {
+      workspace.set(path, content);
+      changed([path]);
+    },
+    listFiles: async () => [...workspace.keys()].filter((f) => !f.endsWith("/.keep")).sort(),
+    createFile: async (_ws, path) => {
+      if (exists(path)) throw new ApiError({ kind: "Io", message: `${path} existe déjà` });
+      workspace.set(path, "");
+      changed([path]);
+    },
+    createDir: async (_ws, path) => {
+      if (exists(path)) throw new ApiError({ kind: "Io", message: `${path} existe déjà` });
+      workspace.set(`${path}/.keep`, "");
+      changed([path]);
+    },
+    renamePath: async (_ws, from, to) => {
+      if (exists(to)) throw new ApiError({ kind: "Io", message: `${to} existe déjà` });
+      for (const [file, text] of [...workspace]) {
+        if (file === from || file.startsWith(`${from}/`)) {
+          workspace.delete(file);
+          workspace.set(to + file.slice(from.length), text);
+        }
+      }
+      changed([from, to]);
+    },
+    deletePath: async (_ws, path) => {
+      for (const file of [...workspace.keys()]) {
+        if (file === path || file.startsWith(`${path}/`)) workspace.delete(file);
+      }
+      changed([path]);
+    },
+    watchWorkspace: async (_ws, onChange) => void (listener = onChange),
+    ask: async (message) => window.confirm(message),
     checkProject: async (_ws, project) => {
       await new Promise((r) => setTimeout(r, 400));
       return check(project);

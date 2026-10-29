@@ -11,8 +11,15 @@ export const commands = {
 	/**  Un workspace imposé par `LEARN_RUST_WORKSPACE` : pratique en dev et pour les tests de bout en bout. */
 	defaultWorkspace: () => __TAURI_INVOKE<string | null>("default_workspace"),
 	listDir: (workspace: string, path: string) => typedError<Entry[], AppError>(__TAURI_INVOKE("list_dir", { workspace, path })),
+	listFiles: (workspace: string) => typedError<string[], AppError>(__TAURI_INVOKE("list_files", { workspace })),
 	readFile: (workspace: string, path: string) => typedError<string, AppError>(__TAURI_INVOKE("read_file", { workspace, path })),
 	writeFile: (workspace: string, path: string, content: string) => typedError<null, AppError>(__TAURI_INVOKE("write_file", { workspace, path, content })),
+	createFile: (workspace: string, path: string) => typedError<null, AppError>(__TAURI_INVOKE("create_file", { workspace, path })),
+	createDir: (workspace: string, path: string) => typedError<null, AppError>(__TAURI_INVOKE("create_dir", { workspace, path })),
+	renamePath: (workspace: string, from: string, to: string) => typedError<null, AppError>(__TAURI_INVOKE("rename_path", { workspace, from, to })),
+	deletePath: (workspace: string, path: string) => typedError<null, AppError>(__TAURI_INVOKE("delete_path", { workspace, path })),
+	/**  Prévient le front à chaque changement dans le workspace, d'où qu'il vienne. */
+	watchWorkspace: (workspace: string, onChange: Channel<string[]>) => typedError<null, AppError>(__TAURI_INVOKE("watch_workspace", { workspace, onChange })),
 	/**  cargo peut prendre plusieurs secondes : on le lance hors du fil principal. */
 	checkProject: (workspace: string, project: string) => typedError<CheckResult, AppError>(__TAURI_INVOKE("check_project", { workspace, project })),
 	terminalOpen: (workspace: string, cols: number, rows: number, onOutput: Channel<string>) => typedError<number, AppError>(__TAURI_INVOKE("terminal_open", { workspace, cols, rows, onOutput })),

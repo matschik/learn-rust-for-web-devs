@@ -15,6 +15,17 @@ export interface Api {
   listDir(workspace: string, path: string): Promise<Entry[]>;
   readFile(workspace: string, path: string): Promise<string>;
   writeFile(workspace: string, path: string, content: string): Promise<void>;
+  /** Tous les fichiers, pour l'ouverture rapide. */
+  listFiles(workspace: string): Promise<string[]>;
+  createFile(workspace: string, path: string): Promise<void>;
+  createDir(workspace: string, path: string): Promise<void>;
+  renamePath(workspace: string, from: string, to: string): Promise<void>;
+  /** Envoie à la corbeille. */
+  deletePath(workspace: string, path: string): Promise<void>;
+  /** `onChange` reçoit les chemins modifiés dans le workspace, par l'app, le terminal ou une IA. */
+  watchWorkspace(workspace: string, onChange: (paths: string[]) => void): Promise<void>;
+  /** Une question oui/non, dans une vraie boîte de dialogue. */
+  ask(message: string): Promise<boolean>;
   checkProject(workspace: string, project: string): Promise<CheckResult>;
   terminalOpen(workspace: string, cols: number, rows: number, onOutput: (text: string) => void): Promise<number>;
   terminalWrite(id: number, data: string): Promise<void>;
@@ -45,6 +56,20 @@ const tauriApi: Api = {
   listDir: (ws, path) => unwrap(commands.listDir(ws, path)),
   readFile: (ws, path) => unwrap(commands.readFile(ws, path)),
   writeFile: async (ws, path, content) => void (await unwrap(commands.writeFile(ws, path, content))),
+  listFiles: (ws) => unwrap(commands.listFiles(ws)),
+  createFile: async (ws, path) => void (await unwrap(commands.createFile(ws, path))),
+  createDir: async (ws, path) => void (await unwrap(commands.createDir(ws, path))),
+  renamePath: async (ws, from, to) => void (await unwrap(commands.renamePath(ws, from, to))),
+  deletePath: async (ws, path) => void (await unwrap(commands.deletePath(ws, path))),
+  watchWorkspace: async (ws, onChange) => {
+    const channel = new Channel<string[]>();
+    channel.onmessage = onChange;
+    await unwrap(commands.watchWorkspace(ws, channel));
+  },
+  ask: async (message) => {
+    const { ask } = await import("@tauri-apps/plugin-dialog");
+    return ask(message, { title: "Learn Rust", kind: "warning" });
+  },
   checkProject: (ws, project) => unwrap(commands.checkProject(ws, project)),
   terminalOpen: (ws, cols, rows, onOutput) => {
     const channel = new Channel<string>();
