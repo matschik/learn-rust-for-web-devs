@@ -49,6 +49,31 @@ export async function activate(context: vscode.ExtensionContext) {
   };
   refreshStatus();
 
+  // Au démarrage d'un workspace d'apprentissage, on remet tout en place : la leçon à droite
+  // (là où VS Code l'avait laissée, sinon dans la 2e colonne), le sommaire et un terminal.
+  context.subscriptions.push(
+    vscode.window.registerWebviewPanelSerializer(LessonPanel.viewType, {
+      async deserializeWebviewPanel(webviewPanel, state: { ref?: string } | undefined) {
+        panel.restore(webviewPanel, state?.ref);
+      },
+    }),
+  );
+  const isLearningWorkspace = Boolean(store.current.lesson);
+  const openOnStartup = vscode.workspace.getConfiguration("learnRust").get("openOnStartup", true);
+  if (isLearningWorkspace && openOnStartup) {
+    // Laisse à VS Code le temps de restaurer le panneau de la dernière séance.
+    setTimeout(async () => {
+      // Le code à gauche : le fichier du projet modifié en dernier, si aucun n'est ouvert.
+      if (!vscode.window.visibleTextEditors.length && folder) {
+        const recent = await latestSource(folder);
+        if (recent) await vscode.window.showTextDocument(recent, { viewColumn: vscode.ViewColumn.One, preview: false });
+      }
+      if (!panel.isOpen && store.current.lesson) panel.show(store.current.lesson, { focus: false });
+      vscode.commands.executeCommand("workbench.view.extension.learnRust");
+      if (!vscode.window.terminals.length) terminal();
+    }, 1500);
+  }
+
   context.subscriptions.push(
     store,
     panel,
@@ -62,6 +87,13 @@ export async function activate(context: vscode.ExtensionContext) {
     }),
     vscode.commands.registerCommand("learnRust.verify", runVerify),
   );
+}
+
+/** Le `main.rs` ou `lib.rs` modifié en dernier dans les projets du workspace. */
+async function latestSource(folder: vscode.WorkspaceFolder): Promise<vscode.Uri | undefined> {
+  const files = await vscode.workspace.findFiles(new vscode.RelativePattern(folder, "*/src/{main,lib}.rs"), "**/target/**", 50);
+  const dated = await Promise.all(files.map(async (uri) => ({ uri, mtime: (await vscode.workspace.fs.stat(uri)).mtime })));
+  return dated.sort((a, b) => b.mtime - a.mtime)[0]?.uri;
 }
 
 export function deactivate() {}

@@ -13,6 +13,8 @@ En français, avec les termes techniques en anglais (ownership, borrow checker, 
 
 Ta progression est enregistrée dans `.learn-rust/progress.json`, dans ton workspace : elle te suit si tu changes de machine, et ton outil d'IA peut la lire.
 
+Quand tu rouvres ce workspace, tout se remet en place : ton code à gauche, la leçon en cours à droite, le sommaire et un terminal. Tu peux couper ce comportement avec le réglage `learnRust.openOnStartup`.
+
 ## Avec ton IA
 
 L'extension n'embarque pas d'IA. Utilise celle que tu as déjà (Claude Code, Copilot, Cursor, Codex…) comme un tuteur : demande-lui d'expliquer une erreur ou de te donner un indice, pas d'écrire le code à ta place.

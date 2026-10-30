@@ -39,7 +39,37 @@ export class LessonPanel implements vscode.Disposable {
     return this.lesson && `${this.lesson.moduleId}/${this.lesson.id}`;
   }
 
-  show(ref: string) {
+  get isOpen(): boolean {
+    return Boolean(this.panel);
+  }
+
+  /** Les options du panneau, partagées avec la restauration au démarrage. */
+  options(): vscode.WebviewPanelOptions & vscode.WebviewOptions {
+    return {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+      localResourceRoots: [vscode.Uri.joinPath(this.extensionUri, "dist")],
+    };
+  }
+
+  /** VS Code rouvre le panneau là où l'apprenant l'avait laissé : on le reprend tel quel. */
+  restore(panel: vscode.WebviewPanel, ref: string | undefined) {
+    this.adopt(panel);
+    const target = ref ?? this.store.current.lesson;
+    if (target) this.show(target);
+    else panel.dispose();
+  }
+
+  private adopt(panel: vscode.WebviewPanel) {
+    this.panel = panel;
+    panel.webview.options = this.options();
+    panel.iconPath = vscode.Uri.joinPath(this.extensionUri, "media", "icon.svg");
+    panel.onDidDispose(() => (this.panel = undefined), null, this.disposables);
+    panel.webview.onDidReceiveMessage((m: FromPanel) => this.receive(m), null, this.disposables);
+  }
+
+  /** Ouvre la leçon ; la première fois, dans la colonne de droite, le code restant à gauche. */
+  show(ref: string, options: { focus?: boolean } = {}) {
     const [moduleId, lessonId] = ref.split("/");
     const lesson = readLesson(this.courseRoot, moduleId ?? "", lessonId ?? "");
     if (!lesson) {
@@ -48,25 +78,21 @@ export class LessonPanel implements vscode.Disposable {
     }
     this.lesson = lesson;
     if (!this.panel) {
-      this.panel = vscode.window.createWebviewPanel(
-        LessonPanel.viewType,
-        lesson.title,
-        { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true },
-        {
-          enableScripts: true,
-          retainContextWhenHidden: true,
-          localResourceRoots: [vscode.Uri.joinPath(this.extensionUri, "dist")],
-        },
+      this.adopt(
+        vscode.window.createWebviewPanel(
+          LessonPanel.viewType,
+          lesson.title,
+          { viewColumn: vscode.ViewColumn.Two, preserveFocus: !options.focus },
+          this.options(),
+        ),
       );
-      this.panel.iconPath = vscode.Uri.joinPath(this.extensionUri, "media", "icon.svg");
-      this.panel.onDidDispose(() => (this.panel = undefined), null, this.disposables);
-      this.panel.webview.onDidReceiveMessage((m: FromPanel) => this.receive(m), null, this.disposables);
-    } else {
-      this.panel.reveal(undefined, true);
+    } else if (options.focus !== false) {
+      this.panel.reveal(undefined, !options.focus);
     }
-    this.panel.title = lesson.title;
-    this.panel.webview.html = this.html(this.panel.webview, lesson);
-    this.store.update((p) => ({ ...p, lesson: ref }));
+    const panel = this.panel!;
+    panel.title = lesson.title;
+    panel.webview.html = this.html(panel.webview, lesson);
+    if (this.store.current.lesson !== ref) this.store.update((p) => ({ ...p, lesson: ref }));
   }
 
   post(message: ToPanel) {

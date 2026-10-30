@@ -28,7 +28,9 @@
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onStartupFinished"
+    "workspaceContains:.learn-rust/progress.json",
+    "onStartupFinished",
+    "onWebviewPanel:learnRust.lesson"
   ],
   "contributes": {
     "viewsContainers": {
@@ -110,7 +112,17 @@
           }
         }
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Learn Rust",
+      "properties": {
+        "learnRust.openOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "À l'ouverture d'un workspace qui a une progression (.learn-rust/progress.json), rouvrir la leçon en cours à droite, le sommaire et un terminal."
+        }
+      }
+    }
   },
   "scripts": {
     "dev": "node scripts/dev.mjs",
