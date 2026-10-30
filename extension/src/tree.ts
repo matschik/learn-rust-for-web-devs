@@ -19,6 +19,8 @@ export class LessonsTree implements vscode.TreeDataProvider<Node> {
   }
 
   getChildren(node?: Node): Node[] {
+    // Sans workspace, la vue reste vide : VS Code affiche alors l'invitation à en choisir un.
+    if (!this.store.persistent) return [];
     if (!node) return this.modules.map((module) => ({ kind: "module", module }));
     if (node.kind === "module") return node.module.lessons.map((l) => ({ kind: "lesson", module: node.module, id: l.id, title: l.title }));
     return [];

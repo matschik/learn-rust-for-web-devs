@@ -3,6 +3,7 @@
 
 import * as vscode from "vscode";
 import { listModules } from "./course";
+import { serialize } from "./progress";
 import { LessonPanel } from "./lessonPanel";
 import { ProgressStore } from "./store";
 import { LessonsTree } from "./tree";
@@ -80,13 +81,44 @@ export async function activate(context: vscode.ExtensionContext) {
     status,
     store.onDidChange(refreshStatus),
     vscode.window.registerTreeDataProvider("learnRust.lessons", tree),
-    vscode.commands.registerCommand("learnRust.openLesson", (ref: string) => panel.show(ref)),
+    vscode.commands.registerCommand("learnRust.chooseWorkspace", () => chooseWorkspace(first)),
+    vscode.commands.registerCommand("learnRust.openLesson", (ref: string) => (folder ? panel.show(ref) : chooseWorkspace(ref))),
     vscode.commands.registerCommand("learnRust.continue", () => {
       const ref = store.current.lesson ?? first;
-      if (ref) panel.show(ref);
+      if (!folder) chooseWorkspace(ref);
+      else if (ref) panel.show(ref);
     }),
     vscode.commands.registerCommand("learnRust.verify", runVerify),
   );
+}
+
+/**
+ * Le point de départ : un dossier à l'apprenant, ouvert dans VS Code. On y range la
+ * progression (avec la leçon à ouvrir), puis on l'ouvre ; au redémarrage, la leçon s'affiche.
+ */
+async function chooseWorkspace(lesson: string | undefined) {
+  const choice = await vscode.window.showInformationMessage(
+    "Choisis d'abord ton workspace : le dossier où tu vas créer tes projets Rust avec cargo. Un dossier vide, par exemple ~/rust-workspace, c'est parfait.",
+    { modal: true },
+    "Choisir un dossier",
+  );
+  if (!choice) return;
+  const [dir] =
+    (await vscode.window.showOpenDialog({
+      canSelectFolders: true,
+      canSelectFiles: false,
+      canSelectMany: false,
+      openLabel: "Utiliser comme workspace",
+      title: "Ton workspace Rust",
+    })) ?? [];
+  if (!dir) return;
+  const file = vscode.Uri.joinPath(dir, ".learn-rust", "progress.json");
+  try {
+    await vscode.workspace.fs.stat(file);
+  } catch {
+    await vscode.workspace.fs.writeFile(file, new TextEncoder().encode(serialize({ lesson: lesson ?? null, checks: {} })));
+  }
+  await vscode.commands.executeCommand("vscode.openFolder", dir, { forceReuseWindow: true });
 }
 
 /** Le `main.rs` ou `lib.rs` modifié en dernier dans les projets du workspace. */

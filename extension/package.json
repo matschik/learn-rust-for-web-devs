@@ -53,11 +53,17 @@
     "viewsWelcome": [
       {
         "view": "learnRust.lessons",
-        "contents": "Ouvre un dossier pour y ranger tes projets Rust. Ta progression y sera enregistrée.\n[Ouvrir un dossier](command:vscode.openFolder)",
+        "contents": "Tout commence par ton workspace : le dossier où tu vas créer tes projets Rust avec cargo. Ta progression y sera rangée.\n[Choisir mon workspace](command:learnRust.chooseWorkspace)",
         "when": "workbenchState == empty"
       }
     ],
     "commands": [
+      {
+        "command": "learnRust.chooseWorkspace",
+        "title": "Choisir mon workspace",
+        "category": "Learn Rust",
+        "icon": "$(folder-opened)"
+      },
       {
         "command": "learnRust.openLesson",
         "title": "Ouvrir une leçon",
