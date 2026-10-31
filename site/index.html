@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Learn Rust for web devs</title>
-<meta name="description" content="Apprendre Rust quand on est dev web TypeScript, avec Claude Code comme tuteur qui ne donne pas les réponses. En français.">
+<meta name="description" content="Une extension VS Code pour apprendre Rust quand on vient de TypeScript : la leçon s'ouvre à côté de ton code, les étapes se cochent toutes seules, et le compilateur te sert de prof. En français.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c2410c'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='ui-monospace,Menlo,monospace' font-size='36' font-weight='700' fill='%23fff7ed'%3Ers%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,9 +13,8 @@
   :root {
     --bg: #f7f3ec; --panel: #fffdf9; --text: #221d18; --muted: #6f665b; --line: #e6ddd0;
     --accent: #b8430f; --accent-soft: #f9e3d3; --ok: #2f7a3f; --ok-soft: #dff0e1;
-    --err: #b42318; --err-soft: #fbe2df; --todo-soft: #efe8dd; --code: #f1ebe1;
-    --term-bg: #1d1915; --term-text: #eadfce; --term-dim: #9a8f80; --on-accent: #fff7ed;
-    --shadow: 0 1px 0 rgba(34, 29, 24, .04), 0 10px 30px -12px rgba(34, 29, 24, .18);
+    --code: #f1ebe1; --term-bg: #1d1915; --term-text: #eadfce; --term-dim: #9a8f80; --on-accent: #fff7ed;
+    --shadow: 0 1px 0 rgba(34, 29, 24, .04), 0 30px 60px -24px rgba(34, 29, 24, .35);
     --serif: "Fraunces", Georgia, "Times New Roman", serif;
     --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
@@ -23,25 +22,25 @@
     :root {
       --bg: #14110e; --panel: #1c1814; --text: #efe6d8; --muted: #a39887; --line: #2f2922;
       --accent: #f2783a; --accent-soft: #3b2416; --ok: #6fd08a; --ok-soft: #17301e;
-      --err: #f4877b; --err-soft: #3b1a16; --todo-soft: #26211b; --code: #25201a;
-      --term-bg: #0d0b09; --term-text: #eadfce; --term-dim: #8b8173; --on-accent: #1d1206;
-      --shadow: none;
+      --code: #25201a; --term-bg: #0d0b09; --term-text: #eadfce; --term-dim: #8b8173; --on-accent: #1d1206;
+      --shadow: 0 30px 60px -24px rgba(0, 0, 0, .6);
     }
   }
   * { box-sizing: border-box; }
   body {
     margin: 0; color: var(--text); font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
     background:
-      radial-gradient(1200px 500px at 85% -10%, var(--accent-soft), transparent 60%),
+      radial-gradient(1200px 500px at 50% -10%, var(--accent-soft), transparent 60%),
       var(--bg);
   }
   a { color: var(--accent); text-underline-offset: 3px; }
   code, pre { font-family: var(--mono); }
   code { background: var(--code); padding: 1px 6px; border-radius: 5px; font-size: .84em; }
-  pre { background: var(--term-bg); color: var(--term-text); padding: 16px 18px; border-radius: 12px; overflow-x: auto; font-size: 14px; line-height: 1.6; }
+  pre { background: var(--term-bg); color: var(--term-text); padding: 16px 18px; border-radius: 12px; overflow-x: auto; font-size: 14px; line-height: 1.6; margin: 0; }
   pre code { background: none; padding: 0; color: inherit; }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 22px 16px 80px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 22px 16px 80px; }
   .i { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.14em; }
+  .i.gh { fill: currentColor; stroke: none; }
 
   .top { display: flex; align-items: center; gap: 18px; font-size: 14px; }
   .brand { display: flex; align-items: center; gap: 9px; font-weight: 650; color: var(--text); text-decoration: none; font-family: var(--serif); font-size: 17px; }
@@ -49,64 +48,175 @@
   .top .spacer { flex: 1; }
   .top a.link { color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
   .top a.link:hover { color: var(--text); }
-  .i.gh { fill: currentColor; stroke: none; }
 
-  .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; padding: 72px 0 32px; }
+  .hero { text-align: center; padding: 64px 0 40px; }
   .tag { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); padding: 4px 12px 4px 8px; border-radius: 99px; }
-  .tag b { color: var(--accent); font-weight: 600; }
-  h1 { font-family: var(--serif); font-weight: 650; font-size: clamp(38px, 5.6vw, 60px); line-height: 1.02; letter-spacing: -0.025em; margin: 18px 0 18px; text-wrap: balance; }
-  h1 em { font-style: italic; color: var(--accent); font-weight: 500; padding-right: .12em; }
-  .lede { font-size: 19px; color: var(--muted); margin: 0; text-wrap: pretty; max-width: 34em; }
-  .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .tag b { color: var(--accent); font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+  h1 { font-family: var(--serif); font-weight: 650; font-size: clamp(38px, 6vw, 64px); line-height: 1.02; letter-spacing: -0.025em; margin: 18px auto; max-width: 14em; text-wrap: balance; }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 500; padding-right: .08em; }
+  .lede { font-size: 19px; color: var(--muted); margin: 0 auto; text-wrap: pretty; max-width: 36em; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; justify-content: center; }
   .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff7ed; font-weight: 600; font-size: 15px; padding: 12px 18px; border-radius: 10px; text-decoration: none; }
   .btn:hover { filter: brightness(1.07); }
   .btn.ghost { background: var(--panel); color: var(--text); border: 1px solid var(--line); }
+  .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
 
-  /* Le hero montre une vraie séance, sous forme de conversation */
-  .chat { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); padding: 22px; display: grid; gap: 14px; position: relative; }
-  .chat .err { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); background: var(--err-soft); border-radius: 12px; padding: 10px 14px; }
-  .chat .err b { font: 600 13px var(--mono); color: var(--err); }
-  .chat .err code { background: none; padding: 0; }
-  .msg { display: flex; gap: 10px; align-items: flex-end; max-width: 92%; }
-  .msg p { margin: 0; padding: 11px 15px; border-radius: 18px; font-size: 15.5px; line-height: 1.45; }
-  .msg.me { justify-self: end; flex-direction: row-reverse; }
-  .msg.me p { background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 6px; }
-  .msg.tutor p { background: var(--accent-soft); color: var(--text); border-bottom-left-radius: 6px; }
-  .msg.me code { background: rgba(255, 255, 255, .18); color: inherit; }
-  .avatar { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
-  .avatar img { width: 40px; height: auto; }
-  .chat .ok { justify-self: start; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ok); background: var(--ok-soft); border-radius: 99px; padding: 6px 12px 6px 10px; margin-left: 56px; }
-  .t-dim { color: var(--term-dim); }
+  /* La maquette : une fenêtre VS Code (thème Dark Modern), toujours sombre */
+  .vs {
+    --vs-bg: #1f1f1f; --vs-side: #181818; --vs-line: #2b2b2b; --vs-text: #cccccc; --vs-dim: #8b8b8b;
+    --vs-tab: #181818; --vs-btn: #0078d4; --vs-accent: #f28c4f; --vs-ok: #6fd08a;
+    --vs-ok-soft: rgba(111, 208, 138, .16); --vs-panel: #252526;
+    margin: 0 auto; max-width: 1080px; border-radius: 12px; overflow: hidden; background: var(--vs-bg); color: var(--vs-text);
+    border: 1px solid #3c3c3c; box-shadow: var(--shadow); font: 13px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; text-align: left;
+  }
+  .vs-title { height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--vs-side); border-bottom: 1px solid var(--vs-line); font-size: 12px; color: var(--vs-dim); }
+  .vs-dots { display: flex; gap: 7px; }
+  .vs-dots span { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .vs-dots span + span { background: #febc2e; }
+  .vs-dots span + span + span { background: #28c840; }
+  .vs-title .search { flex: 0 1 340px; margin: 0 auto; text-align: center; background: #2a2a2a; border: 1px solid #3c3c3c; border-radius: 6px; line-height: 22px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .vs-title .pad { width: 48px; }
+  .vs-main { display: grid; grid-template-columns: 46px minmax(0, 1.1fr) minmax(0, 1fr); height: 540px; }
+  .vs-act { background: var(--vs-side); border-right: 1px solid var(--vs-line); display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 6px; }
+  .vs-act span { width: 46px; height: 42px; display: grid; place-items: center; color: #868686; font-size: 22px; border-left: 2px solid transparent; }
+  .vs-act span.on { color: #e7e7e7; border-left-color: var(--vs-accent); }
+  .vs-act .rs { font: 700 11px var(--mono); width: 24px; height: 24px; border-radius: 6px; background: var(--vs-accent); color: #1d1206; display: grid; place-items: center; transform: rotate(-4deg); }
 
-  section { margin-top: 88px; }
+  /* Colonne de gauche : le panneau de la leçon */
+  .vs-group { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .vs-group + .vs-group { border-left: 1px solid var(--vs-line); }
+  .vs-tabs { height: 35px; flex: none; display: flex; background: var(--vs-tab); border-bottom: 1px solid var(--vs-line); }
+  .vs-tab { display: flex; align-items: center; gap: 7px; padding: 0 12px; font-size: 12.5px; color: var(--vs-dim); border-right: 1px solid var(--vs-line); white-space: nowrap; }
+  .vs-tab.on { background: var(--vs-bg); color: #fff; box-shadow: inset 0 1px 0 var(--vs-accent); margin-bottom: -1px; }
+  .vs-tab .x { color: var(--vs-dim); font-size: 11px; }
+  .vs-tab .ico-rs { font: 700 9px var(--mono); color: var(--vs-accent); }
+  .lesson { flex: 1; overflow: hidden; position: relative; }
+  .lesson .bar { height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 14px 0 22px; border-bottom: 1px solid var(--vs-line); font-size: 12px; color: var(--vs-dim); }
+  .lesson .bar .sp { flex: 1; }
+  .lesson .bar b { color: var(--vs-text); font-variant-numeric: tabular-nums; }
+  .lesson .bar .verify { background: var(--vs-btn); color: #fff; border-radius: 4px; padding: 2px 10px; font-size: 12px; }
+  .lesson .doc { padding: 4px 22px 20px; }
+  .lesson .eyebrow { margin: 14px 0 0; font-size: 11.5px; color: var(--vs-dim); }
+  .lesson h3.t { margin: 0 0 6px; font-size: 21px; font-weight: 650; color: #fff; letter-spacing: -0.01em; }
+  .lesson p { margin: 0 0 10px; font-size: 13px; }
+  .lesson code { background: rgba(255, 255, 255, .07); color: #e6e6e6; font-size: 12px; padding: 0 5px; border-radius: 4px; }
+  .lesson .aside { border: 1px solid var(--vs-line); background: var(--vs-panel); border-radius: 6px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: var(--vs-dim); margin: 0 0 12px; }
+  .lesson .try { border: 1px solid var(--vs-line); border-left: 3px solid var(--vs-accent); background: var(--vs-panel); border-radius: 6px; padding: 8px 14px 6px; margin-bottom: 12px; }
+  .lesson .try h4 { margin: 0 0 6px; font-size: 13.5px; color: var(--vs-accent); }
+  .lesson ul { list-style: none; margin: 0; padding: 0; }
+  .lesson li { display: flex; gap: 9px; align-items: flex-start; margin: 5px 0; font-size: 12.5px; line-height: 1.5; }
+  .lesson li .box { flex: none; width: 13px; height: 13px; margin-top: 3px; border-radius: 3px; border: 1px solid #6b6b6b; display: grid; place-items: center; font-size: 10px; line-height: 1; color: transparent; }
+  .lesson li.on .box { background: var(--vs-ok); border-color: var(--vs-ok); color: #102414; }
+  .lesson li .txt { flex: 1; }
+  .lesson li.on .txt { color: var(--vs-dim); text-decoration: line-through; }
+  .lesson li .badge { flex: none; align-self: center; font-size: 10.5px; line-height: 17px; padding: 0 7px; border-radius: 99px; border: 1px dashed #4a4a4a; color: var(--vs-dim); }
+  .lesson li.on .badge { border: 1px solid transparent; background: var(--vs-ok-soft); color: var(--vs-ok); font-weight: 600; }
+  .lesson code.path { text-decoration: underline dotted; text-underline-offset: 3px; }
+  .lesson .quiz { border: 1px solid var(--vs-line); border-radius: 8px; padding: 10px 14px; }
+  .lesson .quiz p { margin-bottom: 8px; }
+  .lesson .choices { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .lesson .choice { font-size: 12px; padding: 2px 13px; border-radius: 4px; border: 1px solid var(--vs-line); opacity: .55; }
+  .lesson .choice.good { opacity: 1; border-color: var(--vs-ok); color: var(--vs-ok); font-weight: 600; }
+  .lesson .verdict { font-size: 12px; color: var(--vs-ok); font-weight: 600; }
+  .lesson .explain { margin: 8px 0 0; font-size: 12px; color: var(--vs-dim); }
+
+  /* Colonne de droite : le code, puis le terminal */
+  .crumbs { height: 22px; flex: none; padding: 0 14px; font-size: 11.5px; color: var(--vs-dim); display: flex; align-items: center; gap: 6px; }
+  .code { flex: 1; margin: 0; padding: 4px 0 0; background: none; border-radius: 0; color: #d4d4d4; font: 13px/1.6 var(--mono); overflow: hidden; }
+  .code .ln { display: inline-block; width: 42px; padding-right: 16px; text-align: right; color: #6e7681; user-select: none; }
+  .code .cur { background: rgba(255, 255, 255, .04); display: block; }
+  .k { color: #569cd6; } .f { color: #dcdcaa; } .m { color: #569cd6; } .s { color: #ce9178; }
+  .term { flex: 0 0 52%; border-top: 1px solid var(--vs-line); display: flex; flex-direction: column; min-height: 0; }
+  .term .vs-tabs { height: 30px; }
+  .term pre { flex: 1; background: none; color: #cccccc; font: 12px/1.55 var(--mono); padding: 8px 14px; border-radius: 0; overflow: hidden; white-space: pre; }
+  .term .p { color: var(--vs-ok); }
+  .term .d { color: #8b8b8b; }
+  .term .g { color: var(--vs-ok); font-weight: 600; }
+  .vs-status { height: 24px; display: flex; align-items: center; gap: 14px; padding: 0 10px; background: var(--vs-side); border-top: 1px solid var(--vs-line); font-size: 11.5px; color: var(--vs-dim); white-space: nowrap; overflow: hidden; }
+  .vs-status .sp { flex: 1; }
+  .vs-status .lr { color: var(--vs-text); }
+
+  /* L'animation : tu changes le message, tu relances cargo run, l'étape se coche */
+  .swap { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; }
+  .old { max-width: 16ch; animation: hide 0s 1.6s forwards; }
+  .new { max-width: 0; animation: type 1s steps(15, end) 1.7s forwards; }
+  .caret { display: inline-block; width: 2px; height: 1.15em; vertical-align: -2px; background: #aeafad; opacity: 0; animation: blink 1s step-end 1.6s 3; }
+  .later { visibility: hidden; animation: show 0s forwards; }
+  .t1 { animation-delay: 3.2s; } .t2 { animation-delay: 3.7s; } .t3 { animation-delay: 4.1s; } .t4 { animation-delay: 4.5s; }
+  .n2 { max-width: 3ch; animation: hide 0s 4.5s forwards; }
+  .n3 { max-width: 0; animation: reveal 0s 4.5s forwards; }
+  .lesson li.tick .box { animation: box-on 0s 4.5s forwards, pop .35s ease-out 4.5s; }
+  .lesson li.tick .txt { animation: txt-on 0s 4.5s forwards; }
+  .lesson li.tick .badge { animation: badge-on 0s 4.5s forwards; }
+  @keyframes hide { to { max-width: 0; } }
+  @keyframes type { to { max-width: 16ch; } }
+  @keyframes reveal { to { max-width: 3ch; } }
+  @keyframes show { to { visibility: visible; } }
+  @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes pop { 50% { transform: scale(1.35); } }
+  @keyframes box-on { to { background: var(--vs-ok); border-color: var(--vs-ok); color: #102414; } }
+  @keyframes txt-on { to { color: var(--vs-dim); text-decoration: line-through; } }
+  @keyframes badge-on { to { border: 1px solid transparent; background: var(--vs-ok-soft); color: var(--vs-ok); font-weight: 600; } }
+  @media (prefers-reduced-motion: reduce) {
+    .vs * { animation-delay: 0s !important; animation-duration: 0s !important; animation-iteration-count: 1 !important; }
+  }
+
+  section { margin-top: 96px; }
   h2 { font-family: var(--serif); font-weight: 650; font-size: clamp(27px, 3.4vw, 36px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 14px; display: flex; align-items: center; gap: 12px; text-wrap: balance; }
   h2 .chip { width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 20px; flex: none; }
   .intro { max-width: 40em; color: var(--muted); margin: 0 0 24px; text-wrap: pretty; }
 
-  .pieces { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; counter-reset: s; }
+  .steps li { counter-increment: s; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 20px; min-width: 0; }
+  .steps li::before { content: counter(s); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font: 600 14px var(--mono); margin-bottom: 10px; }
+  .steps h3, .piece h3 { font-family: var(--serif); font-weight: 650; font-size: 19px; line-height: 1.2; margin: 0 0 6px; }
+  .steps p, .piece p { margin: 0; font-size: 15px; color: var(--muted); }
+
+  .pieces { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .piece { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
   .piece .ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-size: 19px; }
-  .piece h3, .door h3 { font-family: var(--serif); font-weight: 650; font-size: 20px; line-height: 1.2; margin: 6px 0 0; }
-  .piece p { margin: 0; font-size: 15.5px; color: var(--muted); }
+  .piece h3 { margin-top: 6px; }
 
-  .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .door { border-radius: 18px; padding: 22px 24px; min-width: 0; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; background: var(--panel); border: 1px solid var(--line); }
-  .door + .door { border: 1px dashed var(--accent); background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
-  .door p { margin: 0; font-size: 16px; }
-  .door pre { margin: 0; align-self: stretch; font-size: 13px; }
-  .door .btn { margin-top: auto; }
+  .mods { display: grid; grid-template-columns: 1fr 1.2fr 1fr; align-items: start; gap: 14px; }
+  .mod { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; }
+  .mod h3 { font-family: var(--serif); font-weight: 650; font-size: 19px; margin: 0 0 10px; }
+  .mod h3 span { color: var(--muted); font: 400 13px var(--mono); margin-right: 6px; }
+  .mod ol { margin: 0; padding-left: 22px; font-size: 15.5px; }
+  .mod ol li::marker { color: var(--muted); font-family: var(--mono); font-size: 13px; }
+  .mod.next { border-style: dashed; color: var(--muted); }
+  .mod.next p { margin: 0; font-size: 15.5px; }
+
+  .start { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+  .start .card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .start h3 { font-family: var(--serif); font-weight: 650; font-size: 20px; margin: 0; }
+  .start p { margin: 0; font-size: 16px; }
+  .start pre { font-size: 13px; }
+  .start .btn { align-self: flex-start; }
+  .t-dim { color: var(--term-dim); }
 
   footer { margin-top: 88px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 18px; }
 
+  @media (max-width: 960px) {
+    .steps { grid-template-columns: 1fr 1fr; }
+    .pieces { grid-template-columns: 1fr 1fr; }
+  }
   @media (max-width: 860px) {
-    .hero, .doors { grid-template-columns: 1fr; gap: 32px; }
-    .hero { padding-top: 44px; }
+    .vs-main { grid-template-columns: minmax(0, 1fr); height: auto; }
+    .vs-act { display: none; }
+    .vs-group + .vs-group { border-left: none; border-top: 1px solid var(--vs-line); }
+    .lesson { flex: none; }
+    .code { flex: none; padding-bottom: 8px; }
+    .term pre { flex: none; }
+    .vs-title .search { display: none; }
+    .mods, .start { grid-template-columns: 1fr; }
   }
   @media (max-width: 600px) {
+    .hero { padding-top: 44px; }
     .lede { font-size: 17.5px; }
-    .pieces { grid-template-columns: 1fr; }
+    .steps, .pieces { grid-template-columns: 1fr; }
     section { margin-top: 64px; }
     .top .label { display: none; }
+    .vs-status .hide-sm { display: none; }
   }
 </style>
 </head>
@@ -115,91 +225,192 @@
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
   <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
-  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></symbol>
-  <symbol id="i-message" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-files" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24"><rect width="7" height="7" x="14" y="3" rx="1"/><path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0L14.06 8.5A2 2 0 0 0 15.5 9.94l6.14 1.58a.5.5 0 0 1 0 .96L15.5 14.06a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></symbol>
 </svg>
 
 <div class="wrap">
   <div class="top">
     <a class="brand" href="./"><span class="logo">rs</span>Learn Rust for web devs</a>
     <span class="spacer"></span>
-    <a class="link" href="cours/"><svg class="i"><use href="#i-book"/></svg><span class="label">Apprendre</span></a>
     <a class="link" href="https://github.com/matschik/learn-rust-for-web-devs"><svg class="i gh" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg><span class="label">GitHub</span></a>
   </div>
 
   <header class="hero">
-    <div>
-      <span class="tag"><b>FR</b> En français, avec l'anglais technique</span>
-      <h1>Apprends Rust avec un agent qui <em>refuse</em> de coder à ta place</h1>
-      <p class="lede">Tu fais du TypeScript et tu as envie d'écrire tes backends en Rust ? Ici, Claude Code devient ton tuteur. Il te pose des questions, t'aide à comprendre ce que dit le compilateur et relit ton code. Mais chaque ligne, c'est toi qui l'écris.</p>
-      <div class="ctas">
-        <a class="btn" href="cours/">Commencer la formation <svg class="i"><use href="#i-arrow"/></svg></a>
-        <a class="btn ghost" href="https://github.com/matschik/learn-rust-for-web-devs/fork"><svg class="i"><use href="#i-code"/></svg>Forker le repo</a>
-      </div>
+    <span class="tag"><b><svg class="i"><use href="#i-code"/></svg>VS Code</b> Une extension, en français</span>
+    <h1>Apprends Rust <em>dans ton éditeur</em>, à côté de ton code</h1>
+    <p class="lede">Tu fais du TypeScript et tu veux écrire tes backends en Rust ? La leçon s'ouvre à gauche, ton projet à droite. Tu tapes tes commandes <code>cargo</code>, les étapes se cochent toutes seules, et le compilateur te sert de prof.</p>
+    <div class="ctas">
+      <a class="btn" href="https://marketplace.visualstudio.com/items?itemName=velstudio.learn-rust">Installer l'extension <svg class="i"><use href="#i-arrow"/></svg></a>
+      <a class="btn ghost" href="https://github.com/matschik/learn-rust-for-web-devs"><svg class="i gh" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>Voir le code</a>
     </div>
-    <div class="chat" role="img" aria-label="Une séance : le test échoue avec l'erreur E0382, tu proposes un clone, et Ferris le tuteur te répond par des questions jusqu'à ce que tu trouves.">
-      <div class="err"><b>E0382</b><span>borrow of moved value: <code>title</code></span></div>
-      <div class="msg me"><p>Je mets un <code>.clone()</code> ?</p></div>
-      <div class="msg tutor"><span class="avatar"><img src="ferris.svg" alt=""></span><p>Avant ça : après l'appel à <code>describe(title)</code>, qui possède encore la String ?</p></div>
-      <div class="msg me"><p>describe ! Donc <code>title</code> a perdu ses permissions.</p></div>
-      <div class="msg tutor"><span class="avatar"><img src="ferris.svg" alt=""></span><p>Exactement. Et ensuite, tu as besoin de toute la String, ou juste de sa longueur ?</p></div>
-      <span class="ok"><svg class="i"><use href="#i-check"/></svg>Trouvé, et sans clone.</span>
-    </div>
+    <p class="note">Gratuit et open source.</p>
   </header>
 
+  <div class="vs" role="img" aria-label="VS Code avec l'extension : à gauche la leçon « Hello, cargo » et ses étapes, à droite main.rs et un terminal. Quand tu changes le message et relances cargo run, la troisième étape se coche toute seule.">
+    <div class="vs-title">
+      <span class="vs-dots"><span></span><span></span><span></span></span>
+      <span class="search">mon-rust</span>
+      <span class="pad"></span>
+    </div>
+    <div class="vs-main">
+      <nav class="vs-act" aria-hidden="true">
+        <span><svg class="i"><use href="#i-files"/></svg></span>
+        <span><svg class="i"><use href="#i-search"/></svg></span>
+        <span><svg class="i"><use href="#i-branch"/></svg></span>
+        <span><svg class="i"><use href="#i-blocks"/></svg></span>
+        <span class="on"><b class="rs">rs</b></span>
+      </nav>
+
+      <div class="vs-group">
+        <div class="vs-tabs"><span class="vs-tab on"><span class="ico-rs">rs</span>Leçon : Hello, cargo <span class="x">✕</span></span></div>
+        <div class="lesson">
+          <div class="bar">☰ <span>01 · Hello, cargo</span><span class="sp"></span><span><b><span class="swap n2">2</span><span class="swap n3">3</span>/3</b> étapes</span><span class="verify">Vérifier</span></div>
+          <div class="doc">
+            <p class="eyebrow">Module 01 · Prise en main</p>
+            <h3 class="t">Hello, cargo</h3>
+            <p>Cargo est à la fois le système de compilation et le gestionnaire de paquets de Rust. Il compile ton code, télécharge les bibliothèques dont il dépend…</p>
+            <div class="aside">▸ Côté TypeScript</div>
+            <div class="try">
+              <h4>▶ À toi : ton premier projet</h4>
+              <ul>
+                <li class="on"><span class="box">✓</span><span class="txt">Dans le terminal, tape <code>cargo new hello</code>.</span><span class="badge">✓ auto</span></li>
+                <li class="on"><span class="box">✓</span><span class="txt">Lance-le : <code>cd hello</code>, puis <code>cargo run</code>.</span><span class="badge">✓ auto</span></li>
+                <li class="tick"><span class="box">✓</span><span class="txt">Ouvre <code class="path">hello/src/main.rs</code>, change le message, relance <code>cargo run</code>.</span><span class="badge"><span class="swap n3">✓&nbsp;</span>auto</span></li>
+              </ul>
+            </div>
+            <div class="quiz">
+              <p>Tu renommes <code>main</code> en <code>start</code>. Ça compile ?</p>
+              <div class="choices"><span class="choice">Oui</span><span class="choice good">Non</span><span class="verdict">✓ Bien vu.</span></div>
+              <p class="explain">Erreur E0601 : sans <code>main</code>, Rust ne sait pas par où commencer.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-group">
+        <div class="vs-tabs"><span class="vs-tab on"><span class="ico-rs">rs</span>main.rs <span class="x">✕</span></span><span class="vs-tab">Cargo.toml</span></div>
+        <div class="crumbs">hello › src › main.rs</div>
+<pre class="code"><span class="ln">1</span><span class="k">fn</span> <span class="f">main</span>() {
+<span class="cur"><span class="ln">2</span>    <span class="m">println!</span>(<span class="s">"<span class="swap old">Hello, world!</span><span class="swap new">Salut, Ferris !</span><span class="caret"></span>"</span>);</span><span class="ln">3</span>}</pre>
+        <div class="term">
+          <div class="vs-tabs"><span class="vs-tab on"><svg class="i"><use href="#i-terminal"/></svg>zsh</span></div>
+<pre><span class="p">~/mon-rust</span> cargo new hello
+<span class="d">    Creating binary (application) `hello` package</span>
+<span class="p">~/mon-rust</span> cd hello &amp;&amp; cargo run
+<span class="d">   Compiling hello v0.1.0</span>
+<span class="d">     Running `target/debug/hello`</span>
+Hello, world!
+<span class="later t1"><span class="p">~/mon-rust/hello</span> cargo run</span>
+<span class="later t2"><span class="d">   Compiling hello v0.1.0</span></span>
+<span class="later t3"><span class="g">Salut, Ferris !</span></span></pre>
+        </div>
+      </div>
+    </div>
+    <div class="vs-status">
+      <span><svg class="i"><use href="#i-branch"/></svg> main</span>
+      <span class="hide-sm">rust-analyzer</span>
+      <span class="sp"></span>
+      <span class="lr">🦀 Learn Rust · 01 · Hello, cargo</span>
+    </div>
+  </div>
+
   <section>
-    <h2><span class="chip"><svg class="i"><use href="#i-bulb"/></svg></span>Quelques principes</h2>
+    <h2><span class="chip"><svg class="i"><use href="#i-play"/></svg></span>Comment ça marche</h2>
+    <p class="intro">Pas de site à garder ouvert dans un coin, pas de copier-coller depuis un navigateur. Tout se passe dans VS Code, sur tes propres projets.</p>
+    <ol class="steps">
+      <li><h3>Ouvre un dossier vide</h3><p>Ce sera ton workspace, celui de tes projets Rust. Clique sur l'icône Learn Rust dans la barre d'activité.</p></li>
+      <li><h3>Lis la leçon</h3><p>Elle s'ouvre à gauche, ton code à droite. Une leçon se lit en un quart d'heure, avec des questions pour vérifier que c'est clair.</p></li>
+      <li><h3>Code dans ton terminal</h3><p>Tu crées tes projets avec <code>cargo new</code>. Les étapes se cochent toutes seules quand l'extension voit le fichier, le build ou le test.</p></li>
+      <li><h3>Clique sur Vérifier</h3><p>Ça lance <code>cargo test</code>. Les erreurs du compilateur s'affichent dans ton code, grâce à rust-analyzer.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="chip"><svg class="i"><use href="#i-sparkles"/></svg></span>Ce que tu y trouves</h2>
     <div class="pieces">
       <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-message"/></svg></span>
-        <h3>Tu écris, il questionne</h3>
-        <p>Le tuteur ne te donne jamais la solution. Il te pose les bonnes questions pour que tu trouves toi-même, et si tu bloques, il te glisse un indice, puis un autre.</p>
+        <span class="ico"><svg class="i"><use href="#i-book"/></svg></span>
+        <h3>Le Rust Book, en français</h3>
+        <p>Le parcours suit les chapitres du livre officiel, dans le style de sa traduction française. Chaque leçon se suffit à elle-même : pas besoin de lire le livre à côté.</p>
       </div>
       <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-book"/></svg></span>
-        <h3>Une vraie leçon avant chaque exercice</h3>
-        <p>Chaque exercice commence par un quart d'heure de lecture, en français, avec des exemples et quelques questions pour vérifier que c'est clair. Ensuite seulement, tu passes au code.</p>
+        <span class="ico"><svg class="i"><use href="#i-list"/></svg></span>
+        <h3>Des leçons interactives</h3>
+        <p>Des blocs « À toi » au fil du texte, des questions qui révèlent leur réponse une par une, et le code de départ prêt à copier sous chaque étape.</p>
       </div>
       <div class="piece">
         <span class="ico"><svg class="i"><use href="#i-code"/></svg></span>
         <h3>Depuis TypeScript</h3>
-        <p>Tu ne pars pas de zéro. Chaque notion est comparée à ce que tu écris déjà en TS, pour voir tout de suite ce qui change vraiment.</p>
+        <p>Des encarts « Côté TypeScript » à déplier font le pont avec ce que tu écris déjà. Ils restent fermés si tu n'en as pas besoin.</p>
       </div>
       <div class="piece">
-        <span class="ico"><svg class="i"><use href="#i-clock"/></svg></span>
-        <h3>À ton rythme</h3>
-        <p>Une demi-heure suffit pour une séance. Tu as le droit de te tromper, c'est même comme ça qu'on apprend : le compilateur t'explique pourquoi, et le tuteur se souvient de ce qu'il faudra revoir.</p>
+        <span class="ico"><svg class="i"><use href="#i-check"/></svg></span>
+        <h3>Le compilateur comme prof</h3>
+        <p>Avant de coller un exercice qui ne compile pas, tu prédis l'erreur. Puis tu lis le vrai message, là où il apparaît : dans ton éditeur.</p>
+      </div>
+      <div class="piece">
+        <span class="ico"><svg class="i"><use href="#i-save"/></svg></span>
+        <h3>Ta progression chez toi</h3>
+        <p>Elle est enregistrée dans <code>.learn-rust/progress.json</code>, dans ton workspace. Rouvre-le, et tout se remet en place là où tu t'étais arrêté.</p>
+      </div>
+      <div class="piece">
+        <span class="ico"><svg class="i"><use href="#i-sparkles"/></svg></span>
+        <h3>Avec ton IA, si tu veux</h3>
+        <p>L'extension n'embarque pas d'IA. Garde celle que tu as déjà, Claude Code, Copilot ou Cursor, et demande-lui des indices plutôt que du code.</p>
       </div>
     </div>
   </section>
 
   <section>
-    <h2><span class="chip"><svg class="i"><use href="#i-play"/></svg></span>Deux façons de commencer</h2>
-    <div class="doors">
-      <div class="door">
-        <h3>Suivre la formation</h3>
-        <p>Clone le repo, lance Claude Code et tape <code>/next</code> : le tuteur s'occupe du reste. Côté outils, il te faut <a href="https://rustup.rs/">rustup</a>, <a href="https://code.claude.com/docs">Claude Code</a>, Node 22 et <code>jq</code>.</p>
-<pre><code><span class="t-dim">$</span> git clone https://github.com/matschik/learn-rust-for-web-devs.git
-<span class="t-dim">$</span> cd learn-rust-for-web-devs &amp;&amp; claude
-<span class="t-dim">&gt;</span> /next</code></pre>
-        <a class="btn" href="cours/">Lire la première fiche <svg class="i"><use href="#i-arrow"/></svg></a>
+    <h2><span class="chip"><svg class="i"><use href="#i-map"/></svg></span>Le parcours</h2>
+    <p class="intro">Il suit l'ordre du Rust Book et mène à un backend : une API de tâches qui grandit avec toi, jusqu'à Axum et Postgres.</p>
+    <div class="mods">
+      <div class="mod">
+        <h3><span>01</span>Prise en main</h3>
+        <ol><li>Hello, cargo</li><li>Variables</li><li>Types numériques</li><li>Contrôle de flux</li></ol>
       </div>
-      <div class="door">
-        <h3>En faire ta version</h3>
-        <p>Forke le repo et présente-toi dans un <code>CLAUDE.local.md</code>&nbsp;: prénom, stack, préférences. Tu viens de Python ou de Go&nbsp;? Réécris la section « L'apprenant » de <code>CLAUDE.md</code> et le tuteur fait le pont avec ton langage.</p>
-        <p>Rien n'est caché, tout est dans le repo : les règles du tuteur dans <a href="https://github.com/matschik/learn-rust-for-web-devs/blob/main/CLAUDE.md">CLAUDE.md</a>, les commandes dans <a href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/.claude/commands">.claude/commands</a>, les exercices dans <a href="https://github.com/matschik/learn-rust-for-web-devs/tree/main/modules">modules</a>.</p>
-        <a class="btn ghost" href="https://github.com/matschik/learn-rust-for-web-devs/fork"><svg class="i"><use href="#i-code"/></svg>Forker le repo</a>
+      <div class="mod">
+        <h3><span>02</span>Ownership et structs</h3>
+        <ol><li>Move</li><li>Références et borrowing</li><li>Corriger les erreurs d'ownership</li><li>Slices</li><li>Structs</li><li>Méthodes</li><li>Capstone : un sprint</li></ol>
+      </div>
+      <div class="mod next">
+        <h3><span>03+</span>Et ensuite</h3>
+        <p>Enums et pattern matching, gestion des erreurs, traits, serde, Tokio, Axum, sqlx. Les modules arrivent au fil de l'eau.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="commencer">
+    <h2><span class="chip"><svg class="i"><use href="#i-arrow"/></svg></span>Commencer</h2>
+    <div class="start">
+      <div class="card">
+        <h3>1. Installe Rust</h3>
+        <p>Il te faut <code>cargo</code> et <code>rustc</code>, que <a href="https://rustup.rs/">rustup</a> installe en une commande. rust-analyzer arrive tout seul avec l'extension.</p>
+<pre><code><span class="t-dim">$</span> curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</code></pre>
+      </div>
+      <div class="card">
+        <h3>2. Installe l'extension</h3>
+        <p>Depuis le Marketplace, ou en ligne de commande. Ouvre ensuite un dossier vide et clique sur l'icône Learn Rust.</p>
+<pre><code><span class="t-dim">$</span> code --install-extension velstudio.learn-rust</code></pre>
+        <a class="btn" href="https://marketplace.visualstudio.com/items?itemName=velstudio.learn-rust">Installer l'extension <svg class="i"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </section>
 
   <footer>
-    <span>Fait avec <a href="https://claude.com/claude-code">Claude Code</a> et le <a href="https://rust-book.cs.brown.edu/">Rust Book de Brown</a>.</span>
-    <span>Code sous licence MIT, fiches sous CC BY 4.0. Ferris par Karen Rustad Tölva (CC0).</span>
+    <span>D'après le <a href="https://doc.rust-lang.org/book/">Rust Book</a> et sa <a href="https://jimskapt.github.io/rust-book-fr/">traduction française</a>.</span>
+    <span>Code sous licence MIT, leçons sous CC BY 4.0.</span>
     <a href="https://github.com/matschik/learn-rust-for-web-devs">github.com/matschik/learn-rust-for-web-devs</a>
   </footer>
 </div>
