@@ -1,0 +1,28 @@
+name: Extension VS Code
+
+on:
+  push:
+    branches: [main]
+    paths: ["extension/**", "modules/**", ".github/workflows/extension.yml"]
+  pull_request:
+    paths: ["extension/**", "modules/**", ".github/workflows/extension.yml"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: extension/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+      - run: pnpm package
